@@ -1,0 +1,17 @@
+# The .gitignore will ignore any file that is discribed here is the docs https://git-scm.com/docs/gitignore
+# After you edit this file you will run:
+# git reset .
+# git add .
+# git status
+# these commands will show what files you will add to the next commit (helpful for seeing if your gitignore sintax is correct)
+# Files to be ignored -------------------------
+# Please add to this if you find it needed 
+
+
+# Will ignore files in anysubdir called Personal...
+**/Personal*
+
+#for MPlabX this *should* save us some git headaches
+**/.generated_files
+
+# add new ignore file/paths here
