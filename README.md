@@ -8,6 +8,7 @@ This is the git repo that will deal with the code for the final project of ECE 1
 ## Roadmap
 - [x] Create git repo
 - [ ] Create test code for components 
+  - [ ] Track Wire detector 
 - [ ] Integrate sensors into ES framwork
 - [ ] Create bot behavior state machines  
 - [ ] Integrate bot behavior state machines with sensors and ES_Framework
