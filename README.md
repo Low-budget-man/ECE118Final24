@@ -7,10 +7,11 @@ SLUG-O-LYMPICS: L'ESCARGO VS. SLUG
 This is the git repo that will deal with the code for the final project of ECE 118 spring 2024 
 ## Roadmap
 - [x] Create git repo
--
--
--
-- [ ] Code bot
+- [ ] Create test code for components 
+- [ ] Integrate sensors into ES framwork
+- [ ] Create bot behavior state machines  
+- [ ] Integrate bot behavior state machines with sensors and ES_Framework
+- [ ] Finish Bot Code
 
 ## Authors and acknowledgment
 Authors: \
