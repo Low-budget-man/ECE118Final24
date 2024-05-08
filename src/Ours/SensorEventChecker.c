@@ -37,11 +37,13 @@
  ******************************************************************************/
 #define BATTERY_DISCONNECT_THRESHOLD 175
 
+#define TRACK_THRESH 200
+#define TRACK_HYST 30
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
 
-//#define EVENTCHECKER_TEST
+#define EVENTCHECKER_TEST
 #ifdef EVENTCHECKER_TEST
 #include <stdio.h>
 #define SaveEvent(x) do {eventName=__func__; storedEvent=x;} while (0)
@@ -59,10 +61,11 @@ static ES_Event storedEvent;
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
-
-/* Any private module level variable that you might need for keeping track of
-   events would be placed here. Private variables should be STATIC so that they
-   are limited in scope to this module. */
+static enum detector{
+    NOT_DETECTED,
+    DETECTED,
+};
+static enum detector LastTrack = NOT_DETECTED;
 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
@@ -82,7 +85,7 @@ static ES_Event storedEvent;
  * @note Use this code as a template for your other event checkers, and modify as necessary.
  * @author Gabriel H Elkaim, 2013.09.27 09:18
  * @modified Gabriel H Elkaim/Max Dunne, 2016.09.12 20:08 */
-uint8_t TemplateCheckBattery(void) {
+uint8_t CheckBattery(void) {
     static ES_EventTyp_t lastEvent = BATTERY_DISCONNECTED;
     ES_EventTyp_t curEvent;
     ES_Event thisEvent;
@@ -100,13 +103,52 @@ uint8_t TemplateCheckBattery(void) {
         returnVal = TRUE;
         lastEvent = curEvent; // update history
 #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
-        PostGenericService(thisEvent);
+        PostBattService(thisEvent);
 #else
         SaveEvent(thisEvent);
 #endif   
     }
     return (returnVal);
 }
+
+/**
+ * @Function CheckTrack(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief This function is the event checker that detects if the inductor is 
+ *      close enough to the track wire by comparing it to a #define in the .c
+ * @author Cooper Cantrell 5/8/2024 3:44
+ */
+uint8_t CheckTrack(void){
+    //sets up the basic vars that are needed for the I/O of this function
+    uint8_t returnVal = FALSE;
+    enum detector CurrentTrack = LastTrack;
+    uint16_t TrackVoltage = AD_ReadADPin(TRACK_VOLTAGE);
+    // checks to see what the current value is
+    if(TrackVoltage > TRACK_THRESH + TRACK_HYST){
+        CurrentTrack = DETECTED;
+    }
+    else if(TrackVoltage < TRACK_THRESH - TRACK_HYST){
+        CurrentTrack = NOT_DETECTED;
+    }
+    // checks if there is a change from current to past and acts properly
+    if(CurrentTrack != LastTrack){
+        returnVal = TRUE;
+        LastTrack = CurrentTrack;
+        ES_Event ThisEvent;
+        ThisEvent.EventParam = CurrentTrack;
+        ThisEvent.EventType = TRACKWIRE;
+        #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
+            //PostSensorService(ThisEvent);
+        #else
+            SaveEvent(ThisEvent);
+        #endif
+    }
+    
+    return returnVal;
+}
+
+
 
 /* 
  * The Test Harness for the event checkers is conditionally compiled using
