@@ -8,8 +8,7 @@ build/default/production/_ext/1041239619/ES_Timers.o: \
  ../include/Provided/ES_PostList.h ../include/Provided/ES_PriorTables.h \
  ../include/Provided/ES_Queue.h ../include/Provided/ES_ServiceHeaders.h \
  ../include/Ours/BattService.h ../include/Ours/ES_Configure.h \
- ../include/Provided/ES_Events.h ../include/Ours/SensorService.h \
- ../include/Provided/ES_TattleTale.h \
+ ../include/Provided/ES_Events.h ../include/Provided/ES_TattleTale.h \
  ../include/Provided/ES_ServiceHeaders.h \
  ../include/Provided/ES_PostList.h ../include/Provided/ES_LookupTables.h \
  ../include/Provided/ES_Timers.h
@@ -47,8 +46,6 @@ build/default/production/_ext/1041239619/ES_Timers.o: \
 ../include/Ours/ES_Configure.h:
 
 ../include/Provided/ES_Events.h:
-
-../include/Ours/SensorService.h:
 
 ../include/Provided/ES_TattleTale.h:
 

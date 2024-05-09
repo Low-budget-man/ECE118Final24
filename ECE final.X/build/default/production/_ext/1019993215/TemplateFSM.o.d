@@ -7,9 +7,8 @@ build/default/production/_ext/1019993215/TemplateFSM.o: \
  ../include/Provided/ES_PostList.h ../include/Provided/ES_PriorTables.h \
  ../include/Provided/ES_Queue.h ../include/Provided/ES_ServiceHeaders.h \
  ../include/Ours/BattService.h ../include/Ours/ES_Configure.h \
- ../include/Provided/ES_Events.h ../include/Ours/SensorService.h \
- ../include/Provided/ES_TattleTale.h ../include/Ours/TemplateFSM.h \
- ../include/Provided/BOARD.h
+ ../include/Provided/ES_Events.h ../include/Provided/ES_TattleTale.h \
+ ../include/Ours/TemplateFSM.h ../include/Provided/BOARD.h
 
 ../include/Ours/ES_Configure.h:
 
@@ -42,8 +41,6 @@ build/default/production/_ext/1019993215/TemplateFSM.o: \
 ../include/Ours/ES_Configure.h:
 
 ../include/Provided/ES_Events.h:
-
-../include/Ours/SensorService.h:
 
 ../include/Provided/ES_TattleTale.h:
 

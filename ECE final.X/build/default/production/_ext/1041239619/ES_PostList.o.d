@@ -3,8 +3,7 @@ build/default/production/_ext/1041239619/ES_PostList.o: \
  ../include/Provided/ES_General.h ../include/Provided/ES_PostList.h \
  ../include/Provided/ES_Events.h ../include/Provided/ES_ServiceHeaders.h \
  ../include/Provided/ES_KeyboardInput.h ../include/Ours/BattService.h \
- ../include/Ours/ES_Configure.h ../include/Provided/ES_Events.h \
- ../include/Ours/SensorService.h
+ ../include/Ours/ES_Configure.h ../include/Provided/ES_Events.h
 
 ../include/Ours/ES_Configure.h:
 
@@ -23,5 +22,3 @@ build/default/production/_ext/1041239619/ES_PostList.o: \
 ../include/Ours/ES_Configure.h:
 
 ../include/Provided/ES_Events.h:
-
-../include/Ours/SensorService.h:
