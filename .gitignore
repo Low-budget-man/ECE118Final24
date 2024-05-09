@@ -4,6 +4,10 @@
 # git add .
 # git status
 # these commands will show what files you will add to the next commit (helpful for seeing if your gitignore sintax is correct)
+# if you have a file that you have accidentally tracked and want to remove it form the git repo after ignoreing it you run
+# git rm -rf --cached .
+# git add .
+# if you do this your next commit will have the file gone
 # Files to be ignored -------------------------
 # Please add to this if you find it needed 
 
