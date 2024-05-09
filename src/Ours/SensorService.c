@@ -51,14 +51,8 @@ uint8_t InitSensorService(uint8_t Priority){
     ES_Event ThisEvent;
 
     MyPriority = Priority;
-    // LEDs for all sensors
-    LED_Init();
-    LED_AddBanks(LED_BANK1);
-    //sets all of the banks to 0 in case that is needed (0x0F) is a full bank)
-    LED_OffBank(LED_BANK1,0x0F);
-    // init the Track detector
-    AD_Init();
-    AD_AddPins(TRACK_VOLTAGE);
+    //Need to del later
+    printf("\r\n Init Sensor Service");
     // post the initial transition event
     ThisEvent.EventType = ES_INIT;
     if (ES_PostToService(MyPriority, ThisEvent) == TRUE) {

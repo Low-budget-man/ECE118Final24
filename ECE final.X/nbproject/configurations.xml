@@ -52,10 +52,10 @@
           <itemPath>../src/Ours/BattService.c</itemPath>
           <itemPath>../src/Ours/SensorEventChecker.c</itemPath>
           <itemPath>../src/Ours/SensorService.c</itemPath>
-          <itemPath>../src/Ours/TemplateES_Main.c</itemPath>
           <itemPath>../src/Ours/TemplateFSM.c</itemPath>
           <itemPath>../src/Ours/TemplateHSM.c</itemPath>
           <itemPath>../src/Ours/TemplateSubHSM.c</itemPath>
+          <itemPath>../src/Ours/TemplateES_Main.c</itemPath>
         </logicalFolder>
         <logicalFolder name="Provided" displayName="Provided" projectFiles="true">
           <itemPath>../src/Provided/AD.c</itemPath>
