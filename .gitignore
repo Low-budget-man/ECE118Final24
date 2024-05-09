@@ -17,7 +17,8 @@
 
 #for MPlabX this *should* save us some git headaches
 **/.generated_files
-
+# MP lab x is a dumdum
+/*.X
 # will ignore the .dist file that VScode sometimes makes when opening files
 /.dist
 /.VScode
