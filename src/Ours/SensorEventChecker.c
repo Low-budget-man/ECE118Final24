@@ -52,7 +52,7 @@
 static const char *eventName;
 static ES_Event storedEvent;
 #endif
-#define DEBUG_PRINT
+//#define DEBUG_PRINT
 #ifdef DEBUG_PRINT
 #include <stdio.h>
 #endif
