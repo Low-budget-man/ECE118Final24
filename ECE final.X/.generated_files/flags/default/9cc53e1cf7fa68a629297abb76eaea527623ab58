@@ -1,1 +1,0 @@
- $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -fno-common -I"../include/Ours" -I"../include/Provided"   -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/BOARD.c
