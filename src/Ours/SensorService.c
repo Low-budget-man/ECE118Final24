@@ -23,6 +23,7 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "SensorService.h"
+#include "LED.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -60,7 +61,11 @@ uint8_t InitSensorService(uint8_t Priority){
     ES_Event ThisEvent;
 
     MyPriority = Priority;
-
+    // LEDs for all sensors
+    LED_Init();
+    LED_AddBanks(LED_BANK1);
+    //sets all of the banks to 0 in case that is needed (0x0F) is a full bank)
+    LED_OffBank(LED_BANK1,0x0F)
     // init the Track detector
     AD_Init();
     AD_AddPins(TRACK_VOLTAGE);
@@ -107,6 +112,11 @@ ES_Event RunSensorService(ES_Event ThisEvent){
             // This section is used to reset service for some reason
             break;
         case TRACKWIRE:
+            
+            break;
+        default:
+            printf("ERROR UNKNOWN EVENT IN SERVICE");
+            break;
     }
 }
 
