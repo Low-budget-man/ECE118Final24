@@ -7,13 +7,12 @@
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
-
-#include "BOARD.h"
-#include "AD.h"
-#include "ES_Configure.h"
-#include "ES_Framework.h"
-#include "SensorService.h"
-#include "LED.h"
+#include "../../include/Ours/SensorEventChecker.h"
+#include "../../include/Provided/LED.h"
+#include "../../include/Ours/ES_Configure.h"
+#include "../../include/Provided/ES_Framework.h"
+#include "../../include/Ours/SensorService.h"
+#include "../../include/Provided/LED.h"
 #include <stdio.h>
 
 /*******************************************************************************

@@ -31,6 +31,8 @@
 #include "ES_Events.h"
 #include "serial.h"
 #include "AD.h"
+#include "BattService.h"
+#include "SensorService.h"
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -42,7 +44,7 @@
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
 
-//#define EVENTCHECKER_TEST
+#define EVENTCHECKER_TEST
 #ifdef EVENTCHECKER_TEST
 #include <stdio.h>
 #define SaveEvent(x) do {eventName=__func__; storedEvent=x;} while (0)
@@ -50,7 +52,10 @@
 static const char *eventName;
 static ES_Event storedEvent;
 #endif
-
+#define DEBUG_PRINT
+#ifdef DEBUG_PRINT
+#include <stdio.h>
+#endif
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -60,12 +65,8 @@ static ES_Event storedEvent;
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
-static enum detector{
-    NOT_DETECTED,
-    DETECTED,
-};
-static enum detector LastTrack = NOT_DETECTED;
-
+static enum {NOT_DETECTED, DETECTED} LastTrack = NOT_DETECTED;
+        
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
@@ -121,9 +122,11 @@ uint8_t CheckBattery(void) {
 uint8_t CheckTrack(void){
     //sets up the basic vars that are needed for the I/O of this function
     uint8_t returnVal = FALSE;
-    enum detector CurrentTrack = LastTrack;
+    static enum {NOT_DETECTED, DETECTED} CurrentTrack;
     uint16_t TrackVoltage = AD_ReadADPin(TRACK_VOLTAGE);
-        //printf("\r\n Track Voltage is at %d",TrackVoltage); // For debug only delete
+    #ifdef DEBUG_PRINT
+        printf("\r\n Track Voltage is at %d",TrackVoltage); // For debug only delete
+    #endif 
     // checks to see what the current value is
     if(TrackVoltage > TRACK_THRESH + TRACK_HYST){
         CurrentTrack = DETECTED;
