@@ -7,11 +7,12 @@ SLUG-O-LYMPICS: L'ESCARGO VS. SLUG
 This is the git repo that will deal with the code for the final project of ECE 118 spring 2024 
 ## Roadmap
 - [x] Create git repo
-- [ ] Create test code for components 
-  - [ ] Track Wire detector 
+- [ ] Create and test event checker code for Sensors 
+  - [x] Track Wire detector 
+  - [] Beacon detector
+  - [] Tape Detector
 - [ ] Integrate sensors into ES framwork
 - [ ] Create bot behavior state machines  
-- [ ] Integrate bot behavior state machines with sensors and ES_Framework
 - [ ] Finish Bot Code
 
 ## Authors and acknowledgment

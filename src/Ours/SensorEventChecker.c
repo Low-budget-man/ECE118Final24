@@ -38,7 +38,7 @@
 #define BATTERY_DISCONNECT_THRESHOLD 175
 
 #define TRACK_THRESH 200
-#define TRACK_HYST 30
+#define TRACK_HYST 60
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -124,6 +124,7 @@ uint8_t CheckTrack(void){
     uint8_t returnVal = FALSE;
     enum detector CurrentTrack = LastTrack;
     uint16_t TrackVoltage = AD_ReadADPin(TRACK_VOLTAGE);
+        //printf("\r\n Track Voltage is at %d",TrackVoltage); // For debug only delete
     // checks to see what the current value is
     if(TrackVoltage > TRACK_THRESH + TRACK_HYST){
         CurrentTrack = DETECTED;
@@ -180,7 +181,8 @@ void PrintEvent(void);
 void main(void) {
     BOARD_Init();
     /* user initialization code goes here */
-
+    AD_Init();
+    AD_AddPins(TRACK_VOLTAGE);
     // Do not alter anything below this line
     int i;
 

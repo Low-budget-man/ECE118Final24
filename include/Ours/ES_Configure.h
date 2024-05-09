@@ -76,7 +76,7 @@ static const char *EventNames[] = {
 
 /****************************************************************************/
 // This is the list of event checking functions
-#define EVENT_CHECK_LIST  CheckBattery, CheckTrack
+#define EVENT_CHECK_LIST  CheckTrack //Add check Battery for the real bot
 
 /****************************************************************************/
 // These are the definitions for the post functions to be executed when the

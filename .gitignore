@@ -14,4 +14,6 @@
 #for MPlabX this *should* save us some git headaches
 **/.generated_files
 
+# will ignore the .dist file that VScode sometimes makes when opening files
+*/.dist
 # add new ignore file/paths here
