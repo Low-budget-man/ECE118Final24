@@ -9,6 +9,7 @@
           <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Ours/ES_Configure.h</itemPath>
           <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Ours/SensorEventChecker.h</itemPath>
           <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Ours/BattService.h</itemPath>
+          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Ours/SensorService.h</itemPath>
         </logicalFolder>
         <logicalFolder name="Provided" displayName="Provided" projectFiles="true">
           <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/AD.h</itemPath>
@@ -49,6 +50,7 @@
           <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/TemplateES_Main.c</itemPath>
           <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/SensorEventChecker.c</itemPath>
           <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/BattService.c</itemPath>
+          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/SensorService.c</itemPath>
         </logicalFolder>
         <logicalFolder name="Provided" displayName="Provided" projectFiles="true">
           <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/AD.c</itemPath>
@@ -264,6 +266,20 @@
       <item path="C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/TemplateES_Main.c"
             ex="true"
             overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-CO>
+        </C32-CO>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
       </item>
     </conf>
   </confs>
