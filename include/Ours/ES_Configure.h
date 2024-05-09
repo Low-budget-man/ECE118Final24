@@ -10,6 +10,8 @@
  When           Who     What/Why
  -------------- ---     --------
  01/15/12 10:03 jec      started coding
+ 5/8/2024 15:05 cfc      added track wire event checker
+ 5/8/2024 22:38 cfc      created service for the sensors
  *****************************************************************************/
 
 #ifndef CONFIGURE_H
@@ -119,7 +121,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 2
+#define NUM_SERVICES 3
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
@@ -151,11 +153,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 2
 #if NUM_SERVICES > 2
 // the header file with the public fuction prototypes
-#define SERV_2_HEADER "TestService.h"
+#define SERV_2_HEADER "SensorService.h"
 // the name of the Init function
-#define SERV_2_INIT TestServiceInit
+#define SERV_2_INIT InitSensorService
 // the name of the run function
-#define SERV_2_RUN TestServiceRun
+#define SERV_2_RUN RunSensorService
 // How big should this services Queue be?
 #define SERV_2_QUEUE_SIZE 3
 #endif

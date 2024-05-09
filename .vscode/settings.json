@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.md": "markdown",
+        "es_framework.h": "c",
+        "led.h": "c"
+    }
+}

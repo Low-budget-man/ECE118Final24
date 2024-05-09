@@ -6,69 +6,74 @@
                    projectFiles="true">
       <logicalFolder name="include" displayName="include" projectFiles="true">
         <logicalFolder name="Ours" displayName="Ours" projectFiles="true">
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Ours/ES_Configure.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Ours/SensorEventChecker.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Ours/BattService.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Ours/SensorService.h</itemPath>
+          <itemPath>../include/Ours/BattService.h</itemPath>
+          <itemPath>../include/Ours/ES_Configure.h</itemPath>
+          <itemPath>../include/Ours/SensorEventChecker.h</itemPath>
+          <itemPath>../include/Ours/SensorService.h</itemPath>
+          <itemPath>../include/Ours/TemplateFSM.h</itemPath>
+          <itemPath>../include/Ours/TemplateHSM.h</itemPath>
+          <itemPath>../include/Ours/TemplateSubHSM.h</itemPath>
         </logicalFolder>
         <logicalFolder name="Provided" displayName="Provided" projectFiles="true">
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/AD.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/BOARD.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_CheckEvents.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_Events.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_Framework.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_General.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_KeyboardInput.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_LookupTables.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_Port.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_PostList.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_PriorTables.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_Queue.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_ServiceHeaders.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_TattleTale.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/ES_Timers.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/IO_Ports.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/LED.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/pwm.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/RC_Servo.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/roach.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/serial.h</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/include/Provided/timers.h</itemPath>
+          <itemPath>../include/Provided/AD.h</itemPath>
+          <itemPath>../include/Provided/BOARD.h</itemPath>
+          <itemPath>../include/Provided/ES_CheckEvents.h</itemPath>
+          <itemPath>../include/Provided/ES_Events.h</itemPath>
+          <itemPath>../include/Provided/ES_Framework.h</itemPath>
+          <itemPath>../include/Provided/ES_General.h</itemPath>
+          <itemPath>../include/Provided/ES_KeyboardInput.h</itemPath>
+          <itemPath>../include/Provided/ES_LookupTables.h</itemPath>
+          <itemPath>../include/Provided/ES_Port.h</itemPath>
+          <itemPath>../include/Provided/ES_PostList.h</itemPath>
+          <itemPath>../include/Provided/ES_PriorTables.h</itemPath>
+          <itemPath>../include/Provided/ES_Queue.h</itemPath>
+          <itemPath>../include/Provided/ES_ServiceHeaders.h</itemPath>
+          <itemPath>../include/Provided/ES_TattleTale.h</itemPath>
+          <itemPath>../include/Provided/ES_Timers.h</itemPath>
+          <itemPath>../include/Provided/IO_Ports.h</itemPath>
+          <itemPath>../include/Provided/LED.h</itemPath>
+          <itemPath>../include/Provided/pwm.h</itemPath>
+          <itemPath>../include/Provided/RC_Servo.h</itemPath>
+          <itemPath>../include/Provided/roach.h</itemPath>
+          <itemPath>../include/Provided/serial.h</itemPath>
+          <itemPath>../include/Provided/timers.h</itemPath>
         </logicalFolder>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
                    projectFiles="true">
-      <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/otherfiles/bootloader320.ld</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <logicalFolder name="Ours" displayName="Ours" projectFiles="true">
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/TemplateES_Main.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/SensorEventChecker.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/BattService.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/SensorService.c</itemPath>
+          <itemPath>../src/Ours/BattService.c</itemPath>
+          <itemPath>../src/Ours/SensorEventChecker.c</itemPath>
+          <itemPath>../src/Ours/SensorService.c</itemPath>
+          <itemPath>../src/Ours/TemplateES_Main.c</itemPath>
+          <itemPath>../src/Ours/TemplateFSM.c</itemPath>
+          <itemPath>../src/Ours/TemplateHSM.c</itemPath>
+          <itemPath>../src/Ours/TemplateSubHSM.c</itemPath>
         </logicalFolder>
         <logicalFolder name="Provided" displayName="Provided" projectFiles="true">
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/AD.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/BOARD.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/ES_CheckEvents.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/ES_Framework.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/ES_KeyboardInput.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/ES_PostList.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/ES_Queue.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/ES_TattleTale.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/ES_Timers.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/IO_Ports.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/LED.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/pwm.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/RC_Servo.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/roach.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/serial.c</itemPath>
-          <itemPath>C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Provided/timers.c</itemPath>
+          <itemPath>../src/Provided/AD.c</itemPath>
+          <itemPath>../src/Provided/BOARD.c</itemPath>
+          <itemPath>../src/Provided/ES_CheckEvents.c</itemPath>
+          <itemPath>../src/Provided/ES_Framework.c</itemPath>
+          <itemPath>../src/Provided/ES_KeyboardInput.c</itemPath>
+          <itemPath>../src/Provided/ES_PostList.c</itemPath>
+          <itemPath>../src/Provided/ES_Queue.c</itemPath>
+          <itemPath>../src/Provided/ES_TattleTale.c</itemPath>
+          <itemPath>../src/Provided/ES_Timers.c</itemPath>
+          <itemPath>../src/Provided/IO_Ports.c</itemPath>
+          <itemPath>../src/Provided/LED.c</itemPath>
+          <itemPath>../src/Provided/pwm.c</itemPath>
+          <itemPath>../src/Provided/RC_Servo.c</itemPath>
+          <itemPath>../src/Provided/roach.c</itemPath>
+          <itemPath>../src/Provided/serial.c</itemPath>
+          <itemPath>../src/Provided/timers.c</itemPath>
         </logicalFolder>
       </logicalFolder>
     </logicalFolder>
@@ -82,6 +87,8 @@
     <Elem>C:\Users\coope\OneDrive\Documents\UCSC\Classes\UCSC 3nd quarter classes y3\ECE 118\FinalProject\ece118-final\include</Elem>
     <Elem>C:\Users\coope\OneDrive\Documents\UCSC\Classes\UCSC 3nd quarter classes y3\ECE 118\FinalProject\ece118-final\src</Elem>
     <Elem>C:\Users\coope\OneDrive\Documents\UCSC\Classes\UCSC 3nd quarter classes y3\ECE 118\FinalProject\ece118-final\otherfiles</Elem>
+    <Elem>../include</Elem>
+    <Elem>../src</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -93,7 +100,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.00</languageToolchainVersion>
+        <languageToolchainVersion>4.35</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
@@ -117,9 +124,9 @@
         </subordinates>
       </compileType>
       <makeCustomizationType>
-        <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
+        <makeCustomizationPreStepEnabled>true</makeCustomizationPreStepEnabled>
         <makeUseCleanTarget>false</makeUseCleanTarget>
-        <makeCustomizationPreStep></makeCustomizationPreStep>
+        <makeCustomizationPreStep>#define default</makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
         <makeCustomizationPostStep></makeCustomizationPostStep>
         <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
@@ -264,7 +271,7 @@
         <property key="wpo-lto" value="false"/>
       </C32Global>
       <item path="C:/Users/coope/OneDrive/Documents/UCSC/Classes/UCSC 3nd quarter classes y3/ECE 118/FinalProject/ece118-final/src/Ours/TemplateES_Main.c"
-            ex="true"
+            ex="false"
             overriding="false">
         <C32>
         </C32>

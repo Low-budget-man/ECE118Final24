@@ -16,6 +16,8 @@
                 <sourceRootElem>C:\Users\coope\OneDrive\Documents\UCSC\Classes\UCSC 3nd quarter classes y3\ECE 118\FinalProject\ece118-final\include</sourceRootElem>
                 <sourceRootElem>C:\Users\coope\OneDrive\Documents\UCSC\Classes\UCSC 3nd quarter classes y3\ECE 118\FinalProject\ece118-final\src</sourceRootElem>
                 <sourceRootElem>C:\Users\coope\OneDrive\Documents\UCSC\Classes\UCSC 3nd quarter classes y3\ECE 118\FinalProject\ece118-final\otherfiles</sourceRootElem>
+                <sourceRootElem>../include</sourceRootElem>
+                <sourceRootElem>../src</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
