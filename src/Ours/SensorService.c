@@ -55,7 +55,7 @@ uint8_t InitSensorService(uint8_t Priority){
     LED_Init();
     LED_AddBanks(LED_BANK1);
     //sets all of the banks to 0 in case that is needed (0x0F) is a full bank)
-    LED_OffBank(LED_BANK1,0x0F)
+    LED_OffBank(LED_BANK1,0x0F);
     // init the Track detector
     AD_Init();
     AD_AddPins(TRACK_VOLTAGE);

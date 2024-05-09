@@ -15,5 +15,6 @@
 **/.generated_files
 
 # will ignore the .dist file that VScode sometimes makes when opening files
-*/.dist
+/.dist
+/.VScode
 # add new ignore file/paths here
