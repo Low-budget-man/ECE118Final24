@@ -38,7 +38,6 @@
 #define AD_PORTW8 (1<<11)
 #define BAT_VOLTAGE (1<<12)
 #define ROACH_LIGHT_SENSOR (1<<13)
-#define TRACK_VOLTAGE AD_PORTV3
 
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *

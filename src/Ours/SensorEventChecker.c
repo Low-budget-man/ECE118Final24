@@ -37,7 +37,7 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 #define BATTERY_DISCONNECT_THRESHOLD 175
-
+#define TRACK_VOLTAGE AD_PORTV3
 #define TRACK_THRESH 200
 #define TRACK_HYST 60
 /*******************************************************************************
@@ -142,7 +142,9 @@ uint8_t CheckTrack(void){
         ThisEvent.EventParam = CurrentTrack;
         ThisEvent.EventType = TRACKWIRE;
         #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
+        #ifdef DEBUG_PRINT
         printf("\r\n Posting");
+        #endif
             PostSensorService(ThisEvent);
         #else
             SaveEvent(ThisEvent);

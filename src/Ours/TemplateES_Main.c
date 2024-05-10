@@ -25,8 +25,6 @@ void main(void)
     // init the Track detector
     AD_Init();
     AD_AddPins(TRACK_VOLTAGE);
-    //adding the LEDS so that if printf is broken we can see
-    LED_OnBank(LED_BANK1,0x4);
     
     // now initialize the Events and Services Framework and start it running
     ErrorType = ES_Initialize();
