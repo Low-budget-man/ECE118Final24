@@ -18,7 +18,7 @@
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
-#define TRACK_LED (1<<0)
+#define TRACK_LED (0x1)
 
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
@@ -84,6 +84,7 @@ uint8_t PostSensorService(ES_Event ThisEvent)
  * @author Cooper Cantrell 5/8/2024 */
 ES_Event RunSensorService(ES_Event ThisEvent){
     ES_Event ReturnEvent;
+    printf("\r\n TrackWire Event");
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
     // when simple service test is called it will print otherwise 
     // the LEDS will be used to show that the service can be processed
@@ -108,6 +109,7 @@ ES_Event RunSensorService(ES_Event ThisEvent){
             printf("ERROR UNKNOWN EVENT IN SERVICE");
             break;
     }
+    return ReturnEvent;
 }
 
 /*******************************************************************************

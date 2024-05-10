@@ -44,7 +44,7 @@
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
 
-#define EVENTCHECKER_TEST
+//#define EVENTCHECKER_TEST
 #ifdef EVENTCHECKER_TEST
 #include <stdio.h>
 #define SaveEvent(x) do {eventName=__func__; storedEvent=x;} while (0)
@@ -142,6 +142,7 @@ uint8_t CheckTrack(void){
         ThisEvent.EventParam = CurrentTrack;
         ThisEvent.EventType = TRACKWIRE;
         #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
+        printf("\r\n Posting");
             PostSensorService(ThisEvent);
         #else
             SaveEvent(ThisEvent);
