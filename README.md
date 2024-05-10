@@ -12,7 +12,7 @@ This is the git repo that will deal with the code for the final project of ECE 1
   - [ ] Beacon detector
   - [ ] Tape Detector
 - [ ] Integrate sensors into ES framwork
-  - [ ] Track Wire detector 
+  - [x] Track Wire detector 
   - [ ] Beacon detector
   - [ ] Tape Detector
 - [ ] Create bot behavior state machines  

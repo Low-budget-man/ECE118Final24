@@ -40,6 +40,12 @@
 #define TRACK_VOLTAGE AD_PORTV3
 #define TRACK_THRESH 200
 #define TRACK_HYST 60
+#define TAPE_VOLTAGEL
+#define TAPE_VOLTAGER
+#define TAPE_THRESH
+#define TAPE_HYST
+#define TAPERBit (0)
+#define TAPELBit (1)
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -66,7 +72,8 @@ static ES_Event storedEvent;
  * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
 static enum {NOT_DETECTED, DETECTED} LastTrack = NOT_DETECTED;
-        
+static enum {NOT_DETECTED, DETECTED} LastTapeL = NOT_DETECTED;
+static enum {NOT_DETECTED, DETECTED} LastTapeR = NOT_DETECTED;  
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
@@ -124,9 +131,6 @@ uint8_t CheckTrack(void){
     uint8_t returnVal = FALSE;
     static enum {NOT_DETECTED, DETECTED} CurrentTrack;
     uint16_t TrackVoltage = AD_ReadADPin(TRACK_VOLTAGE);
-    #ifdef DEBUG_PRINT
-        printf("\r\n Track Voltage is at %d",TrackVoltage); // For debug only delete
-    #endif 
     // checks to see what the current value is
     if(TrackVoltage > TRACK_THRESH + TRACK_HYST){
         CurrentTrack = DETECTED;
@@ -143,7 +147,7 @@ uint8_t CheckTrack(void){
         ThisEvent.EventType = TRACKWIRE;
         #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
         #ifdef DEBUG_PRINT
-        printf("\r\n Posting");
+        printf("\r\n Posting a track wire event");
         #endif
             PostSensorService(ThisEvent);
         #else
@@ -154,7 +158,63 @@ uint8_t CheckTrack(void){
     return returnVal;
 }
 
-
+/**
+ * @Function CheckTape(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief This function is the event checker that detects if there is a change
+ *      in tape detetion
+ * @author Cooper Cantrell 5/10/2024 12:07
+ */
+uint8_t CheckTape(void){
+    // event checker setup
+    uint8_t returnVal = FALSE;
+    uint8_t param = 0;
+    static enum {NOT_DETECTED, DETECTED} CurrentTapeL;
+    static enum {NOT_DETECTED, DETECTED} CurrentTapeR;
+    uint16_t TapeLeftVolt = AD_ReadADPin(TAPE_VOLTAGEL);
+    uint16_t TapeRightVolt = AD_ReadADPin(TAPE_VOLTAGER);
+    // for the left tape detetor
+    if(TapeLeftVolt > TAPE_THRESH + TAPE_HYST){
+        CurrentTapeL = DETECTED;
+    }
+    else if(TapeLeftVolt < TRACK_THRESH - TRACK_HYST){
+        CurrentTapeL = NOT_DETECTED;
+    }
+    // for the right tape detetor
+    if(TapeRightVolt > TAPE_THRESH + TAPE_HYST){
+        CurrentTapeR = DETECTED;
+    }
+    else if(TapeRightVolt < TAPE_THRESH + TAPE_HYST){
+        CurrentTapeR = NOT_DETECTED;
+    }
+    //if more tape detetors will add them here
+    
+    // compare to last left
+    if(CurrentTapeL != LastTapeL){
+        param += (CurrentTapeL<<TAPELBit);
+    }
+    // compare to last right
+    if(CurrentTapeR != LastTapeR){
+        param += (CurrentTapeR<<TAPERBit);
+    }
+    if (param)
+    {
+        returnVal = TRUE;
+        ES_Event ThisEvent;
+        ThisEvent.EventType = TAPE;
+        ThisEvent.EventParam = param;
+        #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
+        #ifdef DEBUG_PRINT
+        printf("\r\n Posting a Tape  event");
+        #endif
+            PostSensorService(ThisEvent);
+        #else
+            SaveEvent(ThisEvent);
+        #endif
+    }
+    return returnVal;
+}
 
 /* 
  * The Test Harness for the event checkers is conditionally compiled using

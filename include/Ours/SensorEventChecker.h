@@ -69,5 +69,14 @@ uint8_t CheckBattery(void);
  */
 uint8_t CheckTrack(void);
 
+/**
+ * @Function CheckTape(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief This function is the event checker that detects if there is a change
+ *      in tape detetion
+ * @author Cooper Cantrell 5/10/2024 12:07
+ */
+uint8_t CheckTape(void);
 #endif	/* TEMPLATEEVENTCHECKER_H */
 
