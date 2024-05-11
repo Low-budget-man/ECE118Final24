@@ -24,7 +24,7 @@ void main(void)
     LED_OffBank(LED_BANK1,0x0F);
     // init the Track detector
     AD_Init();
-    AD_AddPins(TRACK_VOLTAGE);
+    AD_AddPins(AD_PORTV3);// This is for the Trackwire
     
     // now initialize the Events and Services Framework and start it running
     ErrorType = ES_Initialize();
