@@ -136,21 +136,15 @@ void SetTapeLED(char state)
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
-static enum { NOT_DETECTED,
-              DETECTED } LastTrack = NOT_DETECTED;
-static enum { NOT_DETECTED,
-              DETECTED } LastTapefrr = NOT_DETECTED;
+enum sensor{NOT_DETECTED,DETECTED};
+enum sensor LastTrack = NOT_DETECTED;
+enum sensor LastTapefrr = NOT_DETECTED;
 #ifndef ONETAPE
-static enum { NOT_DETECTED,
-              DETECTED } LastTapefr = NOT_DETECTED;
-static enum { NOT_DETECTED,
-              DETECTED } LastTapefl = NOT_DETECTED;
-static enum { NOT_DETECTED,
-              DETECTED } LastTapefll = NOT_DETECTED;
-static enum { NOT_DETECTED,
-              DETECTED } LastTapebr = NOT_DETECTED;
-static enum { NOT_DETECTED,
-              DETECTED } LastTapebl = NOT_DETECTED;
+enum sensor LastTapefr = NOT_DETECTED;
+enum sensor LastTapefl = NOT_DETECTED;
+enum sensor LastTapefll = NOT_DETECTED;
+enum sensor LastTapebr = NOT_DETECTED;
+enum sensor LastTapebl = NOT_DETECTED;
 #endif
 static enum { OFF,
               ON } TapeLED = OFF;
@@ -164,6 +158,15 @@ uint16_t TapeflrNoise;
 uint16_t TapefllNoise;
 uint16_t TapebrNoise;
 uint16_t TapeblNoise;
+#endif
+// a var to store the reading to
+uint16_t TapefrrRead;
+#ifndef ONETAPE
+uint16_t TapefrRead;
+uint16_t TapeflrRead;
+uint16_t TapefllRead;
+uint16_t TapebrRead;
+uint16_t TapeblRead;
 #endif
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
@@ -278,19 +281,13 @@ uint8_t CheckTape(void)
     // event checker setup
     uint8_t returnVal = FALSE;
     uint8_t param = 0;
-    static enum { NOT_DETECTED,
-                  DETECTED } CurrentTapefrr;
+    static enum sensor CurrentTapefrr;
 #ifndef ONETAPE
-    static enum { NOT_DETECTED,
-                  DETECTED } CurrentTapefr;
-    static enum { NOT_DETECTED,
-                  DETECTED } CurrentTapefl;
-    static enum { NOT_DETECTED,
-                  DETECTED } CurrentTapefll;
-    static enum { NOT_DETECTED,
-                  DETECTED } CurrentTapebr;
-    static enum { NOT_DETECTED,
-                  DETECTED } CurrentTapebl;
+    static enum sensor CurrentTapefr;
+    static enum sensor CurrentTapefl;
+    static enum sensor CurrentTapefll;
+    static enum sensor CurrentTapebr;
+    static enum sensor CurrentTapebl;
 #endif
     // the LED will be off and be given LEDTIME
     if (!TapeWaiting)
@@ -306,18 +303,20 @@ uint8_t CheckTape(void)
         TapeWaiting = FALSE;
         if (TapeLED) // off is FALSE
         {
-            uint16_t TapefrrRead = AD_ReadADPin(TAPE_VOLTAGEfrr);
+            TapefrrRead = AD_ReadADPin(TAPE_VOLTAGEfrr);
+                printf("\r\n The light reading is %d",TapefrrRead); //del later
 #ifndef ONETAPE
-            uint16_t TapefrRead = AD_ReadADPin(TAPE_VOLTAGEfr);
-            uint16_t TapeflrRead = AD_ReadADPin(TAPE_VOLTAGEfl);
-            uint16_t TapefllRead = AD_ReadADPin(TAPE_VOLTAGEfll);
-            uint16_t TapebrRead = AD_ReadADPin(TAPE_VOLTAGEfbr);
-            uint16_t TapeblRead = AD_ReadADPin(TAPE_VOLTAGEfbl);
+            TapefrRead = AD_ReadADPin(TAPE_VOLTAGEfr);
+            TapeflrRead = AD_ReadADPin(TAPE_VOLTAGEfl);
+            TapefllRead = AD_ReadADPin(TAPE_VOLTAGEfll);
+            TapebrRead = AD_ReadADPin(TAPE_VOLTAGEfbr);
+            TapeblRead = AD_ReadADPin(TAPE_VOLTAGEfbl);
 #endif
         }
         else
         {
             TapefrrNoise = AD_ReadADPin(TAPE_VOLTAGEfrr);
+            printf("\r\n The Noise reading is %d",TapefrrRead); //del later
 #ifndef ONETAPE
             TapefrNoise = AD_ReadADPin(TAPE_VOLTAGEfr);
             TapeflrNoise = AD_ReadADPin(TAPE_VOLTAGEfl);
@@ -328,6 +327,8 @@ uint8_t CheckTape(void)
         }
         TapeLED = !TapeLED;
         // after the check compare to past values and noise to the thresh and raise events
+        //only if has at least 1 of each reading
+        if(TapefrrNoise && TapefrrRead){
         if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH + TAPE_HYST)
         {
             CurrentTapefrr = NOT_DETECTED;
@@ -384,6 +385,7 @@ uint8_t CheckTape(void)
             CurrentTapebl = DETECTED;
         }
 #endif
+        
         // compare past values with current values
         if (CurrentTapefrr != LastTapefrr)
         {
@@ -423,6 +425,7 @@ uint8_t CheckTape(void)
             LastTapebl = CurrentTapebl;
         }
 #endif
+        }
     }
     if (returnVal)
     {
