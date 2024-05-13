@@ -118,7 +118,7 @@ static const char *EventNames[] = {
 // the timer number matches where the timer event will be routed
 
 #define GENERIC_NAMED_TIMER 0 /*make sure this is enabled above and posting to the correct state machine*/
-#define SERVO_TIMER 1
+
 
 /****************************************************************************/
 // The maximum number of services sets an upper bound on the number of 
