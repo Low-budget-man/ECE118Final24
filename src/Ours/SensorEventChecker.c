@@ -433,7 +433,7 @@ uint8_t CheckTape(void)
         ThisEvent.EventType = TAPE;
         ThisEvent.EventParam = param;
 #ifndef EVENTCHECKER_TEST // keep this as is for test harness
-            PostBattService(ThisEvent);
+            PostSensorService(ThisEvent);
 #else
             SaveEvent(ThisEvent);
 #endif

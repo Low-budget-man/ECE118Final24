@@ -84,7 +84,6 @@ uint8_t PostSensorService(ES_Event ThisEvent)
  * @author Cooper Cantrell 5/8/2024 */
 ES_Event RunSensorService(ES_Event ThisEvent){
     ES_Event ReturnEvent;
-    printf("\r\n TrackWire Event");
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
     // when simple service test is called it will print otherwise 
     // the LEDS will be used to show that the service can be processed
@@ -105,8 +104,12 @@ ES_Event RunSensorService(ES_Event ThisEvent){
                 LED_OffBank(LED_BANK1,TRACK_LED);
             }
             break;
+        case TAPE:
+            // Temp case to see if the event is raised properly
+            printf("\r\nTape Event with the param,0x%x",ThisEvent.EventParam);
+            break;
         default:
-            printf("ERROR UNKNOWN EVENT IN SERVICE");
+            printf("\r\nERROR UNKNOWN EVENT IN SERVICE");
             break;
     }
     return ReturnEvent;
