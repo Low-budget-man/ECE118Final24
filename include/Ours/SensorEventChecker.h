@@ -42,6 +42,15 @@
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *
  ******************************************************************************/
+/**
+ * @Function SensorInit(void)
+ * @param none
+ * @return none
+ * @brief This function will init all that is needed for the sensor so that in 
+ * the main functions only this needs to be called
+ * @author Cooper Cantrell 5/13/2024 3:37pm
+ */
+void SensorInit(void);
 
 /**
  * @Function CheckBattery(void)

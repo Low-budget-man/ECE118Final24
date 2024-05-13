@@ -22,9 +22,8 @@ void main(void)
     LED_AddBanks(LED_BANK1);
     //sets all of the banks to 0 in case that is needed (0x0F) is a full bank)
     LED_OffBank(LED_BANK1,0x0F);
-    // init the Track detector
-    AD_Init();
-    AD_AddPins(AD_PORTV3);// This is for the Trackwire
+    // init the sensors
+    SensorInit();
     // now initialize the Events and Services Framework and start it running
     ErrorType = ES_Initialize();
     if (ErrorType == Success) {

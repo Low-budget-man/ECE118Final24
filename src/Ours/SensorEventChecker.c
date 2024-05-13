@@ -85,7 +85,7 @@
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
 
-#define EVENTCHECKER_TEST
+//#define EVENTCHECKER_TEST
 #ifdef EVENTCHECKER_TEST
 #include <stdio.h>
 #define SaveEvent(x)          \
@@ -173,6 +173,24 @@ uint16_t TapeblRead;
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
+
+/**
+ * @Function SensorInit(void)
+ * @param none
+ * @return none
+ * @brief This function will init all that is needed for the sensor so that in 
+ * the main functions only this needs to be called
+ * @author Cooper Cantrell 5/13/2024 3:37pm
+ */
+void SensorInit(void){
+    AD_Init();
+    AD_AddPins(TRACK_VOLTAGE);
+    AD_AddPins(TAPE_VOLTAGEfrr);
+    ES_Timer_Init();
+    // sets the outputs and the pins if we all use th 
+    IO_PortsSetPortOutputs(TAPE_LEDfrrPort,0xfff);
+    IO_PortsWritePort(TAPE_LEDfrrPort,TAPE_LEDfrrPin);
+}
 
 /**
  * @Function TemplateCheckBattery(void)
@@ -477,14 +495,7 @@ void main(void)
 {
     BOARD_Init();
     /* user initialization code goes here */
-    AD_Init();
-    AD_AddPins(TRACK_VOLTAGE);
-    AD_AddPins(TAPE_VOLTAGEfrr);
-    ES_Timer_Init();
-    // sets the outputs and the pins if we all use th 
-    IO_PortsSetPortOutputs(TAPE_LEDfrrPort,0xfff);
-    IO_PortsWritePort(TAPE_LEDfrrPort,TAPE_LEDfrrPin);
-    
+    SensorInit();
     // Do not alter anything below this line
     int i;
 
