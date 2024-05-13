@@ -70,9 +70,9 @@
 #define TAPE_VOLTAGEbr
 #define TAPE_VOLTAGEbl
 #endif
-#define TAPE_THRESH 1023 // this is wrong but just so events are not raised when
+#define TAPE_THRESH 60 
 // reading voltage
-#define TAPE_HYST 0 // see above
+#define TAPE_HYST 15 
 #define TAPEfrrBit (0)
 #define TAPEfrBit (1)
 #define TAPEflBit (2)
@@ -80,7 +80,7 @@
 #define TAPEbrBit (4)
 #define TAPEblBit (5)
 // Time that is needed for the tape sensor to get a stable reading (in ms)
-#define TAPEtime 2
+#define TAPEtime 3
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -117,6 +117,7 @@ void SetTapeLED(char state)
     // assume only use 1 port for all of the LEDS if not will need to change
     uint16_t pattern = 0;
     pattern |= TAPE_LEDfrrPin;
+    pattern |= TAPE_READER_POWERPin;
 #ifndef ONETAPE
     pattern |= TAPE_LEDfrPin;
     pattern |= TAPE_LEDflPin;
@@ -126,11 +127,11 @@ void SetTapeLED(char state)
 #endif
     if (state)
     {
-        IO_PortsSetPortBits(TAPE_LEDfrrPort, pattern);
+        IO_PortsWritePort(TAPE_LEDfrrPort, pattern);
     }
     else
     {
-        IO_PortsSetPortBits(TAPE_LEDfrrPort, 0);
+        IO_PortsWritePort(TAPE_LEDfrrPort, TAPE_READER_POWERPin);
     }
 }
 /*******************************************************************************
@@ -150,6 +151,7 @@ static enum { OFF,
               ON } TapeLED = OFF;
 uint8_t TapeWaiting = FALSE;
 uint32_t TapeWaitStart;
+uint8_t LEDset = FALSE;
 // so the current noise for the tape can be used
 uint16_t TapefrrNoise;
 #ifndef ONETAPE
@@ -296,15 +298,18 @@ uint8_t CheckTape(void)
         TapeWaitStart = ES_Timer_GetTime();
     }
     // writes the output power so that the LEDs will turn on and off (this may be slow if we need to optimize)
-    SetTapeLED(TapeLED);
+    if(!LEDset){
+        SetTapeLED(TapeLED);
+        LEDset = TRUE;
+    }
     // this checks to see if enough time has passed for the reading to be stable
     if (ES_Timer_GetTime() > TapeWaitStart + TAPEtime)
     {
         TapeWaiting = FALSE;
+        LEDset = FALSE;
         if (TapeLED) // off is FALSE
         {
             TapefrrRead = AD_ReadADPin(TAPE_VOLTAGEfrr);
-                printf("\r\n The light reading is %d",TapefrrRead); //del later
 #ifndef ONETAPE
             TapefrRead = AD_ReadADPin(TAPE_VOLTAGEfr);
             TapeflrRead = AD_ReadADPin(TAPE_VOLTAGEfl);
@@ -316,7 +321,6 @@ uint8_t CheckTape(void)
         else
         {
             TapefrrNoise = AD_ReadADPin(TAPE_VOLTAGEfrr);
-            printf("\r\n The Noise reading is %d",TapefrrRead); //del later
 #ifndef ONETAPE
             TapefrNoise = AD_ReadADPin(TAPE_VOLTAGEfr);
             TapeflrNoise = AD_ReadADPin(TAPE_VOLTAGEfl);
@@ -477,6 +481,10 @@ void main(void)
     AD_AddPins(TRACK_VOLTAGE);
     AD_AddPins(TAPE_VOLTAGEfrr);
     ES_Timer_Init();
+    // sets the outputs and the pins if we all use th 
+    IO_PortsSetPortOutputs(TAPE_LEDfrrPort,0xfff);
+    IO_PortsWritePort(TAPE_LEDfrrPort,TAPE_LEDfrrPin);
+    
     // Do not alter anything below this line
     int i;
 

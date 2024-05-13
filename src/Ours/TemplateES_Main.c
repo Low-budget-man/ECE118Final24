@@ -25,7 +25,6 @@ void main(void)
     // init the Track detector
     AD_Init();
     AD_AddPins(AD_PORTV3);// This is for the Trackwire
-    
     // now initialize the Events and Services Framework and start it running
     ErrorType = ES_Initialize();
     if (ErrorType == Success) {
