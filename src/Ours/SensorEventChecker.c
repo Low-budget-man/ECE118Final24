@@ -43,32 +43,32 @@
 #define TRACK_THRESH 200
 #define TRACK_HYST 60
 // for tape sensor testing will only use the frr (front right right) tape sensor
-#define ONETAPE
+//#define ONETAPE
 // the tape sensors will be powered by the PIC32 this will control the pins
-#define TAPE_READER_POWERPort PORTW
+#define TAPE_READER_POWERPort PORTX
 #define TAPE_READER_POWERPin PIN3
 // the LEDs need their own pin for power we may change this later
-#define TAPE_LEDfrrPort PORTW
+#define TAPE_LEDfrrPort PORTX
 #define TAPE_LEDfrrPin PIN4
-#ifdef ONETAPE
-#define TAPE_LEDfrPort
-#define TAPE_LEDfrPin
-#define TAPE_LEDflPort
-#define TAPE_LEDflPin
-#define TAPE_LEDfllPort
-#define TAPE_LEDfllPin
-#define TAPE_LEDbrPort
-#define TAPE_LEDbrPin
-#define TAPE_LEDblPort
-#define TAPE_LEDblPin
+#ifndef ONETAPE
+#define TAPE_LEDfrPort PORTX
+#define TAPE_LEDfrPin PIN5
+#define TAPE_LEDflPort PORTX
+#define TAPE_LEDflPin PIN6
+#define TAPE_LEDfllPort PORTX
+#define TAPE_LEDfllPin PIN7
+#define TAPE_LEDbrPort PORTX
+#define TAPE_LEDbrPin PIN8
+#define TAPE_LEDblPort PORTX
+#define TAPE_LEDblPin PIN9
 #endif
 #define TAPE_VOLTAGEfrr AD_PORTV4
 #ifndef ONETAPE
-#define TAPE_VOLTAGEfr
-#define TAPE_VOLTAGEfl
-#define TAPE_VOLTAGEfll
-#define TAPE_VOLTAGEbr
-#define TAPE_VOLTAGEbl
+#define TAPE_VOLTAGEfr AD_PORTV5
+#define TAPE_VOLTAGEfl AD_PORTV6
+#define TAPE_VOLTAGEfll AD_PORTV7
+#define TAPE_VOLTAGEbr AD_PORTV8
+#define TAPE_VOLTAGEbl AD_PORTW3
 #endif
 #define TAPE_THRESH 60 
 // reading voltage
@@ -80,6 +80,7 @@
 #define TAPEbrBit (4)
 #define TAPEblBit (5)
 // Time that is needed for the tape sensor to get a stable reading (in ms)
+// Note that the time waited is 1 ms more than this
 #define TAPEtime 3
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
@@ -156,7 +157,7 @@ uint8_t LEDset = FALSE;
 uint16_t TapefrrNoise;
 #ifndef ONETAPE
 uint16_t TapefrNoise;
-uint16_t TapeflrNoise;
+uint16_t TapeflNoise;
 uint16_t TapefllNoise;
 uint16_t TapebrNoise;
 uint16_t TapeblNoise;
@@ -165,7 +166,7 @@ uint16_t TapeblNoise;
 uint16_t TapefrrRead;
 #ifndef ONETAPE
 uint16_t TapefrRead;
-uint16_t TapeflrRead;
+uint16_t TapeflRead;
 uint16_t TapefllRead;
 uint16_t TapebrRead;
 uint16_t TapeblRead;
@@ -186,6 +187,13 @@ void SensorInit(void){
     AD_Init();
     AD_AddPins(TRACK_VOLTAGE);
     AD_AddPins(TAPE_VOLTAGEfrr);
+#ifndef ONETAPE
+    AD_AddPins(TAPE_VOLTAGEfr);
+    AD_AddPins(TAPE_VOLTAGEfl);
+    AD_AddPins(TAPE_VOLTAGEfll);
+    AD_AddPins(TAPE_VOLTAGEbr);
+    AD_AddPins(TAPE_VOLTAGEbl);
+#endif
     ES_Timer_Init();
     // sets the outputs and the pins if we all use th 
     IO_PortsSetPortOutputs(TAPE_LEDfrrPort,0xfff);
@@ -330,10 +338,10 @@ uint8_t CheckTape(void)
             TapefrrRead = AD_ReadADPin(TAPE_VOLTAGEfrr);
 #ifndef ONETAPE
             TapefrRead = AD_ReadADPin(TAPE_VOLTAGEfr);
-            TapeflrRead = AD_ReadADPin(TAPE_VOLTAGEfl);
+            TapeflRead = AD_ReadADPin(TAPE_VOLTAGEfl);
             TapefllRead = AD_ReadADPin(TAPE_VOLTAGEfll);
-            TapebrRead = AD_ReadADPin(TAPE_VOLTAGEfbr);
-            TapeblRead = AD_ReadADPin(TAPE_VOLTAGEfbl);
+            TapebrRead = AD_ReadADPin(TAPE_VOLTAGEbr);
+            TapeblRead = AD_ReadADPin(TAPE_VOLTAGEbl);
 #endif
         }
         else
@@ -341,10 +349,10 @@ uint8_t CheckTape(void)
             TapefrrNoise = AD_ReadADPin(TAPE_VOLTAGEfrr);
 #ifndef ONETAPE
             TapefrNoise = AD_ReadADPin(TAPE_VOLTAGEfr);
-            TapeflrNoise = AD_ReadADPin(TAPE_VOLTAGEfl);
+            TapeflNoise = AD_ReadADPin(TAPE_VOLTAGEfl);
             TapefllNoise = AD_ReadADPin(TAPE_VOLTAGEfll);
-            TapebrNoise = AD_ReadADPin(TAPE_VOLTAGEfbr);
-            TapeblNoise = AD_ReadADPin(TAPE_VOLTAGEfbl);
+            TapebrNoise = AD_ReadADPin(TAPE_VOLTAGEbr);
+            TapeblNoise = AD_ReadADPin(TAPE_VOLTAGEbl);
 #endif
         }
         TapeLED = !TapeLED;
@@ -393,7 +401,7 @@ uint8_t CheckTape(void)
             CurrentTapebr = NOT_DETECTED;
         }
 
-        else if ((TapebrNoise - TapefbrRead) <= TAPE_THRESH - TAPE_HYST)
+        else if ((TapebrNoise - TapebrRead) <= TAPE_THRESH - TAPE_HYST)
         {
             CurrentTapebr = DETECTED;
         }
@@ -434,7 +442,7 @@ uint8_t CheckTape(void)
             param += (CurrentTapefll << TAPEfllBit);
             LastTapefll = CurrentTapefll;
         }
-        if (CurrentTapebr != LastTapefbr)
+        if (CurrentTapebr != LastTapebr)
         {
             returnVal = TRUE;
             param += (CurrentTapebr << TAPEbrBit);
