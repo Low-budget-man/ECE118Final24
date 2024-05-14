@@ -420,38 +420,32 @@ uint8_t CheckTape(void)
         if (CurrentTapefrr != LastTapefrr)
         {
             returnVal = TRUE;
-            param += (CurrentTapefrr << TAPEfrrBit);
             LastTapefrr = CurrentTapefrr;
         }
 #ifndef ONETAPE
         if (CurrentTapefr != LastTapefr)
         {
             returnVal = TRUE;
-            param += (CurrentTapefr << TAPEfrBit);
             LastTapefr = CurrentTapefr;
         }
         if (CurrentTapefl != LastTapefl)
         {
             returnVal = TRUE;
-            param += (CurrentTapefl << TAPEflBit);
             LastTapefl = CurrentTapefl;
         }
         if (CurrentTapefll != LastTapefll)
         {
             returnVal = TRUE;
-            param += (CurrentTapefll << TAPEfllBit);
             LastTapefll = CurrentTapefll;
         }
         if (CurrentTapebr != LastTapebr)
         {
             returnVal = TRUE;
-            param += (CurrentTapebr << TAPEbrBit);
             LastTapebr = CurrentTapebr;
         }
         if (CurrentTapebl != LastTapebl)
         {
             returnVal = TRUE;
-            param += (CurrentTapebl << TAPEblBit);
             LastTapebl = CurrentTapebl;
         }
 #endif
@@ -459,6 +453,12 @@ uint8_t CheckTape(void)
     }
     if (returnVal)
     {
+        param += (CurrentTapefrr << TAPEfrrBit);
+        param += (CurrentTapefr << TAPEfrBit);
+        param += (CurrentTapefl << TAPEflBit);
+        param += (CurrentTapefll << TAPEfllBit);
+        param += (CurrentTapebr << TAPEbrBit);
+        param += (CurrentTapebl << TAPEblBit);
         ES_Event ThisEvent;
         ThisEvent.EventType = TAPE;
         ThisEvent.EventParam = param;
