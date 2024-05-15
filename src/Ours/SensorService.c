@@ -20,6 +20,7 @@
  ******************************************************************************/
 #define TRACK_LED (0x1)
 #define TAPE_LED (0x2)
+#define BEACON_LED (0x4)
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -105,17 +106,25 @@ ES_Event RunSensorService(ES_Event ThisEvent){
         case TAPE:
             // Temp case to see if the event is raised properly
             printf("\r\nTape Event with the param,0x%x",ThisEvent.EventParam);
-            if(ThisEvent.EventParam){
-                // detected
-                LED_OnBank(LED_BANK1,TAPE_LED);
-            }
-            else{
-                // not detected
-                LED_OffBank(LED_BANK1,TAPE_LED);
-            }
+//            if(ThisEvent.EventParam){
+//                // detected
+//                LED_OnBank(LED_BANK1,TAPE_LED);
+//            }
+//            else{
+//                // not detected
+//                LED_OffBank(LED_BANK1,TAPE_LED);
+//            }
             break;
         case BEACON:
             printf("\r\n Beacon Event param: %x",ThisEvent.EventParam);
+            if(ThisEvent.EventParam){
+                // detected
+                LED_OnBank(LED_BANK1,BEACON_LED);
+            }
+            else{
+                // not detected
+                LED_OffBank(LED_BANK1,BEACON_LED);
+            }
             break;
         default:
             printf("\r\nERROR UNKNOWN EVENT IN SERVICE");

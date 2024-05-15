@@ -44,8 +44,8 @@
 #define TRACK_VOLTAGE AD_PORTV3
 #define TRACK_THRESH 200
 #define TRACK_HYST 60
-//#define TRACK_PORT PORTX
-//#define TRACK_POWER PIN10
+#define TRACK_PORT PORTX
+#define TRACK_POWER PIN10
 // Tape #defines ---------------------------------------------------------------
 // for tape sensor testing will only use the frr (front right right) tape sensor
 //#define ONETAPE
@@ -139,7 +139,7 @@ void SetTapeLED(char state) {
     if (state) {
         IO_PortsWritePort(TAPE_LEDfrrPort, pattern);
     } else {
-        IO_PortsWritePort(TAPE_LEDfrrPort, (TAPE_READER_POWERPin));
+        IO_PortsWritePort(TAPE_LEDfrrPort, (TAPE_READER_POWERPin | TRACK_PORT));
     }
 }
 
@@ -203,7 +203,7 @@ void SensorInit(void) {
     ES_Timer_Init();
     // for the track wire ------------------------------------------------------
     AD_AddPins(TRACK_VOLTAGE);
-    //IO_PortsSetPortOutputs(TRACK_PORT, TRACK_POWER);
+    IO_PortsSetPortOutputs(TRACK_PORT, TRACK_POWER);
     // for the tape sensor -----------------------------------------------------
     AD_AddPins(TAPE_VOLTAGEfrr);
 #ifndef ONETAPE
