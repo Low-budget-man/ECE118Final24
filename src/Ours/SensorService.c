@@ -94,6 +94,7 @@ ES_Event RunSensorService(ES_Event ThisEvent){
             // This section is used to reset service for some reason
             break;
         case TRACKWIRE:
+            printf("\r\nTrack Event with the param,0x%x",ThisEvent.EventParam);
             if(ThisEvent.EventParam){
                 // detected
                 LED_OnBank(LED_BANK1,TRACK_LED);

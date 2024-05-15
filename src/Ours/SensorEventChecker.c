@@ -129,6 +129,7 @@ void SetTapeLED(char state) {
     uint16_t pattern = 0;
     pattern |= TAPE_LEDfrrPin;
     pattern |= TAPE_READER_POWERPin;
+    pattern |= TRACK_POWER;
 #ifndef ONETAPE
     pattern |= TAPE_LEDfrPin;
     pattern |= TAPE_LEDflPin;
@@ -139,7 +140,7 @@ void SetTapeLED(char state) {
     if (state) {
         IO_PortsWritePort(TAPE_LEDfrrPort, pattern);
     } else {
-        IO_PortsWritePort(TAPE_LEDfrrPort, (TAPE_READER_POWERPin | TRACK_PORT));
+        IO_PortsWritePort(TAPE_LEDfrrPort, (TAPE_READER_POWERPin | TRACK_POWER));
     }
 }
 
@@ -204,6 +205,7 @@ void SensorInit(void) {
     // for the track wire ------------------------------------------------------
     AD_AddPins(TRACK_VOLTAGE);
     IO_PortsSetPortOutputs(TRACK_PORT, TRACK_POWER);
+    IO_PortsSetPortBits(TRACK_PORT,TRACK_POWER);
     // for the tape sensor -----------------------------------------------------
     AD_AddPins(TAPE_VOLTAGEfrr);
 #ifndef ONETAPE
