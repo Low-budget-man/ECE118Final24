@@ -25,7 +25,7 @@
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
-
+#include "serial.h"
 #include "ES_Configure.h"
 #include "SensorEventChecker.h"
 #include "ES_Events.h"
@@ -38,10 +38,15 @@
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
+// Batt #defines ---------------------------------------------------------------
 #define BATTERY_DISCONNECT_THRESHOLD 175
+// Track wire #defines ---------------------------------------------------------
 #define TRACK_VOLTAGE AD_PORTV3
 #define TRACK_THRESH 200
 #define TRACK_HYST 60
+//#define TRACK_PORT PORTX
+//#define TRACK_POWER PIN10
+// Tape #defines ---------------------------------------------------------------
 // for tape sensor testing will only use the frr (front right right) tape sensor
 //#define ONETAPE
 // the tape sensors will be powered by the PIC32 this will control the pins
@@ -82,11 +87,15 @@
 // Time that is needed for the tape sensor to get a stable reading (in ms)
 // Note that the time waited is 1 ms more than this
 #define TAPEtime 3
+// Beacon #defines -------------------------------------------------------------
+#define BEACON_PORT PORTY
+#define BEACON_PIN PIN3
+
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
 
-//#define EVENTCHECKER_TEST
+#define EVENTCHECKER_TEST
 #ifdef EVENTCHECKER_TEST
 #include <stdio.h>
 #define SaveEvent(x)          \
@@ -106,6 +115,7 @@ static ES_Event storedEvent;
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
+
 /**
  * @Function SetTapeLED(state)
  * @param state true if the LEDs will be turned on 0 if off
@@ -113,9 +123,9 @@ static ES_Event storedEvent;
  * @brief This function will turn on and off the LEDs for the tape sensor reader
  * @author Cooper Cantrell 5/11/2024 2:19PM
  */
-void SetTapeLED(char state)
-{
-    // assume only use 1 port for all of the LEDS if not will need to change
+void SetTapeLED(char state) {
+    // assume only use 1 port for all of the LEDS and the track wire 
+    // if not will need to change
     uint16_t pattern = 0;
     pattern |= TAPE_LEDfrrPin;
     pattern |= TAPE_READER_POWERPin;
@@ -126,19 +136,19 @@ void SetTapeLED(char state)
     pattern |= TAPE_LEDbrPin;
     pattern |= TAPE_LEDblPin;
 #endif
-    if (state)
-    {
+    if (state) {
         IO_PortsWritePort(TAPE_LEDfrrPort, pattern);
-    }
-    else
-    {
-        IO_PortsWritePort(TAPE_LEDfrrPort, TAPE_READER_POWERPin);
+    } else {
+        IO_PortsWritePort(TAPE_LEDfrrPort, (TAPE_READER_POWERPin));
     }
 }
+
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
-enum sensor{NOT_DETECTED,DETECTED};
+enum sensor {
+    NOT_DETECTED, DETECTED
+};
 enum sensor LastTrack = NOT_DETECTED;
 enum sensor LastTapefrr = NOT_DETECTED;
 #ifndef ONETAPE
@@ -148,8 +158,12 @@ enum sensor LastTapefll = NOT_DETECTED;
 enum sensor LastTapebr = NOT_DETECTED;
 enum sensor LastTapebl = NOT_DETECTED;
 #endif
-static enum { OFF,
-              ON } TapeLED = OFF;
+enum sensor LastBeacon = NOT_DETECTED;
+
+static enum {
+    OFF,
+    ON
+} TapeLED = OFF;
 uint8_t TapeWaiting = FALSE;
 uint32_t TapeWaitStart;
 uint8_t LEDset = FALSE;
@@ -183,9 +197,14 @@ uint16_t TapeblRead;
  * the main functions only this needs to be called
  * @author Cooper Cantrell 5/13/2024 3:37pm
  */
-void SensorInit(void){
+void SensorInit(void) {
+    // for more than 1 sensors ---------------------------------------------------------
     AD_Init();
+    ES_Timer_Init();
+    // for the track wire ------------------------------------------------------
     AD_AddPins(TRACK_VOLTAGE);
+    //IO_PortsSetPortOutputs(TRACK_PORT, TRACK_POWER);
+    // for the tape sensor -----------------------------------------------------
     AD_AddPins(TAPE_VOLTAGEfrr);
 #ifndef ONETAPE
     AD_AddPins(TAPE_VOLTAGEfr);
@@ -194,10 +213,14 @@ void SensorInit(void){
     AD_AddPins(TAPE_VOLTAGEbr);
     AD_AddPins(TAPE_VOLTAGEbl);
 #endif
-    ES_Timer_Init();
-    // sets the outputs and the pins if we all use th 
-    IO_PortsSetPortOutputs(TAPE_LEDfrrPort,0xfff);
-    IO_PortsWritePort(TAPE_LEDfrrPort,TAPE_LEDfrrPin);
+    // assumes that all tape sensors will use the same port for outputs
+    uint16_t TapeOut = TAPE_READER_POWERPin | TAPE_LEDfrrPin | TAPE_LEDfrPin |
+            TAPE_LEDflPin | TAPE_LEDfllPin | TAPE_LEDbrPin | TAPE_LEDblPin;
+    IO_PortsSetPortOutputs(TAPE_LEDfrrPort, TapeOut);
+    // Sets the phototransistor to all of them high
+    IO_PortsSetPortBits(TAPE_LEDfrrPort, TAPE_READER_POWERPin);
+    // for the Beacon ----------------------------------------------------------
+    IO_PortsSetPortInputs(BEACON_PORT, BEACON_PIN);
 }
 
 /**
@@ -214,24 +237,19 @@ void SensorInit(void){
  * @note Use this code as a template for your other event checkers, and modify as necessary.
  * @author Gabriel H Elkaim, 2013.09.27 09:18
  * @modified Gabriel H Elkaim/Max Dunne, 2016.09.12 20:08 */
-uint8_t CheckBattery(void)
-{
+uint8_t CheckBattery(void) {
     static ES_EventTyp_t lastEvent = BATTERY_DISCONNECTED;
     ES_EventTyp_t curEvent;
     ES_Event thisEvent;
     uint8_t returnVal = FALSE;
     uint16_t batVoltage = AD_ReadADPin(BAT_VOLTAGE); // read the battery voltage
 
-    if (batVoltage > BATTERY_DISCONNECT_THRESHOLD)
-    { // is battery connected?
+    if (batVoltage > BATTERY_DISCONNECT_THRESHOLD) { // is battery connected?
         curEvent = BATTERY_CONNECTED;
-    }
-    else
-    {
+    } else {
         curEvent = BATTERY_DISCONNECTED;
     }
-    if (curEvent != lastEvent)
-    { // check for change from last time
+    if (curEvent != lastEvent) { // check for change from last time
         thisEvent.EventType = curEvent;
         thisEvent.EventParam = batVoltage;
         returnVal = TRUE;
@@ -253,25 +271,23 @@ uint8_t CheckBattery(void)
  *      close enough to the track wire by comparing it to a #define in the .c
  * @author Cooper Cantrell 5/8/2024 3:44
  */
-uint8_t CheckTrack(void)
-{
+uint8_t CheckTrack(void) {
     // sets up the basic vars that are needed for the I/O of this function
     uint8_t returnVal = FALSE;
-    static enum { NOT_DETECTED,
-                  DETECTED } CurrentTrack;
+
+    static enum {
+        NOT_DETECTED,
+        DETECTED
+    } CurrentTrack;
     uint16_t TrackVoltage = AD_ReadADPin(TRACK_VOLTAGE);
     // checks to see what the current value is
-    if (TrackVoltage > TRACK_THRESH + TRACK_HYST)
-    {
+    if (TrackVoltage > TRACK_THRESH + TRACK_HYST) {
         CurrentTrack = DETECTED;
-    }
-    else if (TrackVoltage < TRACK_THRESH - TRACK_HYST)
-    {
+    } else if (TrackVoltage < TRACK_THRESH - TRACK_HYST) {
         CurrentTrack = NOT_DETECTED;
     }
     // checks if there is a change from current to past and acts properly
-    if (CurrentTrack != LastTrack)
-    {
+    if (CurrentTrack != LastTrack) {
         returnVal = TRUE;
         LastTrack = CurrentTrack;
         ES_Event ThisEvent;
@@ -298,11 +314,9 @@ uint8_t CheckTrack(void)
  *      in tape detetion
  * @author Cooper Cantrell 5/10/2024 12:07
  */
-uint8_t CheckTape(void)
-{
+uint8_t CheckTape(void) {
     // if there is no noise to compare to turn the led off so we can get a noise reading
-    if (!TapefrrNoise)
-    {
+    if (!TapefrrNoise) {
         TapeLED = OFF;
     }
 
@@ -318,19 +332,17 @@ uint8_t CheckTape(void)
     static enum sensor CurrentTapebl;
 #endif
     // the LED will be off and be given LEDTIME
-    if (!TapeWaiting)
-    {
+    if (!TapeWaiting) {
         TapeWaiting = TRUE;
         TapeWaitStart = ES_Timer_GetTime();
     }
     // writes the output power so that the LEDs will turn on and off (this may be slow if we need to optimize)
-    if(!LEDset){
+    if (!LEDset) {
         SetTapeLED(TapeLED);
         LEDset = TRUE;
     }
     // this checks to see if enough time has passed for the reading to be stable
-    if (ES_Timer_GetTime() > TapeWaitStart + TAPEtime)
-    {
+    if (ES_Timer_GetTime() > TapeWaitStart + TAPEtime) {
         TapeWaiting = FALSE;
         LEDset = FALSE;
         if (TapeLED) // off is FALSE
@@ -343,9 +355,7 @@ uint8_t CheckTape(void)
             TapebrRead = AD_ReadADPin(TAPE_VOLTAGEbr);
             TapeblRead = AD_ReadADPin(TAPE_VOLTAGEbl);
 #endif
-        }
-        else
-        {
+        } else {
             TapefrrNoise = AD_ReadADPin(TAPE_VOLTAGEfrr);
 #ifndef ONETAPE
             TapefrNoise = AD_ReadADPin(TAPE_VOLTAGEfr);
@@ -358,101 +368,76 @@ uint8_t CheckTape(void)
         TapeLED = !TapeLED;
         // after the check compare to past values and noise to the thresh and raise events
         //only if has at least 1 of each reading
-        if(TapefrrNoise && TapefrrRead){
-        if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH + TAPE_HYST)
-        {
-            CurrentTapefrr = NOT_DETECTED;
-        }
-
-        else if ((TapefrrNoise - TapefrrRead) <= TAPE_THRESH - TAPE_HYST)
-        {
-            CurrentTapefrr = DETECTED;
-        }
+        if (TapefrrNoise && TapefrrRead) {
+            if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH + TAPE_HYST) {
+                CurrentTapefrr = NOT_DETECTED;
+            }
+            else if ((TapefrrNoise - TapefrrRead) <= TAPE_THRESH - TAPE_HYST) {
+                CurrentTapefrr = DETECTED;
+            }
 #ifndef ONETAPE
-        if ((TapefrNoise - TapefrRead) >= TAPE_THRESH + TAPE_HYST)
-        {
-            CurrentTapefr = NOT_DETECTED;
-        }
-
-        else if ((TapefrNoise - TapefrRead) <= TAPE_THRESH - TAPE_HYST)
-        {
-            CurrentTapefr = DETECTED;
-        }
-        if ((TapeflNoise - TapeflRead) >= TAPE_THRESH + TAPE_HYST)
-        {
-            CurrentTapefl = NOT_DETECTED;
-        }
-
-        else if ((TapeflNoise - TapeflRead) <= TAPE_THRESH - TAPE_HYST)
-        {
-            CurrentTapefl = DETECTED;
-        }
-        if ((TapefllNoise - TapefllRead) >= TAPE_THRESH + TAPE_HYST)
-        {
-            CurrentTapefll = NOT_DETECTED;
-        }
-
-        else if ((TapefllNoise - TapefllRead) <= TAPE_THRESH - TAPE_HYST)
-        {
-            CurrentTapefll = DETECTED;
-        }
-        if ((TapebrNoise - TapebrRead) >= TAPE_THRESH + TAPE_HYST)
-        {
-            CurrentTapebr = NOT_DETECTED;
-        }
-
-        else if ((TapebrNoise - TapebrRead) <= TAPE_THRESH - TAPE_HYST)
-        {
-            CurrentTapebr = DETECTED;
-        }
-        if ((TapeblNoise - TapeblRead) >= TAPE_THRESH + TAPE_HYST)
-        {
-            CurrentTapebl = NOT_DETECTED;
-        }
-
-        else if ((TapeblNoise - TapeblRead) <= TAPE_THRESH - TAPE_HYST)
-        {
-            CurrentTapebl = DETECTED;
-        }
+            if ((TapefrNoise - TapefrRead) >= TAPE_THRESH + TAPE_HYST) {
+                CurrentTapefr = NOT_DETECTED;
+            }
+            else if ((TapefrNoise - TapefrRead) <= TAPE_THRESH - TAPE_HYST) {
+                CurrentTapefr = DETECTED;
+            }
+            if ((TapeflNoise - TapeflRead) >= TAPE_THRESH + TAPE_HYST) {
+                CurrentTapefl = NOT_DETECTED;
+            }
+            else if ((TapeflNoise - TapeflRead) <= TAPE_THRESH - TAPE_HYST) {
+                CurrentTapefl = DETECTED;
+            }
+            if ((TapefllNoise - TapefllRead) >= TAPE_THRESH + TAPE_HYST) {
+                CurrentTapefll = NOT_DETECTED;
+            }
+            else if ((TapefllNoise - TapefllRead) <= TAPE_THRESH - TAPE_HYST) {
+                CurrentTapefll = DETECTED;
+            }
+            if ((TapebrNoise - TapebrRead) >= TAPE_THRESH + TAPE_HYST) {
+                CurrentTapebr = NOT_DETECTED;
+            }
+            else if ((TapebrNoise - TapebrRead) <= TAPE_THRESH - TAPE_HYST) {
+                CurrentTapebr = DETECTED;
+            }
+            if ((TapeblNoise - TapeblRead) >= TAPE_THRESH + TAPE_HYST) {
+                CurrentTapebl = NOT_DETECTED;
+            }
+            else if ((TapeblNoise - TapeblRead) <= TAPE_THRESH - TAPE_HYST) {
+                CurrentTapebl = DETECTED;
+            }
 #endif
-        
-        // compare past values with current values
-        if (CurrentTapefrr != LastTapefrr)
-        {
-            returnVal = TRUE;
-            LastTapefrr = CurrentTapefrr;
-        }
+
+            // compare past values with current values
+            if (CurrentTapefrr != LastTapefrr) {
+                returnVal = TRUE;
+                LastTapefrr = CurrentTapefrr;
+            }
 #ifndef ONETAPE
-        if (CurrentTapefr != LastTapefr)
-        {
-            returnVal = TRUE;
-            LastTapefr = CurrentTapefr;
-        }
-        if (CurrentTapefl != LastTapefl)
-        {
-            returnVal = TRUE;
-            LastTapefl = CurrentTapefl;
-        }
-        if (CurrentTapefll != LastTapefll)
-        {
-            returnVal = TRUE;
-            LastTapefll = CurrentTapefll;
-        }
-        if (CurrentTapebr != LastTapebr)
-        {
-            returnVal = TRUE;
-            LastTapebr = CurrentTapebr;
-        }
-        if (CurrentTapebl != LastTapebl)
-        {
-            returnVal = TRUE;
-            LastTapebl = CurrentTapebl;
-        }
+            if (CurrentTapefr != LastTapefr) {
+                returnVal = TRUE;
+                LastTapefr = CurrentTapefr;
+            }
+            if (CurrentTapefl != LastTapefl) {
+                returnVal = TRUE;
+                LastTapefl = CurrentTapefl;
+            }
+            if (CurrentTapefll != LastTapefll) {
+                returnVal = TRUE;
+                LastTapefll = CurrentTapefll;
+            }
+            if (CurrentTapebr != LastTapebr) {
+                returnVal = TRUE;
+                LastTapebr = CurrentTapebr;
+            }
+            if (CurrentTapebl != LastTapebl) {
+                returnVal = TRUE;
+                LastTapebl = CurrentTapebl;
+            }
 #endif
         }
     }
-    if (returnVal)
-    {
+    if (returnVal) {
         param += (CurrentTapefrr << TAPEfrrBit);
         param += (CurrentTapefr << TAPEfrBit);
         param += (CurrentTapefl << TAPEflBit);
@@ -463,14 +448,45 @@ uint8_t CheckTape(void)
         ThisEvent.EventType = TAPE;
         ThisEvent.EventParam = param;
 #ifndef EVENTCHECKER_TEST // keep this as is for test harness
-            PostSensorService(ThisEvent);
+        PostSensorService(ThisEvent);
 #else
-            SaveEvent(ThisEvent);
+        SaveEvent(ThisEvent);
 #endif
     }
 
-return returnVal;
+    return returnVal;
 }
+
+/**
+ * @Function CheckBeacon(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief This function is the event checker that detects if there is a change
+ *      in beacon detetion
+ * @author Cooper Cantrell 5/14/2024 2:47
+ */
+uint8_t CheckBeacon(void) {
+    uint8_t returnVal = FALSE;
+    enum sensor CurrentBeacon = !(BEACON_PIN & IO_PortsReadPort(BEACON_PORT));
+    if ((CurrentBeacon != LastBeacon)) {
+        LastBeacon = CurrentBeacon;
+        returnVal = TRUE;
+        ES_Event ThisEvent;
+        ThisEvent.EventParam = CurrentBeacon;
+        ThisEvent.EventType = BEACON;
+#ifndef EVENTCHECKER_TEST // keep this as is for test harness
+#ifdef DEBUG_PRINT
+        printf("\r\n Posting a BEACON wire event");
+#endif
+        PostSensorService(ThisEvent);
+#else
+        SaveEvent(ThisEvent);
+#endif
+    }
+    printf("\r\n%d",returnVal);
+    return returnVal;
+}
+
 
 /*
  * The Test Harness for the event checkers is conditionally compiled using
@@ -495,12 +511,11 @@ return returnVal;
  */
 #ifdef EVENTCHECKER_TEST
 #include <stdio.h>
-static uint8_t (*EventList[])(void) = {EVENT_CHECK_LIST};
+static uint8_t(*EventList[])(void) = {EVENT_CHECK_LIST};
 
 void PrintEvent(void);
 
-void main(void)
-{
+void main(void) {
     BOARD_Init();
     /* user initialization code goes here */
     SensorInit();
@@ -509,14 +524,10 @@ void main(void)
 
     printf("\r\nEvent checking test harness for %s", __FILE__);
 
-    while (1)
-    {
-        if (IsTransmitEmpty())
-        {
-            for (i = 0; i < sizeof(EventList) >> 2; i++)
-            {
-                if (EventList[i]() == TRUE)
-                {
+    while (1) {
+        if (IsTransmitEmpty()) {
+            for (i = 0; i < sizeof (EventList) >> 2; i++) {
+                if (EventList[i]() == TRUE) {
                     PrintEvent();
                     break;
                 }
@@ -525,9 +536,8 @@ void main(void)
     }
 }
 
-void PrintEvent(void)
-{
+void PrintEvent(void) {
     printf("\r\nFunc: %s\tEvent: %s\tParam: 0x%X", eventName,
-           EventNames[storedEvent.EventType], storedEvent.EventParam);
+            EventNames[storedEvent.EventType], storedEvent.EventParam);
 }
 #endif

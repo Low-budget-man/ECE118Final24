@@ -51,6 +51,7 @@ typedef enum {
     NUMBEROFEVENTS,
     TRACKWIRE,
     TAPE,
+    BEACON,
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
@@ -69,6 +70,7 @@ static const char *EventNames[] = {
 	"NUMBEROFEVENTS",
     "TRACKWIRE",
     "TAPE",
+    "BEACON",
 };
 
 
@@ -80,7 +82,7 @@ static const char *EventNames[] = {
 
 /****************************************************************************/
 // This is the list of event checking functions
-#define EVENT_CHECK_LIST  CheckTrack,  CheckTape //Add check Battery for the real bot
+#define EVENT_CHECK_LIST  CheckTrack,  CheckTape, CheckBeacon //Add check Battery for the real bot
 
 /****************************************************************************/
 // These are the definitions for the post functions to be executed when the

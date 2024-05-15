@@ -87,5 +87,15 @@ uint8_t CheckTrack(void);
  * @author Cooper Cantrell 5/10/2024 12:07
  */
 uint8_t CheckTape(void);
+
+/**
+ * @Function CheckBeacon(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief This function is the event checker that detects if there is a change
+ *      in beacon detetion
+ * @author Cooper Cantrell 5/14/2024 2:47
+ */
+uint8_t CheckBeacon(void);
 #endif	/* TEMPLATEEVENTCHECKER_H */
 
