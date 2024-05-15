@@ -14,8 +14,8 @@
  * Updated on 13/Nov/2013
  */
 
-#ifndef FanService_H  // <- This should be changed to your own guard on both
-#define FanService_H  //    of these lines
+#ifndef BattService_H  // <- This should be changed to your own guard on both
+#define BattService_H  //    of these lines
 
 
 /*******************************************************************************
@@ -49,7 +49,7 @@
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitFanService(uint8_t Priority);
+uint8_t InitBattService(uint8_t Priority);
 
 /**
  * @Function PostTemplateService(ES_Event ThisEvent)
@@ -60,7 +60,7 @@ uint8_t InitFanService(uint8_t Priority);
  *        be posted to. Remember to rename to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostFanService(ES_Event ThisEvent);
+uint8_t PostBattService(ES_Event ThisEvent);
 
 /**
  * @Function RunTemplateService(ES_Event ThisEvent)
@@ -71,7 +71,7 @@ uint8_t PostFanService(ES_Event ThisEvent);
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed." 
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunFanService(ES_Event ThisEvent);
+ES_Event RunBattService(ES_Event ThisEvent);
 
 
 
