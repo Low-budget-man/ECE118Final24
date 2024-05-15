@@ -95,7 +95,7 @@
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
 
-#define EVENTCHECKER_TEST
+//#define EVENTCHECKER_TEST
 #ifdef EVENTCHECKER_TEST
 #include <stdio.h>
 #define SaveEvent(x)          \
@@ -483,7 +483,6 @@ uint8_t CheckBeacon(void) {
         SaveEvent(ThisEvent);
 #endif
     }
-    printf("\r\n%d",returnVal);
     return returnVal;
 }
 

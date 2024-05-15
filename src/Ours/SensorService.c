@@ -114,6 +114,9 @@ ES_Event RunSensorService(ES_Event ThisEvent){
                 LED_OffBank(LED_BANK1,TAPE_LED);
             }
             break;
+        case BEACON:
+            printf("\r\n Beacon Event param: %x",ThisEvent.EventParam);
+            break;
         default:
             printf("\r\nERROR UNKNOWN EVENT IN SERVICE");
             break;
