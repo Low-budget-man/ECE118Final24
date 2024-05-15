@@ -49,22 +49,8 @@ typedef enum {
     BATTERY_CONNECTED,
     BATTERY_DISCONNECTED,
     NUMBEROFEVENTS,
-    TRACK_WIRE_DETECTED, //No parameters
-	TRACK_WIRE_UNDETECTED, //No parameters
-    TAPE_DETECTED, //Parameter: Which sensor(s) detection begins on
-	TAPE_UNDETECTED, //Parameter: Which sensor(s) detection ends on
-	BUMPER_HIT, //Parameter: Which bumper(s) hit
-	BUMPER_RELEASED, //Parameter: Which bumper released
-	PING_SENT, // When ping sensor starts timer, alert the rest of the code
-	PING_RECIEVED, //Parameter: distance
-	ENCODER_ROTATED, //Parameter: left/right, direction. 
-	DOORS_OPEN, // Intended as no parameter, but could be left/right
-	DOORS_CLOSED, // Intended as no parameter, but could be left/right
-	LEFT_MOTOR_SPEED_CHANGED, // Parameter: speed
-	RIGHT_MOTOR_SPEED_CHANGED, // Parameter: speed
-	FANS_ON, //No parameters, activating and deactivating both fans at once
-	FANS_OFF,//No parameters	
-	
+    TRACKWIRE,
+    TAPE,
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
@@ -81,21 +67,8 @@ static const char *EventNames[] = {
 	"BATTERY_CONNECTED",
 	"BATTERY_DISCONNECTED",
 	"NUMBEROFEVENTS",
-    "TRACK_WIRE_DETECTED",
-	"TRACK_WIRE_UNDETECTED",
-	"TAPE_DETECTED",
-	"TAPE_UNDETECTED",
-	"BUMPER_HIT",
-	"BUMPER_RELEASED",
-	"PING_SENT",
-	"PING_RECIEVED",
-	"ENCODER_ROTATED",
-	"DOORS_OPEN",
-	"DOORS_CLOSED",
-	"LEFT_MOTOR_SPEED_CHANGED",
-	"RIGHT_MOTOR_SPEED_CHANGED",
-	"FANS_ON",
-	"FANS_OFF"
+    "TRACKWIRE",
+    "TAPE",
 };
 
 
@@ -107,17 +80,17 @@ static const char *EventNames[] = {
 
 /****************************************************************************/
 // This is the list of event checking functions
-#define EVENT_CHECK_LIST  CheckTrack,  CheckTape, CheckBumpers, CheckPing/*active sensor, idk if needed*/, CheckEncoders //Add check Battery for the real bot
+#define EVENT_CHECK_LIST  CheckTrack,  CheckTape //Add check Battery for the real bot
 
 /****************************************************************************/
 // These are the definitions for the post functions to be executed when the
 // corresponding timer expires. All 16 must be defined. If you are not using
 // a timers, then you can use TIMER_UNUSED
 #define TIMER_UNUSED ((pPostFunc)0)
-#define TIMER0_RESP_FUNC PostServoService
-#define TIMER1_RESP_FUNC PostPingService // I imagine that the ping sensor will need its own service, distinct from the general sensor service, and timer to go with it
-#define TIMER2_RESP_FUNC PostMotorService
-#define TIMER3_RESP_FUNC PostFanService 
+#define TIMER0_RESP_FUNC TIMER_UNUSED
+#define TIMER1_RESP_FUNC TIMER_UNUSED
+#define TIMER2_RESP_FUNC TIMER_UNUSED
+#define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
 #define TIMER5_RESP_FUNC TIMER_UNUSED
 #define TIMER6_RESP_FUNC TIMER_UNUSED
@@ -138,10 +111,7 @@ static const char *EventNames[] = {
 // definitions for the response functions to make it easire to check that
 // the timer number matches where the timer event will be routed
 
-#define SERVO_TIMER 0
-#define PING_TIMER 1
-#define MOTOR_TIMER 2
-#define FAN_TIMER 3
+#define GENERIC_NAMED_TIMER 0 /*make sure this is enabled above and posting to the correct state machine*/
 
 
 /****************************************************************************/
@@ -153,7 +123,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 7 // including keyboard
+#define NUM_SERVICES 3
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
@@ -196,51 +166,54 @@ static const char *EventNames[] = {
 
 
 
+/****************************************************************************/
 // These are the definitions for Service 3
 #if NUM_SERVICES > 3
 // the header file with the public fuction prototypes
-#define SERV_3_HEADER "ServoService.h"
+#define SERV_3_HEADER "TestService.h"
 // the name of the Init function
-#define SERV_3_INIT ServoServiceInit
+#define SERV_3_INIT TestServiceInit
 // the name of the run function
-#define SERV_3_RUN ServoServiceRun
+#define SERV_3_RUN TestServiceRun
 // How big should this services Queue be?
 #define SERV_3_QUEUE_SIZE 3
 #endif
 
-
+/****************************************************************************/
 // These are the definitions for Service 4
 #if NUM_SERVICES > 4
 // the header file with the public fuction prototypes
-#define SERV_4_HEADER "PingService.h"
+#define SERV_4_HEADER "TestService.h"
 // the name of the Init function
-#define SERV_4_INIT InitPingService
+#define SERV_4_INIT TestServiceInit
 // the name of the run function
-#define SERV_4_RUN RunPingservice
+#define SERV_4_RUN TestServiceRun
 // How big should this services Queue be?
 #define SERV_4_QUEUE_SIZE 3
 #endif
 
+/****************************************************************************/
 // These are the definitions for Service 5
 #if NUM_SERVICES > 5
 // the header file with the public fuction prototypes
-#define SERV_5_HEADER "MotorService.h"
+#define SERV_5_HEADER "TestService.h"
 // the name of the Init function
-#define SERV_5_INIT InitMotorService
+#define SERV_5_INIT TestServiceInit
 // the name of the run function
-#define SERV_5_RUN RunMotorService
+#define SERV_5_RUN TestServiceRun
 // How big should this services Queue be?
 #define SERV_5_QUEUE_SIZE 3
 #endif
 
+/****************************************************************************/
 // These are the definitions for Service 6
 #if NUM_SERVICES > 6
 // the header file with the public fuction prototypes
-#define SERV_6_HEADER "FanService.h"
+#define SERV_6_HEADER "TestService.h"
 // the name of the Init function
-#define SERV_6_INIT InitFanService
+#define SERV_6_INIT TestServiceInit
 // the name of the run function
-#define SERV_6_RUN RunFanService
+#define SERV_6_RUN TestServiceRun
 // How big should this services Queue be?
 #define SERV_6_QUEUE_SIZE 3
 #endif
