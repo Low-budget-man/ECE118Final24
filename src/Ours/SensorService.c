@@ -19,7 +19,7 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 #define TRACK_LED (0x1)
-
+#define TAPE_LED (0x2)
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -50,8 +50,6 @@ uint8_t InitSensorService(uint8_t Priority){
     ES_Event ThisEvent;
 
     MyPriority = Priority;
-    //Need to del later
-    printf("\r\n Init Sensor Service");
     // post the initial transition event
     ThisEvent.EventType = ES_INIT;
     if (ES_PostToService(MyPriority, ThisEvent) == TRUE) {
@@ -84,7 +82,6 @@ uint8_t PostSensorService(ES_Event ThisEvent)
  * @author Cooper Cantrell 5/8/2024 */
 ES_Event RunSensorService(ES_Event ThisEvent){
     ES_Event ReturnEvent;
-    printf("\r\n TrackWire Event");
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
     // when simple service test is called it will print otherwise 
     // the LEDS will be used to show that the service can be processed
@@ -105,8 +102,20 @@ ES_Event RunSensorService(ES_Event ThisEvent){
                 LED_OffBank(LED_BANK1,TRACK_LED);
             }
             break;
+        case TAPE:
+            // Temp case to see if the event is raised properly
+            printf("\r\nTape Event with the param,0x%x",ThisEvent.EventParam);
+            if(ThisEvent.EventParam){
+                // detected
+                LED_OnBank(LED_BANK1,TAPE_LED);
+            }
+            else{
+                // not detected
+                LED_OffBank(LED_BANK1,TAPE_LED);
+            }
+            break;
         default:
-            printf("ERROR UNKNOWN EVENT IN SERVICE");
+            printf("\r\nERROR UNKNOWN EVENT IN SERVICE");
             break;
     }
     return ReturnEvent;
