@@ -90,7 +90,17 @@
 // Beacon #defines -------------------------------------------------------------
 #define BEACON_PORT PORTY
 #define BEACON_PIN PIN3
-
+// Bumper #defines -------------------------------------------------------------
+#define BUMPER_PORT PORTX
+#define BUMPER_POWER PIN11
+#define BUMPERfrPORT PORTY
+#define BUMPERfrPIN PIN4
+#define BUMPERflPORT PORTY
+#define BUMPERflPIN PIN5
+#define BUMPERbrPORT PORTY
+#define BUMPERbrPIN PIN6
+#define BUMPERblPORT PORTY
+#define BUMPERblPIN PIN7
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -130,6 +140,7 @@ void SetTapeLED(char state) {
     pattern |= TAPE_LEDfrrPin;
     pattern |= TAPE_READER_POWERPin;
     pattern |= TRACK_POWER;
+    pattern |= BUMPER_POWER;
 #ifndef ONETAPE
     pattern |= TAPE_LEDfrPin;
     pattern |= TAPE_LEDflPin;
@@ -140,7 +151,7 @@ void SetTapeLED(char state) {
     if (state) {
         IO_PortsWritePort(TAPE_LEDfrrPort, pattern);
     } else {
-        IO_PortsWritePort(TAPE_LEDfrrPort, (TAPE_READER_POWERPin | TRACK_POWER));
+        IO_PortsWritePort(TAPE_LEDfrrPort, (TAPE_READER_POWERPin | TRACK_POWER | BUMPER_POWER));
     }
 }
 
@@ -160,6 +171,11 @@ enum sensor LastTapebr = NOT_DETECTED;
 enum sensor LastTapebl = NOT_DETECTED;
 #endif
 enum sensor LastBeacon = NOT_DETECTED;
+
+enum sensor LastBumpfr = NOT_DETECTED;
+enum sensor LastBumpfl = NOT_DETECTED;
+enum sensor LastBumpbr = NOT_DETECTED;
+enum sensor LastBumpbl = NOT_DETECTED;
 
 static enum {
     OFF,
@@ -223,6 +239,14 @@ void SensorInit(void) {
     IO_PortsSetPortBits(TAPE_LEDfrrPort, TAPE_READER_POWERPin);
     // for the Beacon ----------------------------------------------------------
     IO_PortsSetPortInputs(BEACON_PORT, BEACON_PIN);
+    //for the bumper -----------------------------------------------------------
+    IO_PortsSetPortOutputs(BUMPER_PORT, BUMPER_POWER);
+    IO_PortsSetPortBits(BUMPER_PORT, BUMPER_POWER);
+    // assumes that all bupers will be on the same port for input
+    // if not will need to change
+    uint16_t BumperIn = BUMPERfrPIN | BUMPERflPIN | BUMPERbrPIN | BUMPERblPIN;
+    IO_PortsSetPortInputs(BUMPERfrPORT,BumperIn);
+
 }
 
 /**
@@ -488,6 +512,43 @@ uint8_t CheckBeacon(void) {
     return returnVal;
 }
 
+/**
+ * @Function CheckBumper(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief This function is the event checker that detects if there is a change
+ *      in Bumper detetion
+ * @author Cooper Cantrell 5/15/2024 5:26
+ */
+uint8_t CheckBumper(void){
+    uint8_t returnVal = FALSE;
+    enum sensor CurrentBumpfr = !!(BUMPERfrPIN & IO_PortsReadPort(BUMPERfrPORT));
+    enum sensor CurrentBumpfl = !!(BUMPERflPIN & IO_PortsReadPort(BUMPERflPORT));
+    enum sensor CurrentBumpbr = !!(BUMPERbrPIN & IO_PortsReadPort(BUMPERbrPORT));
+    enum sensor CurrentBumpbl = !!(BUMPERblPIN & IO_PortsReadPort(BUMPERblPORT));
+    uint8_t param = (CurrentBumpfr<<0) | (CurrentBumpfl<<1) | (CurrentBumpbr<<2) | (CurrentBumpbl <<3);
+    if ((CurrentBumpfr!=LastBumpfr) || (CurrentBumpfl!=LastBumpfl) || 
+    (CurrentBumpbr!=LastBumpbr) || (CurrentBumpbl!=LastBumpbl))
+    {
+        LastBumpfr = CurrentBumpfr;
+        LastBumpfl = CurrentBumpfl;
+        LastBumpbr = CurrentBumpbr;
+        LastBumpbl = CurrentBumpbl;
+        returnVal = TRUE;
+        ES_Event ThisEvent;
+        ThisEvent.EventParam = param;
+        ThisEvent.EventType = BUMPER;
+#ifndef EVENTCHECKER_TEST // keep this as is for test harness
+#ifdef DEBUG_PRINT
+        printf("\r\n Posting a BUMPER wire event");
+#endif
+        PostSensorService(ThisEvent);
+#else
+        SaveEvent(ThisEvent);
+#endif
+    }
+    return returnVal;
+}
 
 /*
  * The Test Harness for the event checkers is conditionally compiled using

@@ -97,5 +97,15 @@ uint8_t CheckTape(void);
  * @author Cooper Cantrell 5/14/2024 2:47
  */
 uint8_t CheckBeacon(void);
+
+/**
+ * @Function CheckBumper(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief This function is the event checker that detects if there is a change
+ *      in Bumper detetion
+ * @author Cooper Cantrell 5/15/2024 5:26
+ */
+uint8_t CheckBumper(void);
 #endif	/* TEMPLATEEVENTCHECKER_H */
 
