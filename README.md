@@ -9,14 +9,14 @@ This is the git repo that will deal with the code for the final project of ECE 1
 - [x] Create git repo
 - [ ] Create and test event checker code for Sensors 
   - [x] Track Wire detector 
-  - [ ] Tape Detector
-  - [ ] Beacon detector
+  - [x] Tape Detector
+  - [x] Beacon detector
   - [ ] Ping Sensor
 
 - [ ] Integrate sensors into ES framwork
   - [x] Track Wire detector
-  - [ ] Tape Detector 
-  - [ ] Beacon detector
+  - [x] Tape Detector 
+  - [x] Beacon detector
   - [ ] Ping Sensor
 - [ ] Create bot behavior state machines  
 - [ ] Finish Bot Code
