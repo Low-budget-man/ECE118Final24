@@ -22,4 +22,6 @@
 # will ignore the .dist file that VScode sometimes makes when opening files
 /.dist
 /.vscode
+#for notepad ++
+/.bak
 # add new ignore file/paths here
