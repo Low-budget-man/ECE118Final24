@@ -88,18 +88,18 @@
 // Note that the time waited is 1 ms more than this
 #define TAPEtime 3
 // Beacon #defines -------------------------------------------------------------
-#define BEACON_PORT PORTY
+#define BEACON_PORT PORTW
 #define BEACON_PIN PIN3
 // Bumper #defines -------------------------------------------------------------
 #define BUMPER_PORT PORTX
 #define BUMPER_POWER PIN11
-#define BUMPERfrPORT PORTY
+#define BUMPERfrPORT PORTW
 #define BUMPERfrPIN PIN4
-#define BUMPERflPORT PORTY
+#define BUMPERflPORT PORTW
 #define BUMPERflPIN PIN5
-#define BUMPERbrPORT PORTY
+#define BUMPERbrPORT PORTW
 #define BUMPERbrPIN PIN6
-#define BUMPERblPORT PORTY
+#define BUMPERblPORT PORTW
 #define BUMPERblPIN PIN7
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
