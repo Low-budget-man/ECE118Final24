@@ -139,6 +139,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         break;
     case BUMPER:
         printf("\r\n Bumper Event param: %x", ThisEvent.EventParam);
+        break;
     default:
         printf("\r\nERROR UNKNOWN EVENT IN SERVICE");
         break;

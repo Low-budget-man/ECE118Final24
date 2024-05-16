@@ -140,6 +140,7 @@ void SetTapeLED(char state) {
     pattern |= TAPE_LEDfrrPin;
     pattern |= TAPE_READER_POWERPin;
     pattern |= TRACK_POWER;
+    pattern |= BUMPER_POWER;
 #ifndef ONETAPE
     pattern |= TAPE_LEDfrPin;
     pattern |= TAPE_LEDflPin;
@@ -521,11 +522,11 @@ uint8_t CheckBeacon(void) {
  */
 uint8_t CheckBumper(void){
     uint8_t returnVal = FALSE;
-    enum sensor CurrentBumpfr = (BUMPERfrPIN & IO_PortsReadPort(BUMPERfrPORT));
-    enum sensor CurrentBumpfl = (BUMPERflPIN & IO_PortsReadPort(BUMPERflPORT));
-    enum sensor CurrentBumpbr = (BUMPERbrPIN & IO_PortsReadPort(BUMPERbrPORT));
-    enum sensor CurrentBumpbl = (BUMPERblPIN & IO_PortsReadPort(BUMPERblPORT));
-    uint8_t param = (CurrentBumpfr<<0) | (CurrentBumpfl<<1) | (CurrentBumpbr<<2) | (CurrentBumpbl <<3) ;
+    enum sensor CurrentBumpfr = !!(BUMPERfrPIN & IO_PortsReadPort(BUMPERfrPORT));
+    enum sensor CurrentBumpfl = !!(BUMPERflPIN & IO_PortsReadPort(BUMPERflPORT));
+    enum sensor CurrentBumpbr = !!(BUMPERbrPIN & IO_PortsReadPort(BUMPERbrPORT));
+    enum sensor CurrentBumpbl = !!(BUMPERblPIN & IO_PortsReadPort(BUMPERblPORT));
+    uint8_t param = (CurrentBumpfr<<0) | (CurrentBumpfl<<1) | (CurrentBumpbr<<2) | (CurrentBumpbl <<3);
     if ((CurrentBumpfr!=LastBumpfr) || (CurrentBumpfl!=LastBumpfl) || 
     (CurrentBumpbr!=LastBumpbr) || (CurrentBumpbl!=LastBumpbl))
     {
