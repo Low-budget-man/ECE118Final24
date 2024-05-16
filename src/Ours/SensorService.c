@@ -47,15 +47,19 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author Cooper Cantrell 5/8/2024 8:13 PM*/
-uint8_t InitSensorService(uint8_t Priority){
+uint8_t InitSensorService(uint8_t Priority)
+{
     ES_Event ThisEvent;
 
     MyPriority = Priority;
     // post the initial transition event
     ThisEvent.EventType = ES_INIT;
-    if (ES_PostToService(MyPriority, ThisEvent) == TRUE) {
+    if (ES_PostToService(MyPriority, ThisEvent) == TRUE)
+    {
         return TRUE;
-    } else {
+    }
+    else
+    {
         return FALSE;
     }
 }
@@ -79,57 +83,65 @@ uint8_t PostSensorService(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
  * @return Event - return event (type and param), in general should be ES_NO_EVENT
  * @brief This function is where you implement the whole of the service,
- *        as this is called any time a new event is passed to the event queue.  
+ *        as this is called any time a new event is passed to the event queue.
  * @author Cooper Cantrell 5/8/2024 */
-ES_Event RunSensorService(ES_Event ThisEvent){
+ES_Event RunSensorService(ES_Event ThisEvent)
+{
     ES_Event ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-    // when simple service test is called it will print otherwise 
+    // when simple service test is called it will print otherwise
     // the LEDS will be used to show that the service can be processed
-    switch (ThisEvent.EventType) {
-        case ES_INIT:
-            // No hardware initialization or single time setups, those
-            // go in the init function above.
-            //
-            // This section is used to reset service for some reason
-            break;
-        case TRACKWIRE:
-            printf("\r\nTrack Event with the param,0x%x",ThisEvent.EventParam);
-            if(ThisEvent.EventParam){
-                // detected
-                LED_OnBank(LED_BANK1,TRACK_LED);
-            }
-            else{
-                // not detected
-                LED_OffBank(LED_BANK1,TRACK_LED);
-            }
-            break;
-        case TAPE:
-            // Temp case to see if the event is raised properly
-            printf("\r\nTape Event with the param,0x%x",ThisEvent.EventParam);
-//            if(ThisEvent.EventParam){
-//                // detected
-//                LED_OnBank(LED_BANK1,TAPE_LED);
-//            }
-//            else{
-//                // not detected
-//                LED_OffBank(LED_BANK1,TAPE_LED);
-//            }
-            break;
-        case BEACON:
-            printf("\r\n Beacon Event param: %x",ThisEvent.EventParam);
-            if(ThisEvent.EventParam){
-                // detected
-                LED_OnBank(LED_BANK1,BEACON_LED);
-            }
-            else{
-                // not detected
-                LED_OffBank(LED_BANK1,BEACON_LED);
-            }
-            break;
-        default:
-            printf("\r\nERROR UNKNOWN EVENT IN SERVICE");
-            break;
+    switch (ThisEvent.EventType)
+    {
+    case ES_INIT:
+        // No hardware initialization or single time setups, those
+        // go in the init function above.
+        //
+        // This section is used to reset service for some reason
+        break;
+    case TRACKWIRE:
+        printf("\r\nTrack Event with the param,0x%x", ThisEvent.EventParam);
+        if (ThisEvent.EventParam)
+        {
+            // detected
+            LED_OnBank(LED_BANK1, TRACK_LED);
+        }
+        else
+        {
+            // not detected
+            LED_OffBank(LED_BANK1, TRACK_LED);
+        }
+        break;
+    case TAPE:
+        // Temp case to see if the event is raised properly
+        printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
+        //            if(ThisEvent.EventParam){
+        //                // detected
+        //                LED_OnBank(LED_BANK1,TAPE_LED);
+        //            }
+        //            else{
+        //                // not detected
+        //                LED_OffBank(LED_BANK1,TAPE_LED);
+        //            }
+        break;
+    case BEACON:
+        printf("\r\n Beacon Event param: %x", ThisEvent.EventParam);
+        if (ThisEvent.EventParam)
+        {
+            // detected
+            LED_OnBank(LED_BANK1, BEACON_LED);
+        }
+        else
+        {
+            // not detected
+            LED_OffBank(LED_BANK1, BEACON_LED);
+        }
+        break;
+    case BUMPER:
+        printf("\r\n Bumper Event param: %x", ThisEvent.EventParam);
+    default:
+        printf("\r\nERROR UNKNOWN EVENT IN SERVICE");
+        break;
     }
     return ReturnEvent;
 }
@@ -137,4 +149,3 @@ ES_Event RunSensorService(ES_Event ThisEvent){
 /*******************************************************************************
  * PRIVATE FUNCTIONs                                                           *
  ******************************************************************************/
-
