@@ -23,5 +23,5 @@
 /.dist
 /.vscode
 #for notepad ++
-/.bak
+*.bak
 # add new ignore file/paths here
