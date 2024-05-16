@@ -13,6 +13,7 @@
 #include <AD.h>
 #include "SensorEventChecker.h"
 #include "IO_Ports.h"
+#include "RC_Servo.h"
 
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
@@ -41,13 +42,16 @@
  * the PWM module, the A/D converter, the data directions on some pins, and
  * setting the initial motor directions.
  * @note  None.
- * @author Cooper Cantrell, 2024.5.16 */
+ * @author Cooper Cantrell & Caitlin Bonesio, 2024.5.16 */
 void Maw_Init(void){
-    // init the sensors
-    SensorInit();
     // Setting up the PWM in the same way that the roach was 
+    PWM_Init();
     PWM_SetFrequency(PWMFRQ);
     PWM_AddPins(LEFT_MOTOR | RIGHT_MOTOR);
+    // init the sensors
+    SensorInit();
+    //set up servos
+    RC_Init();
     //for dir
     IO_PortsSetPortOutputs(RIGHT_DIR1);
     IO_PortsSetPortOutputs(RIGHT_DIR2);
@@ -56,7 +60,7 @@ void Maw_Init(void){
     // starts the motors at 0 speed
     IO_PortsClearPortBits(RIGHT_DIR1);
     IO_PortsClearPortBits(RIGHT_DIR2);
-     IO_PortsClearPortBits(LEFT_DIR1);
+    IO_PortsClearPortBits(LEFT_DIR1);
     IO_PortsClearPortBits(LEFT_DIR2);
 }
 
@@ -67,7 +71,7 @@ void Maw_Init(void){
  * @param of the motor. 0 stops the motor. A negative value is reverse.
  * @return SUCCESS or ERROR
  * @brief  This function is used to set the speed and direction of the left motor.
- * @author Cooper Cantrell, 2024.5.16 */
+ * @author Caitlin Bonesio, 2024.5.16 */
 char Maw_LeftMtrSpeed(char newSpeed){
     if(newSpeed < 0){
         IO_PortsSetPortBits(LEFT_DIR2);
@@ -89,7 +93,7 @@ char Maw_LeftMtrSpeed(char newSpeed){
  * @param of the motor. 0 stops the motor. A negative value is reverse.
  * @return SUCCESS or ERROR
  * @brief  This function is used to set the speed and direction of the left motor.
- * @author Cooper Cantrell, 2024.5.16 */
+ * @author Caitlin Bonesio, 2024.5.16 */
 char Maw_RightMtrSpeed(char newSpeed){
     if(newSpeed < 0){
         IO_PortsSetPortBits(RIGHT_DIR2);
@@ -105,3 +109,20 @@ char Maw_RightMtrSpeed(char newSpeed){
     PWM_SetDutyCycle(RIGHT_MOTOR, newSpeed*10);
 }
 
+/**
+ * @Function Maw_RightDoor(uint8_t Position)
+ * @param Position - a true or false value for OPEN or CLOSED
+ * @return SUCCESS or ERROR
+ * @brief  This function is used to open and close the doors
+ * @author Cooper Cantrell, 2024.5.16 */
+char Maw_RightDoor(uint8_t Position){
+
+}
+
+/**
+ * @Function Maw_LeftDoor(uint8_t Position)
+ * @param Position - a true or false value for OPEN or CLOSED
+ * @return SUCCESS or ERROR
+ * @brief  This function is used to open and close the doors
+ * @author Cooper Cantrell, 2024.5.16 */
+char Maw_LeftDoor(uint8_t Position);

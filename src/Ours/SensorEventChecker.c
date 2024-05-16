@@ -35,6 +35,7 @@
 #include "SensorService.h"
 #include "IO_Ports.h"
 #include "ES_Timers.h"
+#include "PingSensor.h"
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -94,13 +95,17 @@
 #define BUMPER_PORT PORTX
 #define BUMPER_POWER PIN11
 #define BUMPERfrPORT PORTW
-#define BUMPERfrPIN PIN4
+#define BUMPERfrPIN PIN5
 #define BUMPERflPORT PORTW
-#define BUMPERflPIN PIN5
+#define BUMPERflPIN PIN4
 #define BUMPERbrPORT PORTW
-#define BUMPERbrPIN PIN6
+#define BUMPERbrPIN PIN7
 #define BUMPERblPORT PORTW
-#define BUMPERblPIN PIN7
+#define BUMPERblPIN PIN6
+#define BUMPERfrBit (1)
+#define BUMPERflBit (0)
+#define BUMPERbrBit (3)
+#define BUMPERblBit (2)
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -218,6 +223,8 @@ void SensorInit(void) {
     // for more than 1 sensors ---------------------------------------------------------
     AD_Init();
     ES_Timer_Init();
+    // for the ping sensor -----------------------------------------------------
+    PINGInit()
     // for the track wire ------------------------------------------------------
     AD_AddPins(TRACK_VOLTAGE);
     IO_PortsSetPortOutputs(TRACK_PORT, TRACK_POWER);
@@ -526,7 +533,7 @@ uint8_t CheckBumper(void){
     enum sensor CurrentBumpfl = !!(BUMPERflPIN & IO_PortsReadPort(BUMPERflPORT));
     enum sensor CurrentBumpbr = !!(BUMPERbrPIN & IO_PortsReadPort(BUMPERbrPORT));
     enum sensor CurrentBumpbl = !!(BUMPERblPIN & IO_PortsReadPort(BUMPERblPORT));
-    uint8_t param = (CurrentBumpfr<<0) | (CurrentBumpfl<<1) | (CurrentBumpbr<<2) | (CurrentBumpbl <<3);
+    uint8_t param = (CurrentBumpfr<<BUMPERfrBit) | (CurrentBumpfl<<BUMPERflBit) | (CurrentBumpbr<<BUMPERbrBit) | (CurrentBumpbl <<BUMPERblBit);
     if ((CurrentBumpfr!=LastBumpfr) || (CurrentBumpfl!=LastBumpfl) || 
     (CurrentBumpbr!=LastBumpbr) || (CurrentBumpbl!=LastBumpbl))
     {

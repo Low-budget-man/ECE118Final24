@@ -92,7 +92,7 @@ static const char *EventNames[] = {
 // corresponding timer expires. All 16 must be defined. If you are not using
 // a timers, then you can use TIMER_UNUSED
 #define TIMER_UNUSED ((pPostFunc)0)
-#define TIMER0_RESP_FUNC PostServoService
+#define TIMER0_RESP_FUNC TIMER_UNUSED
 #define TIMER1_RESP_FUNC TIMER_UNUSED
 #define TIMER2_RESP_FUNC TIMER_UNUSED
 #define TIMER3_RESP_FUNC TIMER_UNUSED
@@ -117,7 +117,6 @@ static const char *EventNames[] = {
 // the timer number matches where the timer event will be routed
 
 #define GENERIC_NAMED_TIMER 0 /*make sure this is enabled above and posting to the correct state machine*/
-#define SERVO_TIMER 1
 
 /****************************************************************************/
 // The maximum number of services sets an upper bound on the number of 
@@ -128,7 +127,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 4
+#define NUM_SERVICES 3
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
@@ -173,7 +172,7 @@ static const char *EventNames[] = {
 // These are the definitions for Service 3
 #if NUM_SERVICES > 3
 // the header file with the public fuction prototypes
-#define SERV_3_HEADER "ServoService.h"
+#define SERV_3_HEADER "TestService.h"
 // the name of the Init function
 #define SERV_3_INIT ServoServiceInit
 // the name of the run function

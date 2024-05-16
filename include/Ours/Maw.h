@@ -35,7 +35,7 @@ void Maw_Init(void);
  * @param of the motor. 0 stops the motor. A negative value is reverse.
  * @return SUCCESS or ERROR
  * @brief  This function is used to set the speed and direction of the left motor.
- * @author Cooper Cantrell, 2024.5.16 */
+ * @author Caitlin Bonesio, 2024.5.16 */
 char Maw_LeftMtrSpeed(char newSpeed);
 
 /**
@@ -44,8 +44,23 @@ char Maw_LeftMtrSpeed(char newSpeed);
  * @param of the motor. 0 stops the motor. A negative value is reverse.
  * @return SUCCESS or ERROR
  * @brief  This function is used to set the speed and direction of the left motor.
- * @author Cooper Cantrell, 2024.5.16 */
+ * @author Caitlin Bonesio, 2024.5.16 */
 char Maw_RightMtrSpeed(char newSpeed);
 
+/**
+ * @Function Maw_RightDoor(uint8_t Position)
+ * @param Position - a true or false value for OPEN or CLOSED
+ * @return SUCCESS or ERROR
+ * @brief  This function is used to open and close the doors
+ * @author Cooper Cantrell, 2024.5.16 */
+char Maw_RightDoor(uint8_t Position);
+
+/**
+ * @Function Maw_LeftDoor(uint8_t Position)
+ * @param Position - a true or false value for OPEN or CLOSED
+ * @return SUCCESS or ERROR
+ * @brief  This function is used to open and close the doors
+ * @author Cooper Cantrell, 2024.5.16 */
+char Maw_LeftDoor(uint8_t Position);
 
 #endif
