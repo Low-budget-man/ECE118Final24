@@ -18,8 +18,14 @@ This is the git repo that will deal with the code for the final project of ECE 1
   - [x] Tape Detector 
   - [x] Beacon detector
   - [ ] Ping Sensor
-- [ ] Create helper functions for PWM motor controll  
-- [ ] Create bot behavior state machines  
+- [ ] Create helper functions for PWM motor control
+  - [x] Write test cases for Motors and servos
+  - [x] Test Motors
+  - [ ] Test Servos
+- [ ] Create bot behavior state machines 
+  - [ ] Create an HSM that that the sensors can post to
+  - [ ] Create Sub State machines
+  
 - [ ] Finish Bot Code
 
 ## Authors and acknowledgment
