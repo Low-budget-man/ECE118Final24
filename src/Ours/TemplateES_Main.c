@@ -21,7 +21,7 @@ void main(void)
     LED_Init();
     LED_AddBanks(LED_BANK1);
     //sets all of the banks to 0 in case that is needed (0x0F) is a full bank)
-    LED_OffBank(LED_BANK1,0x0F);
+    LED_OffBank(LED_BANK1,0xFF);
     // init the sensors
     SensorInit();
     // now initialize the Events and Services Framework and start it running
