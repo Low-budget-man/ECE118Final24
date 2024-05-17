@@ -21,6 +21,7 @@
 #define TRACK_LED (0x1)
 #define TAPE_LED (0x2)
 #define BEACON_LED (0x4)
+#define DEBOUNCE_Wait
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -32,7 +33,7 @@
  ******************************************************************************/
 
 static uint8_t MyPriority;
-
+static uint8_t LastBump;
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
@@ -52,6 +53,8 @@ uint8_t InitSensorService(uint8_t Priority)
     ES_Event ThisEvent;
 
     MyPriority = Priority;
+    // for the init of the timers
+    ES_Timer_Init();
     // post the initial transition event
     ThisEvent.EventType = ES_INIT;
     if (ES_PostToService(MyPriority, ThisEvent) == TRUE)
@@ -138,12 +141,23 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         }
         break;
     case BUMPER:
-        printf("\r\n Bumper Event param: %x", ThisEvent.EventParam);
+        ES_Timer_InitTimer(BUMPER_DEBOUNCE_T, DEBOUNCE_Wait);
+        LastBump = ThisEvent.EventParam;
+        break;
+    case ES_TIMEOUT:
+        if (ThisEvent.EventParam == BUMPER_DEBOUNCE_T)
+        {
+            printf("\r\n Debounced Bumper Event with param %x", LastBump);
+        }
+        else
+        {
+            printf("\r\nERROR: Unknown TimerParam in SensorService");
+        }
         break;
     default:
-        printf("\r\nERROR UNKNOWN EVENT IN SERVICE");
-        break;
+        printf("\r\nERROR: Unknown event in SensorService");
     }
+
     return ReturnEvent;
 }
 
