@@ -18,6 +18,7 @@
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
+//#define MawTest
 #define PWMFRQ 1000
 #define RIGHT_MOTOR PWM_PORTY12
 #define LEFT_MOTOR PWM_PORTZ06
@@ -25,7 +26,11 @@
 #define RIGHT_DIR2 PORTY,PIN10
 #define LEFT_DIR1 PORTZ,PIN5
 #define LEFT_DIR2 PORTZ,PIN4
-// when Dir1 = 1 that is forward
+// when Dir1 = 1 and Dir2 = 0 that is forward
+#define RIGHT_DOOR RC_PORTY06
+#define LEFT_DOOR RC_PORTY07
+#define OPEN MAXPULSE
+#define CLOSED MINPULSE
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/
@@ -62,6 +67,9 @@ void Maw_Init(void){
     IO_PortsClearPortBits(RIGHT_DIR2);
     IO_PortsClearPortBits(LEFT_DIR1);
     IO_PortsClearPortBits(LEFT_DIR2);
+    // for the servos
+    RC_Init();
+    RC_AddPins(RIGHT_DOOR|LEFT_DOOR);
 }
 
 
@@ -85,6 +93,7 @@ char Maw_LeftMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(LEFT_DIR2);
     }
     PWM_SetDutyCycle(LEFT_MOTOR, newSpeed*10);
+    return SUCCESS;
 }
 
 /**
@@ -107,6 +116,7 @@ char Maw_RightMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(RIGHT_DIR2);
     }
     PWM_SetDutyCycle(RIGHT_MOTOR, newSpeed*10);
+    return SUCCESS;
 }
 
 /**
@@ -116,7 +126,13 @@ char Maw_RightMtrSpeed(char newSpeed){
  * @brief  This function is used to open and close the doors
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_RightDoor(uint8_t Position){
-
+    if(Position){
+        RC_SetPulseTime(RIGHT_DOOR,OPEN);
+    }
+    else{
+        RC_SetPulseTime(RIGHT_DOOR,CLOSED);
+    }
+    return SUCCESS;
 }
 
 /**
@@ -125,4 +141,82 @@ char Maw_RightDoor(uint8_t Position){
  * @return SUCCESS or ERROR
  * @brief  This function is used to open and close the doors
  * @author Cooper Cantrell, 2024.5.16 */
-char Maw_LeftDoor(uint8_t Position);
+char Maw_LeftDoor(uint8_t Position){
+    if(Position){
+        RC_SetPulseTime(LEFT_DOOR,OPEN);
+    }
+    else{
+        RC_SetPulseTime(LEFT_DOOR,CLOSED);
+    }
+    return SUCCESS;
+}
+
+#ifdef MawTest
+#include <stdio.h>
+#define DELAY(x)    for (wait = 0; wait <= x; wait++) {asm("nop");}
+#define A_BIT       18300
+#define A_BIT_MORE  36600
+#define YET_A_BIT_LONGER (A_BIT_MORE<<2)
+#define A_LOT       183000
+int main(void){
+    Maw_Init();
+    printf("\r\n Maw Test code for the moving parts will begin shortly");
+    DELAY(A_BIT);
+    printf("\r\n Test 1 Right motor");
+    DELAY(A_BIT);
+    printf("\r\n Right Motor Speed 50");
+    Maw_RightMtrSpeed(50);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n Right Motor Speed 100");
+    Maw_RightMtrSpeed(100);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n Right Motor Speed -50");
+    Maw_RightMtrSpeed(-50);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n Right Motor Speed -100");
+    Maw_RightMtrSpeed(-100);
+    DELAY(YET_A_BIT_LONGER);
+    Maw_RightMtrSpeed(0);
+    printf("\r\n Testing of the right motor done ");
+    DELAY(A_BIT_MORE);
+    printf("\r\n Test 2 Left motor");
+    DELAY(A_BIT);
+    printf("\r\n Left Motor Speed 50");
+    Maw_LeftMtrSpeed(50);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n Left Motor Speed 100");
+    Maw_LeftMtrSpeed(100);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n Left Motor Speed -50");
+    Maw_LeftMtrSpeed(-50);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n Left Motor Speed -100");
+    Maw_LeftMtrSpeed(-100);
+    DELAY(YET_A_BIT_LONGER);
+    Maw_LeftMtrSpeed(0);
+    printf("\r\n Testing of the left motor done ");
+    DELAY(A_BIT_MORE);
+    printf("\r\n Test 3 right servo");
+    DELAY(A_BIT);
+    printf("\r\n OPEN");
+    Maw_RightDoor(TRUE);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n CLOSE");
+    Maw_RightDoor(FALSE);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n Testing of the right servo done");
+    DELAY(A_BIT_MORE);
+    printf("\r\n Test 4 left servo");
+    DELAY(A_BIT);
+    printf("\r\n OPEN");
+    Maw_LeftDoor(TRUE);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n CLOSE");
+    Maw_LeftDoor(FALSE);
+    DELAY(YET_A_BIT_LONGER);
+    printf("\r\n Testing of the left servo done");
+    DELAY(A_BIT_MORE);
+    printf("\r\n All Tests Done Goodbye");
+    return SUCCESS;
+}
+#endif
