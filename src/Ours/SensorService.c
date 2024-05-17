@@ -13,6 +13,7 @@
 #include "../../include/Provided/ES_Framework.h"
 #include "../../include/Ours/SensorService.h"
 #include "../../include/Provided/LED.h"
+#include "ES_Timers.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -21,7 +22,7 @@
 #define TRACK_LED (0x1)
 #define TAPE_LED (0x2)
 #define BEACON_LED (0x4)
-#define DEBOUNCE_Wait
+#define DEBOUNCE_Wait 2
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/

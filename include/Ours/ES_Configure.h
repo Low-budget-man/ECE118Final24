@@ -117,9 +117,7 @@ static const char *EventNames[] = {
 // to different timers if the need arises. Keep these definitons close to the
 // definitions for the response functions to make it easire to check that
 // the timer number matches where the timer event will be routed
-
-#define GENERIC_NAMED_TIMER 0 /*make sure this is enabled above and posting to the correct state machine*/
-#define BUMPER_DEBOUNCE_T 1 
+#define BUMPER_DEBOUNCE_T 0
 /****************************************************************************/
 // The maximum number of services sets an upper bound on the number of 
 // services that the framework will handle. Reasonable values are 8 and 16

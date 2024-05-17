@@ -111,7 +111,6 @@ char Maw_RightMtrSpeed(char newSpeed){
         IO_PortsSetPortBits(RIGHT_DIR2);
         IO_PortsClearPortBits(RIGHT_DIR1);
         newSpeed *= -1;
-        printf("\r\n Setting speed to %d",newSpeed);
     } else if (newSpeed > 0){
         IO_PortsSetPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
