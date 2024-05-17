@@ -64,6 +64,7 @@ typedef enum {
 	RIGHT_MOTOR_SPEED_CHANGED, // Parameter: speed
 	FANS_ON, //No parameters, activating and deactivating both fans at once
 	FANS_OFF,//No parameters	
+	RAM_DONE, //No parameters
 	
 } ES_EventTyp_t;
 
@@ -95,7 +96,8 @@ static const char *EventNames[] = {
 	"LEFT_MOTOR_SPEED_CHANGED",
 	"RIGHT_MOTOR_SPEED_CHANGED",
 	"FANS_ON",
-	"FANS_OFF"
+	"FANS_OFF",
+	"RAM_DONE",
 };
 
 
@@ -118,7 +120,7 @@ static const char *EventNames[] = {
 #define TIMER1_RESP_FUNC PostPingService // I imagine that the ping sensor will need its own service, distinct from the general sensor service, and timer to go with it
 #define TIMER2_RESP_FUNC PostMotorService
 #define TIMER3_RESP_FUNC PostFanService 
-#define TIMER4_RESP_FUNC TIMER_UNUSED
+#define TIMER4_RESP_FUNC PostMawHSM
 #define TIMER5_RESP_FUNC TIMER_UNUSED
 #define TIMER6_RESP_FUNC TIMER_UNUSED
 #define TIMER7_RESP_FUNC TIMER_UNUSED
@@ -142,6 +144,8 @@ static const char *EventNames[] = {
 #define PING_TIMER 1
 #define MOTOR_TIMER 2
 #define FAN_TIMER 3
+#define WANDER_TIMER 4
+//We probably want more timers for each sub hsm
 
 
 /****************************************************************************/

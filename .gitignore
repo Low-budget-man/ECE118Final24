@@ -23,3 +23,8 @@
 /.dist
 /.vscode
 # add new ignore file/paths here
+
+#Whenever I use notepad++, it makes .bak files. I assume those are some kind of backups.
+#I'm just using it because mplab takes forever to open and organize, and I'm not running code
+#from my computer anyways.
+/*.bak
