@@ -18,7 +18,9 @@
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
-//#define MawTest
+#define MawTest
+
+
 #define PWMFRQ 1000
 #define RIGHT_MOTOR PWM_PORTY12
 #define LEFT_MOTOR PWM_PORTZ06
@@ -153,14 +155,16 @@ char Maw_LeftDoor(uint8_t Position){
 
 #ifdef MawTest
 #include <stdio.h>
+int wait;
 #define DELAY(x)    for (wait = 0; wait <= x; wait++) {asm("nop");}
-#define A_BIT       18300
-#define A_BIT_MORE  36600
+#define A_BIT       183000
+#define A_BIT_MORE  366000
 #define YET_A_BIT_LONGER (A_BIT_MORE<<2)
-#define A_LOT       183000
+#define A_LOT       1830000
 int main(void){
+    BOARD_Init();
+    printf("Maw Test code for the moving parts will begin shortly");
     Maw_Init();
-    printf("\r\n Maw Test code for the moving parts will begin shortly");
     DELAY(A_BIT);
     printf("\r\n Test 1 Right motor");
     DELAY(A_BIT);
