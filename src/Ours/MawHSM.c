@@ -38,7 +38,7 @@
  ******************************************************************************/
 //Include any defines you need to do
 
-#define WanderTime 30000 // 30 seconds
+#define WANDER_TIME 30000 // 30 seconds
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
