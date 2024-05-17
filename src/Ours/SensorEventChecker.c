@@ -36,6 +36,7 @@
 #include "IO_Ports.h"
 #include "ES_Timers.h"
 #include "PingSensor.h"
+#include <stdlib.h>
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -107,6 +108,8 @@
 #define BUMPERflBit (0)
 #define BUMPERbrBit (3)
 #define BUMPERblBit (2)
+// for the Ping sensor, most of the work is done in PingSensor.h
+#define PING_HYST 5
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -182,6 +185,8 @@ enum sensor LastBumpfr = NOT_DETECTED;
 enum sensor LastBumpfl = NOT_DETECTED;
 enum sensor LastBumpbr = NOT_DETECTED;
 enum sensor LastBumpbl = NOT_DETECTED;
+
+uint16_t LastPing = 0;
 
 static enum {
     OFF,
@@ -560,6 +565,35 @@ uint8_t CheckBumper(void){
     return returnVal;
 }
 
+/**
+ * @Function CheckPing(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief This function is the event checker that detects if there is a change
+ *      in Ping detection
+ * @author Cooper Cantrell 5/15/2024 5:26
+ */
+uint8_t CheckPing(void){
+    uint16_t CurrentPing = PINGGetData();
+    uint8_t returnVal = FALSE;
+    if (abs(CurrentPing - LastPing) > PING_HYST)
+    {
+        returnVal = TRUE;
+        LastPing = CurrentPing;
+        ES_Event ThisEvent;
+        ThisEvent.EventType = PING;
+        ThisEvent.EventParam = CurrentPing;
+#ifndef EVENTCHECKER_TEST // keep this as is for test harness
+#ifdef DEBUG_PRINT
+        printf("\r\n Posting a PING event");
+#endif
+        PostSensorService(ThisEvent);
+#else
+        SaveEvent(ThisEvent);
+#endif
+    }
+    return returnVal;
+}
 /*
  * The Test Harness for the event checkers is conditionally compiled using
  * the EVENTCHECKER_TEST macro (defined either in the file or at the project level).

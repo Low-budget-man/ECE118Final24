@@ -83,7 +83,7 @@ uint8_t CheckTrack(void);
  * @param none
  * @return TRUE or FALSE
  * @brief This function is the event checker that detects if there is a change
- *      in tape detetion
+ *      in tape detection
  * @author Cooper Cantrell 5/10/2024 12:07
  */
 uint8_t CheckTape(void);
@@ -93,7 +93,7 @@ uint8_t CheckTape(void);
  * @param none
  * @return TRUE or FALSE
  * @brief This function is the event checker that detects if there is a change
- *      in beacon detetion
+ *      in beacon detection
  * @author Cooper Cantrell 5/14/2024 2:47
  */
 uint8_t CheckBeacon(void);
@@ -103,9 +103,19 @@ uint8_t CheckBeacon(void);
  * @param none
  * @return TRUE or FALSE
  * @brief This function is the event checker that detects if there is a change
- *      in Bumper detetion
+ *      in Bumper detection
  * @author Cooper Cantrell 5/15/2024 5:26
  */
 uint8_t CheckBumper(void);
+
+/**
+ * @Function CheckPing(void)
+ * @param none
+ * @return TRUE or FALSE
+ * @brief This function is the event checker that detects if there is a change
+ *      in Ping detection
+ * @author Cooper Cantrell 5/15/2024 5:26
+ */
+uint8_t CheckPing(void);
 #endif	/* TEMPLATEEVENTCHECKER_H */
 

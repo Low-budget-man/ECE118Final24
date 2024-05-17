@@ -54,6 +54,7 @@ typedef enum {
     TAPE,
     BEACON,
     BUMPER,
+    PING,
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
@@ -74,6 +75,7 @@ static const char *EventNames[] = {
     "TAPE",
     "BEACON",
     "BUMPER"
+    "PING",
 };
 
 
