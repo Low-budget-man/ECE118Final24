@@ -12,7 +12,7 @@ uint16_t time;
 void PINGInit(){
     T3CON = 0; // everything should be off
     T3CONbits.TCKPS = 0b110; // 1:4 prescaler/ 10MHz clk 
-    T3CONbits.T32 = 0;
+//    T3CONbits.T32 = 0;
     PR3 = (37500 - 1); // interrupt at 20 milliS intervals
     T3CONbits.ON = 1; // turn the timer on
     

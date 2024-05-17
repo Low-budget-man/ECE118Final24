@@ -93,15 +93,16 @@
 #define BEACON_PIN PIN3
 // Bumper #defines -------------------------------------------------------------
 #define BUMPER_PORT PORTX
-#define BUMPER_POWER PIN11
+#define BUMPER_POWER PIN4
 #define BUMPERfrPORT PORTW
 #define BUMPERfrPIN PIN5
 #define BUMPERflPORT PORTW
 #define BUMPERflPIN PIN4
 #define BUMPERbrPORT PORTW
 #define BUMPERbrPIN PIN7
-#define BUMPERblPORT PORTW
-#define BUMPERblPIN PIN6
+#define BUMPERblPORT PORTY
+//Pin 6 and 8 is haveing issues and does not work
+#define BUMPERblPIN PIN3
 #define BUMPERfrBit (1)
 #define BUMPERflBit (0)
 #define BUMPERbrBit (3)
@@ -224,7 +225,7 @@ void SensorInit(void) {
     AD_Init();
     ES_Timer_Init();
     // for the ping sensor -----------------------------------------------------
-    PINGInit()
+    PINGInit();
     // for the track wire ------------------------------------------------------
     AD_AddPins(TRACK_VOLTAGE);
     IO_PortsSetPortOutputs(TRACK_PORT, TRACK_POWER);
@@ -251,8 +252,9 @@ void SensorInit(void) {
     IO_PortsSetPortBits(BUMPER_PORT, BUMPER_POWER);
     // assumes that all bupers will be on the same port for input
     // if not will need to change
-    uint16_t BumperIn = BUMPERfrPIN | BUMPERflPIN | BUMPERbrPIN | BUMPERblPIN;
+    uint16_t BumperIn = BUMPERfrPIN | BUMPERflPIN | BUMPERbrPIN;
     IO_PortsSetPortInputs(BUMPERfrPORT,BumperIn);
+    IO_PortsSetPortInputs(BUMPERblPORT,BUMPERblPIN);
 
 }
 
@@ -533,6 +535,7 @@ uint8_t CheckBumper(void){
     enum sensor CurrentBumpfl = !!(BUMPERflPIN & IO_PortsReadPort(BUMPERflPORT));
     enum sensor CurrentBumpbr = !!(BUMPERbrPIN & IO_PortsReadPort(BUMPERbrPORT));
     enum sensor CurrentBumpbl = !!(BUMPERblPIN & IO_PortsReadPort(BUMPERblPORT));
+    //printf("\r\nBumper BL = %d", CurrentBumpbl);
     uint8_t param = (CurrentBumpfr<<BUMPERfrBit) | (CurrentBumpfl<<BUMPERflBit) | (CurrentBumpbr<<BUMPERbrBit) | (CurrentBumpbl <<BUMPERblBit);
     if ((CurrentBumpfr!=LastBumpfr) || (CurrentBumpfl!=LastBumpfl) || 
     (CurrentBumpbr!=LastBumpbr) || (CurrentBumpbl!=LastBumpbl))
