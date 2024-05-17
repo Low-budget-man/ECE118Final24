@@ -157,7 +157,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 7 // including keyboard
+#define NUM_SERVICES 4 // including keyboard
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
@@ -203,11 +203,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 3
 #if NUM_SERVICES > 3
 // the header file with the public fuction prototypes
-#define SERV_3_HEADER "ServoService.h"
+#define SERV_3_HEADER "MawHSM.h"
 // the name of the Init function
-#define SERV_3_INIT ServoServiceInit
+#define SERV_3_INIT InitMawHSM
 // the name of the run function
-#define SERV_3_RUN ServoServiceRun
+#define SERV_3_RUN RunMawHSM
 // How big should this services Queue be?
 #define SERV_3_QUEUE_SIZE 3
 #endif
@@ -225,26 +225,28 @@ static const char *EventNames[] = {
 #define SERV_4_QUEUE_SIZE 3
 #endif
 
+/****************************************************************************/
 // These are the definitions for Service 5
 #if NUM_SERVICES > 5
 // the header file with the public fuction prototypes
-#define SERV_5_HEADER "MotorService.h"
+#define SERV_5_HEADER "TestService.h"
 // the name of the Init function
-#define SERV_5_INIT InitMotorService
+#define SERV_5_INIT TestServiceInit
 // the name of the run function
-#define SERV_5_RUN RunMotorService
+#define SERV_5_RUN TestServiceRun
 // How big should this services Queue be?
 #define SERV_5_QUEUE_SIZE 3
 #endif
 
-// These are the definitions for Service 6
+/****************************************************************************/
+// These are the definitions for Service 7
 #if NUM_SERVICES > 6
 // the header file with the public fuction prototypes
-#define SERV_6_HEADER "FanService.h"
+#define SERV_6_HEADER "TestService.h"
 // the name of the Init function
-#define SERV_6_INIT InitFanService
+#define SERV_6_INIT TestServiceInit
 // the name of the run function
-#define SERV_6_RUN RunFanService
+#define SERV_6_RUN TestServiceRun
 // How big should this services Queue be?
 #define SERV_6_QUEUE_SIZE 3
 #endif
