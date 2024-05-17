@@ -25,7 +25,8 @@
 #define RIGHT_MOTOR PWM_PORTY12
 #define LEFT_MOTOR PWM_PORTZ06
 #define RIGHT_DIR1 PORTY,PIN11
-#define RIGHT_DIR2 PORTY,PIN10
+// was pin 9 but that seems to not work
+#define RIGHT_DIR2 PORTY,PIN5
 #define LEFT_DIR1 PORTZ,PIN5
 #define LEFT_DIR2 PORTZ,PIN4
 // when Dir1 = 1 and Dir2 = 0 that is forward
@@ -109,6 +110,8 @@ char Maw_RightMtrSpeed(char newSpeed){
     if(newSpeed < 0){
         IO_PortsSetPortBits(RIGHT_DIR2);
         IO_PortsClearPortBits(RIGHT_DIR1);
+        newSpeed *= -1;
+        printf("\r\n Setting speed to %d",newSpeed);
     } else if (newSpeed > 0){
         IO_PortsSetPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
