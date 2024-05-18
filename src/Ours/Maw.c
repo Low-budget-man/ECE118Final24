@@ -18,7 +18,7 @@
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
-//#define MawTest
+#define MawTest
 
 
 #define PWMFRQ 1000
@@ -30,7 +30,7 @@
 #define LEFT_DIR1 PORTZ,PIN5
 #define LEFT_DIR2 PORTZ,PIN4
 // when Dir1 = 1 and Dir2 = 0 that is forward
-#define RIGHT_DOOR RC_PORTY06
+#define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07
 //Bigger to be more open (closer to 90 deg in)
 #define collect 2100
