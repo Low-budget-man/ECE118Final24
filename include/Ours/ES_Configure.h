@@ -87,7 +87,7 @@ static const char *EventNames[] = {
 
 /****************************************************************************/
 // This is the list of event checking functions
-#define EVENT_CHECK_LIST  CheckTrack,  CheckTape, CheckBumpers, CheckPing/*active sensor, idk if needed*/, CheckEncoders //Add check Battery for the real bot
+#define EVENT_CHECK_LIST  CheckTrack,  CheckTape, CheckBumper, CheckPing, //, CheckEncoders //Add check Battery for the real bot
 
 /****************************************************************************/
 // These are the definitions for the post functions to be executed when the
@@ -127,7 +127,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 4 // including keyboard
+#define NUM_SERVICES 3 // including keyboard
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
