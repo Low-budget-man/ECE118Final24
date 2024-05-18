@@ -32,8 +32,12 @@
 // when Dir1 = 1 and Dir2 = 0 that is forward
 #define RIGHT_DOOR RC_PORTY06
 #define LEFT_DOOR RC_PORTY07
-#define OPEN MAXPULSE
-#define CLOSED MINPULSE
+//Bigger to be more open (closer to 90 deg in)
+#define collect 2100
+// Smaller to be more open (sticking out all of the way)
+#define deposit 700
+
+
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/
@@ -111,7 +115,6 @@ char Maw_RightMtrSpeed(char newSpeed){
         IO_PortsSetPortBits(RIGHT_DIR2);
         IO_PortsClearPortBits(RIGHT_DIR1);
         newSpeed *= -1;
-        printf("\r\n Setting speed to %d",newSpeed);
     } else if (newSpeed > 0){
         IO_PortsSetPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
@@ -126,32 +129,34 @@ char Maw_RightMtrSpeed(char newSpeed){
 
 /**
  * @Function Maw_RightDoor(uint8_t Position)
- * @param Position - a true or false value for OPEN or CLOSED
+ * @param Position - a true or false value for collect or deposit
  * @return SUCCESS or ERROR
  * @brief  This function is used to open and close the doors
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_RightDoor(uint8_t Position){
     if(Position){
-        RC_SetPulseTime(RIGHT_DOOR,OPEN);
+        RC_SetPulseTime(RIGHT_DOOR,collect);
     }
     else{
-        RC_SetPulseTime(RIGHT_DOOR,CLOSED);
+        RC_SetPulseTime(RIGHT_DOOR,deposit);
     }
     return SUCCESS;
 }
 
 /**
  * @Function Maw_LeftDoor(uint8_t Position)
- * @param Position - a true or false value for OPEN or CLOSED
+ * @param Position - a true or false value for collect or deposit
  * @return SUCCESS or ERROR
- * @brief  This function is used to open and close the doors
+ * @brief  This function is used to open and close the 
+ * @note Because of how the servos are on the bot there it seems like it is 
+ * going to the wrong spot this is to abstract away how the servos are mounted
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_LeftDoor(uint8_t Position){
-    if(Position){
-        RC_SetPulseTime(LEFT_DOOR,OPEN);
+    if(!(Position)){
+        RC_SetPulseTime(LEFT_DOOR,collect);
     }
     else{
-        RC_SetPulseTime(LEFT_DOOR,CLOSED);
+        RC_SetPulseTime(LEFT_DOOR,deposit);
     }
     return SUCCESS;
 }
@@ -205,20 +210,20 @@ int main(void){
     DELAY(A_BIT_MORE);
     printf("\r\n Test 3 right servo");
     DELAY(A_BIT);
-    printf("\r\n OPEN");
+    printf("\r\n collect");
     Maw_RightDoor(TRUE);
     DELAY(YET_A_BIT_LONGER);
-    printf("\r\n CLOSE");
+    printf("\r\n deposit");
     Maw_RightDoor(FALSE);
     DELAY(YET_A_BIT_LONGER);
     printf("\r\n Testing of the right servo done");
     DELAY(A_BIT_MORE);
     printf("\r\n Test 4 left servo");
     DELAY(A_BIT);
-    printf("\r\n OPEN");
+    printf("\r\n collect");
     Maw_LeftDoor(TRUE);
     DELAY(YET_A_BIT_LONGER);
-    printf("\r\n CLOSE");
+    printf("\r\n deposit");
     Maw_LeftDoor(FALSE);
     DELAY(YET_A_BIT_LONGER);
     printf("\r\n Testing of the left servo done");
