@@ -46,14 +46,9 @@
 #define TRACK_VOLTAGE AD_PORTV3
 #define TRACK_THRESH 200
 #define TRACK_HYST 60
-#define TRACK_PORT PORTX
-#define TRACK_POWER PIN10
 // Tape #defines ---------------------------------------------------------------
 // for tape sensor testing will only use the frr (front right right) tape sensor
 //#define ONETAPE
-// the tape sensors will be powered by the PIC32 this will control the pins
-#define TAPE_READER_POWERPort PORTX
-#define TAPE_READER_POWERPin PIN3
 // the LEDs need their own pin for power we may change this later
 #define TAPE_LEDfrrPort PORTX
 #define TAPE_LEDfrrPin PIN4
@@ -93,8 +88,6 @@
 #define BEACON_PORT PORTW
 #define BEACON_PIN PIN3
 // Bumper #defines -------------------------------------------------------------
-#define BUMPER_PORT PORTX
-#define BUMPER_POWER PIN4
 #define BUMPERfrPORT PORTW
 #define BUMPERfrPIN PIN5
 #define BUMPERflPORT PORTW
@@ -147,9 +140,6 @@ void SetTapeLED(char state) {
     // if not will need to change
     uint16_t pattern = 0;
     pattern |= TAPE_LEDfrrPin;
-    pattern |= TAPE_READER_POWERPin;
-    pattern |= TRACK_POWER;
-    pattern |= BUMPER_POWER;
 #ifndef ONETAPE
     pattern |= TAPE_LEDfrPin;
     pattern |= TAPE_LEDflPin;
@@ -160,7 +150,7 @@ void SetTapeLED(char state) {
     if (state) {
         IO_PortsWritePort(TAPE_LEDfrrPort, pattern);
     } else {
-        IO_PortsWritePort(TAPE_LEDfrrPort, (TAPE_READER_POWERPin | TRACK_POWER | BUMPER_POWER));
+        IO_PortsWritePort(TAPE_LEDfrrPort,0);
     }
 }
 
@@ -233,8 +223,6 @@ void SensorInit(void) {
     PINGInit();
     // for the track wire ------------------------------------------------------
     AD_AddPins(TRACK_VOLTAGE);
-    IO_PortsSetPortOutputs(TRACK_PORT, TRACK_POWER);
-    IO_PortsSetPortBits(TRACK_PORT,TRACK_POWER);
     // for the tape sensor -----------------------------------------------------
     AD_AddPins(TAPE_VOLTAGEfrr);
 #ifndef ONETAPE
@@ -245,16 +233,13 @@ void SensorInit(void) {
     AD_AddPins(TAPE_VOLTAGEbl);
 #endif
     // assumes that all tape sensors will use the same port for outputs
-    uint16_t TapeOut = TAPE_READER_POWERPin | TAPE_LEDfrrPin | TAPE_LEDfrPin |
+    uint16_t TapeOut = TAPE_LEDfrrPin | TAPE_LEDfrPin |
             TAPE_LEDflPin | TAPE_LEDfllPin | TAPE_LEDbrPin | TAPE_LEDblPin;
     IO_PortsSetPortOutputs(TAPE_LEDfrrPort, TapeOut);
     // Sets the phototransistor to all of them high
-    IO_PortsSetPortBits(TAPE_LEDfrrPort, TAPE_READER_POWERPin);
     // for the Beacon ----------------------------------------------------------
     IO_PortsSetPortInputs(BEACON_PORT, BEACON_PIN);
     //for the bumper -----------------------------------------------------------
-    IO_PortsSetPortOutputs(BUMPER_PORT, BUMPER_POWER);
-    IO_PortsSetPortBits(BUMPER_PORT, BUMPER_POWER);
     // assumes that all bupers will be on the same port for input
     // if not will need to change
     uint16_t BumperIn = BUMPERfrPIN | BUMPERflPIN | BUMPERbrPIN;
