@@ -18,9 +18,10 @@
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
-#define MawTest
+//#define MawTest
 
-
+//NOTE : PING ECHO = y6
+// PING trigger = y10
 #define PWMFRQ 1000
 #define RIGHT_MOTOR PWM_PORTY12
 #define LEFT_MOTOR PWM_PORTZ06
