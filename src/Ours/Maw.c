@@ -55,7 +55,7 @@
  * @brief  This functon will be used to scale 
  * @author Cooper Cantrell, 2024.5.21 */
 unsigned int ScaleValue(char newSpeed){
-    return (MAX_BATT_READ * newSpeed) / CURRENT_BATT_VOLT
+    return (MAX_BATT_READ * newSpeed) / CURRENT_BATT_VOLT;
 }
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                           *
