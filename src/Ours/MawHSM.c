@@ -23,7 +23,6 @@
  * 10/23/11 18:20 jec      began conversion from SMTemplate.c (02/20/07 rev)
  */
 
-
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
@@ -36,7 +35,7 @@
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
-//Include any defines you need to do
+// Include any defines you need to do
 
 #define WANDER_TIME 30000 // 30 seconds
 
@@ -44,19 +43,20 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-
-typedef enum {
+typedef enum
+{
     InitPState,
+    StartEnd,
     Wander,
-	Deposit
+    Deposit
 } MawHSMState_t;
 
 static const char *StateNames[] = {
-	"InitPState",
-	"Wander",
-	"Deposit",
+    "InitPState",
+    "StartEnd",
+    "Wander",
+    "Deposit",
 };
-
 
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
@@ -72,7 +72,6 @@ static const char *StateNames[] = {
 
 static MawHSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
-
 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
@@ -94,9 +93,12 @@ uint8_t InitMawHSM(uint8_t Priority)
     // put us into the Initial PseudoState
     CurrentState = InitPState;
     // post the initial transition event
-    if (ES_PostToService(MyPriority, INIT_EVENT) == TRUE) {
+    if (ES_PostToService(MyPriority, INIT_EVENT) == TRUE)
+    {
         return TRUE;
-    } else {
+    }
+    else
+    {
         return FALSE;
     }
 }
@@ -133,61 +135,76 @@ uint8_t PostMawHSM(ES_Event ThisEvent)
 ES_Event RunMawHSM(ES_Event ThisEvent)
 {
     uint8_t makeTransition = FALSE; // use to flag transition
-    MawHSMState_t nextState; // <- change type to correct enum
+    MawHSMState_t nextState;        // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
 
-    switch (CurrentState) {
-    case InitPState: // If current state is initial Pseudo State
-        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+    switch (CurrentState)
+    {
+    case InitPState:                        // If current state is initial Pseudo State
+        if (ThisEvent.EventType == ES_INIT) // only respond to ES_Init
         {
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
             // Initialize all sub-state machines
             InitWanderSubHSM();
-			InitDepositSubHSM
+            InitDepositSubHSM();
             // now put the machine into the actual initial state
-            nextState = Wander;
+            nextState = StartEnd;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
             ;
         }
         break;
+    case StartEnd:
+        // Stays in In the StartEnd state untill the bumpers are pressed
+        if (ThisEvent.EventType == BUMPER)
+        {
+            nextState = Wander;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
 
+        break;
     case Wander: // in the first state, replace this with correct names
         // run sub-state machine for this state
-        //NOTE: the SubState Machine runs and responds to events before anything in the this
-        //state machine does
+        // NOTE: the SubState Machine runs and responds to events before anything in the this
+        // state machine does
         ThisEvent = RunWanderSubHSM(ThisEvent);
-        switch (ThisEvent.EventType) {
-        case ES_NO_EVENT:
+        switch (ThisEvent.EventType)
+        {
+        case ES_TIMEOUT:
+            if (ThisEvent.EventParam == WANDER_TIME)
+            {
+                nextState = Deposit;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
+            }
+            break;
         default:
             break;
         }
-		case ES_TIMEOUT:
-			nextState = Deposit;
-			makeTransition = TRUE;
-			ThisEvent.EventType = ES_NO_EVENT;        
-			break;  
-        break;
-	case Deposit:
-		ThisEvent = RunDepositSubHSM(ThisEvent);
-		switch (ThisEvent.EventType) {
-			case ES_NO_EVENT:
-			default:
-				break;
-			case RAM_DONE: // Maybe also BUMPER_HIT
-				nextState = Wander;
-				makeTransition = TRUE;
-				ThisEvent.EventType = ES_NO_EVENT;        
-				break;  
+    case Deposit:
+        ThisEvent = RunDepositSubHSM(ThisEvent);
+        switch (ThisEvent.EventType)
+        {
+        case ES_NO_EVENT:
+        default:
+            break;
+        case DEPOSITED: // Maybe also BUMPER_HIT
+            nextState = Wander;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+            break;
         }
+        break;
     default: // all unhandled states fall into here
         break;
     } // end switch on Current State
 
-    if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
+    if (makeTransition == TRUE)
+    { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
         RunMawHSM(EXIT_EVENT); // <- rename to your own Run function
         CurrentState = nextState;
@@ -197,7 +214,6 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
     ES_Tail(); // trace call stack end
     return ThisEvent;
 }
-
 
 /*******************************************************************************
  * PRIVATE FUNCTIONS                                                           *
