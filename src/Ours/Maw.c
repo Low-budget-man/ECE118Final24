@@ -114,7 +114,7 @@ char Maw_LeftMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(LEFT_DIR1);
         IO_PortsClearPortBits(LEFT_DIR2);
     }
-    
+    newSpeed += LEFT_BIAS;
     PWM_SetDutyCycle(LEFT_MOTOR, ScaleValue(newSpeed));
     return SUCCESS;
 }
@@ -139,6 +139,7 @@ char Maw_RightMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
     }
+    newSpeed += RIGHT_BIAS;
     PWM_SetDutyCycle(RIGHT_MOTOR, ScaleValue(newSpeed));
     return SUCCESS;
 }
