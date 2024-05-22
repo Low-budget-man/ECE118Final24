@@ -31,14 +31,17 @@
 #include "ES_Framework.h"
 #include "BOARD.h"
 #include "MawHSM.h"
-#include "TemplateSubHSM.h" //#include all sub state machines called
+#include "TemplateSubHSM.h" // #include all sub state machines called
+#include "ES_Timers.h"
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
 // Include any defines you need to do
-
-#define WANDER_TIME 30000 // 30 seconds
-
+// 30 seconds
+#define WANDER_TIME 30000 
+// 2 min may need to break this up depending on how the timers work
+#define GAME_TIME 120000 
+//
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -72,7 +75,8 @@ static const char *StateNames[] = {
 
 static MawHSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
-
+static uint8_t TimerCounter; // This may not be needed if the timers are 32Bits
+ 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
@@ -92,6 +96,8 @@ uint8_t InitMawHSM(uint8_t Priority)
     MyPriority = Priority;
     // put us into the Initial PseudoState
     CurrentState = InitPState;
+    // I think timers need to be init here
+    ES_Timer_Init();
     // post the initial transition event
     if (ES_PostToService(MyPriority, INIT_EVENT) == TRUE)
     {
@@ -159,11 +165,18 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         break;
     case StartEnd:
         // Stays in In the StartEnd state untill the bumpers are pressed
-        if (ThisEvent.EventType == BUMPER)
+        switch (ThisEvent.EventType)
         {
+        case BUMPER:
             nextState = Wander;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
+            break;
+        case EXIT_EVENT:
+            // When Leaveing this state start the timer
+            break;
+        default:
+            break;
         }
 
         break;
@@ -175,11 +188,14 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         switch (ThisEvent.EventType)
         {
         case ES_TIMEOUT:
-            if (ThisEvent.EventParam == WANDER_TIME)
+            if (ThisEvent.EventParam == WANDER_TIMER)
             {
                 nextState = Deposit;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
+            }
+            else if(ThisEvent.EventParam == GAME_TIMER){
+
             }
             break;
         default:
