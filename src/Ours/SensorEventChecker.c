@@ -48,31 +48,31 @@
 #define TRACK_HYST 60
 // Tape #defines ---------------------------------------------------------------
 // for tape sensor testing will only use the frr (front right right) tape sensor
-#define ONETAPE
+//#define ONETAPE
 // the LEDs need their own pin for power we may change this later
 #define TAPE_LEDfrrPort PORTX
 #define TAPE_LEDfrrPin PIN4
-#ifndef ONETAPE
-#define TAPE_LEDfrPort PORTX
-#define TAPE_LEDfrPin PIN5
-#define TAPE_LEDflPort PORTX
-#define TAPE_LEDflPin PIN6
-#define TAPE_LEDfllPort PORTX
-#define TAPE_LEDfllPin PIN10
-#define TAPE_LEDbrPort PORTX
-#define TAPE_LEDbrPin PIN8
-#define TAPE_LEDblPort PORTX
-#define TAPE_LEDblPin PIN11
+// #ifndef ONETAPE
+// #define TAPE_LEDfrPort PORTX
+// #define TAPE_LEDfrPin PIN5
+// #define TAPE_LEDflPort PORTX
+// #define TAPE_LEDflPin PIN6
+// #define TAPE_LEDfllPort PORTX
+// #define TAPE_LEDfllPin PIN10
+// #define TAPE_LEDbrPort PORTX
+// #define TAPE_LEDbrPin PIN8
+// #define TAPE_LEDblPort PORTX
+// #define TAPE_LEDblPin PIN11
 
 
-#define TAPE_LED_BLUE TAPE_LEDbrPort
-#define TAPE_LED_RED TAPE_LEDfrrPort
-#define TAPE_LED_WHITE TAPE_LEDfrPort
-#define TAPE_LED_BLACK TAPE_LEDflPort
-#define TAPE_LED_BROWN TAPE_LEDfllPort
-#define TAPE_LED_GREEN TAPE_LEDblPort
+// #define TAPE_LED_BLUE TAPE_LEDbrPort
+// #define TAPE_LED_RED TAPE_LEDfrrPort
+// #define TAPE_LED_WHITE TAPE_LEDfrPort
+// #define TAPE_LED_BLACK TAPE_LEDflPort
+// #define TAPE_LED_BROWN TAPE_LEDfllPort
+// #define TAPE_LED_GREEN TAPE_LEDblPort
 
-#endif
+// #endif
 #define TAPE_VOLTAGEfrr AD_PORTV4
 #ifndef ONETAPE
 #define TAPE_VOLTAGEfr AD_PORTV5
