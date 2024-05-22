@@ -48,7 +48,7 @@
 #define TRACK_HYST 60
 // Tape #defines ---------------------------------------------------------------
 // for tape sensor testing will only use the frr (front right right) tape sensor
-//#define ONETAPE
+#define ONETAPE
 // the LEDs need their own pin for power we may change this later
 #define TAPE_LEDfrrPort PORTX
 #define TAPE_LEDfrrPin PIN4
@@ -58,11 +58,11 @@
 #define TAPE_LEDflPort PORTX
 #define TAPE_LEDflPin PIN6
 #define TAPE_LEDfllPort PORTX
-#define TAPE_LEDfllPin PIN7
+#define TAPE_LEDfllPin PIN10
 #define TAPE_LEDbrPort PORTX
 #define TAPE_LEDbrPin PIN8
 #define TAPE_LEDblPort PORTX
-#define TAPE_LEDblPin PIN9
+#define TAPE_LEDblPin PIN11
 
 
 #define TAPE_LED_BLUE TAPE_LEDbrPort
@@ -200,9 +200,9 @@ static enum {
     OFF,
     ON
 } TapeLED = OFF;
-uint8_t TapeWaiting = FALSE;
-uint32_t TapeWaitStart;
-uint8_t LEDset = FALSE;
+static uint8_t TapeWaiting = FALSE;
+static uint32_t TapeWaitStart;
+static uint8_t LEDset = FALSE;
 // so the current noise for the tape can be used
 uint16_t TapefrrNoise;
 #ifndef ONETAPE
