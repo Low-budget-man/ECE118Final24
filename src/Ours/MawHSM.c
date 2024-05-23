@@ -31,7 +31,9 @@
 #include "ES_Framework.h"
 #include "BOARD.h"
 #include "MawHSM.h"
-#include "TemplateSubHSM.h" // #include all sub state machines called
+// #include all sub state machines called
+//#include "WanderSubHSM.h"
+//#include "DepositSubHSM.h"
 #include "ES_Timers.h"
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
@@ -153,9 +155,9 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
-            // Initialize all sub-state machines
-            InitWanderSubHSM();
-            InitDepositSubHSM();
+            // Initialize all sub-state machines [NOT YET STILL TESTING]]
+            // InitWanderSubHSM();
+            // InitDepositSubHSM();
             // now put the machine into the actual initial state
             nextState = StartEnd;
             makeTransition = TRUE;
@@ -172,7 +174,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
             break;
-        case EXIT_EVENT:
+        case ES_EXIT:
             // When Leaveing this state start the timer
             break;
         default:
@@ -183,8 +185,9 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
     case Wander: // in the first state, replace this with correct names
         // run sub-state machine for this state
         // NOTE: the SubState Machine runs and responds to events before anything in the this
-        // state machine does
-        ThisEvent = RunWanderSubHSM(ThisEvent);
+        // state machine does 
+        // NOTE: Right now this is to test if the TopLevel HSM can work uncomment later
+        // ThisEvent = RunWanderSubHSM(ThisEvent);
         switch (ThisEvent.EventType)
         {
         case ES_TIMEOUT:
@@ -202,7 +205,8 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             break;
         }
     case Deposit:
-        ThisEvent = RunDepositSubHSM(ThisEvent);
+        // NOTE: Right now this is to test if the TopLevel HSM can work uncomment later
+        //ThisEvent = RunDepositSubHSM(ThisEvent);
         switch (ThisEvent.EventType)
         {
         case ES_NO_EVENT:
