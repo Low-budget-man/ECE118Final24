@@ -155,6 +155,9 @@ ES_Event RunSensorService(ES_Event ThisEvent)
             printf("\r\nERROR: Unknown TimerParam in SensorService");
         }
         break;
+    case PING:
+        printf("\r\n Ping Event Detected with param: %d", ThisEvent.EventParam);
+        break; 
     default:
         printf("\r\nERROR: Unknown event in SensorService: %s",EventNames[ThisEvent.EventType]);
     }

@@ -48,13 +48,13 @@ typedef enum {
     /* User-defined events start here */
     BATTERY_CONNECTED,
     BATTERY_DISCONNECTED,
-    NUMBEROFEVENTS,
 	/*Sensor events begin here*/
     TRACKWIRE,
     TAPE,
     BEACON,
     BUMPER,
     PING,
+    NUMBEROFEVENTS
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
@@ -70,12 +70,12 @@ static const char *EventNames[] = {
 	"ES_TIMERSTOPPED",
 	"BATTERY_CONNECTED",
 	"BATTERY_DISCONNECTED",
-	"NUMBEROFEVENTS",
     "TRACKWIRE",
     "TAPE",
     "BEACON",
-    "BUMPER"
+    "BUMPER",
     "PING",
+	"NUMBEROFEVENTS"
 };
 
 

@@ -19,7 +19,7 @@
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
 //#define MawTest
-//NOTE : PING ECHO = y6
+//NOTE : PING ECHO = y8
 // PING trigger = y10
 #define PWMFRQ 1000
 

@@ -119,7 +119,7 @@
 #define BUMPERbrBit (3)
 #define BUMPERblBit (2)
 // for the Ping sensor, most of the work is done in PingSensor.h
-#define PING_HYST 5
+#define PING_HYST 20
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -565,7 +565,7 @@ uint8_t CheckBumper(void){
 uint8_t CheckPing(void){
     uint16_t CurrentPing = PINGGetData();
     uint8_t returnVal = FALSE;
-    printf("\r\n PING SENSOR DIST %d",CurrentPing);
+    //printf("\r\n PING SENSOR DIST %d",CurrentPing);
     if (abs(CurrentPing - LastPing) > PING_HYST)
     {
         returnVal = TRUE;
