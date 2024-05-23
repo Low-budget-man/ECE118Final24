@@ -158,6 +158,13 @@ ES_Event RunSensorService(ES_Event ThisEvent)
     case PING:
         printf("\r\n Ping Event Detected with param: %d", ThisEvent.EventParam);
         break; 
+    // for events we want to ignore
+    case ES_NO_EVENT:
+        break;
+    case ES_TIMERACTIVE:
+        break;
+    case ES_TIMERSTOPPED:
+        break;
     default:
         printf("\r\nERROR: Unknown event in SensorService: %s",EventNames[ThisEvent.EventType]);
     }
