@@ -156,7 +156,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         }
         break;
     default:
-        printf("\r\nERROR: Unknown event in SensorService");
+        printf("\r\nERROR: Unknown event in SensorService: %s",EventNames[ThisEvent.EventType]);
     }
 
     return ReturnEvent;
