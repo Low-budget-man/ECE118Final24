@@ -119,7 +119,10 @@
 #define BUMPERbrBit (3)
 #define BUMPERblBit (2)
 // for the Ping sensor, most of the work is done in PingSensor.h
-#define PING_HYST 20
+#define PING_HYST 10
+// this is the number of points in the ping sensor moving avrage bigger is more 
+// filter but slower
+#define PING_FILTER 10
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -170,6 +173,17 @@ void SetTapeLED(char state) {
         IO_PortsSetPortBits(TAPE_LEDfrrPort,pattern);
     }
 }
+/**
+ * @Function PingFilter(state)
+ * @param The current Reading of the Ping Sensor
+ * @return The new moving avg value
+ * @brief This Function will return a moving avrage for the ping sensor to 
+ * reduce noise
+ * @author Cooper Cantrell 5/23/2024 4:09PM
+ */
+uint16_t PingFilter(uint16_t Reading){
+    
+}
 
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
@@ -219,7 +233,8 @@ uint16_t TapeflRead;
 uint16_t TapefllRead;
 uint16_t TapebrRead;
 uint16_t TapeblRead;
-
+// used to store the moving Avrg for the ping sensor
+uint16_t PingReadings[PING_FILTER]
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/

@@ -145,8 +145,8 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             // Initialize all sub-state machines
-            InitWanderSubHSM();
-			InitDepositSubHSM
+//            InitWanderSubHSM();
+//			InitDepositSubHSM
             // now put the machine into the actual initial state
             nextState = Wander;
             makeTransition = TRUE;
