@@ -64,24 +64,18 @@ void __ISR(_INPUT_CAPTURE_3_VECTOR) __IC3Interrupt(void){
 }
 
 #ifdef PINGSENSORTESTSTAP
-#include "Protocol2.h"
-#include "LedsDriver.h"
+#include "serial.h"
 int main(){
-    Protocol_Init(115200);
     BOARD_Init();
-    initLEDs();
-    FRTInit();
+    SERIAL_Init();
     PINGInit();
     printf("initializing\r\n");
     uint64_t* PingTimer = 0;
     while(1){
-        if(FRTGetMilliS() % 120 < 2){
-            if(FRTHasMilliS(&PingTimer)){
-                uint16_t data = PINGGetData();
-                //ConvertEndian((char*)&data, 2);
-                printf("distance: %d\r\n", data);
-            }
+        for(int i = 0; i < 40000; i++){
+            asm("nop");
         }
+        printf("distance: %d\r\n", data);
     }
 }
 
