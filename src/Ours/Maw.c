@@ -22,6 +22,8 @@
 //NOTE : PING ECHO = y6
 // PING trigger = y10
 #define PWMFRQ 1000
+
+//Motor is outside in: pwm/dir/dir
 #define RIGHT_MOTOR PWM_PORTY12
 #define LEFT_MOTOR PWM_PORTZ06
 #define RIGHT_DIR1 PORTY,PIN11
@@ -30,6 +32,8 @@
 #define LEFT_DIR1 PORTZ,PIN5
 #define LEFT_DIR2 PORTZ,PIN4
 // when Dir1 = 1 and Dir2 = 0 that is forward
+
+//Servo: Brn/red/orn is gnd/pwr/sig
 #define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07
 //Bigger to be more open (closer to 90 deg in)
