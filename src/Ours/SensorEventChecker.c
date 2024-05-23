@@ -111,9 +111,9 @@
 #define BUMPERflPIN PIN4
 #define BUMPERbrPORT PORTW
 #define BUMPERbrPIN PIN7
-#define BUMPERblPORT PORTW
+#define BUMPERblPORT PORTY
 //Pin 6 and 8 is haveing issues and does not work
-#define BUMPERblPIN PIN6
+#define BUMPERblPIN PIN3
 #define BUMPERfrBit (1)
 #define BUMPERflBit (0)
 #define BUMPERbrBit (3)
