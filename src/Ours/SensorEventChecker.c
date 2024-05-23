@@ -43,7 +43,7 @@
 // Batt #defines ---------------------------------------------------------------
 #define BATTERY_DISCONNECT_THRESHOLD 175
 // Track wire #defines ---------------------------------------------------------
-#define TRACK_VOLTAGE AD_PORTV3
+#define TRACK_VOLTAGE AD_PORTW4
 #define TRACK_THRESH 200
 #define TRACK_HYST 60
 // Tape #defines ---------------------------------------------------------------
