@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "ES_Configure.h"
 #include "ES_Framework.h"
+#include "SensorEventChecker.h"
 // My includes
 #include "AD.h"
 #include "LED.h"

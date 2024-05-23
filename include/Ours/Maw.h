@@ -10,7 +10,14 @@
 #define MAW_H
 
 #include <BOARD.h>
-
+/*******************************************************************************
+ * PUBLIC DEFINES PROTOTYPES                                                  *
+ ******************************************************************************/
+// This is in Volts
+#define MAX_MOTOR_VOLTAGE 8 
+// the motor Bias is a number that will be added to the motors as you set the speed
+#define RIGHT_BIAS 0
+#define LEFT_BIAS 0
 
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *
@@ -35,6 +42,8 @@ void Maw_Init(void);
  * @param of the motor. 0 stops the motor. A negative value is reverse.
  * @return SUCCESS or ERROR
  * @brief  This function is used to set the speed and direction of the left motor.
+ * @modified Cooper Cantrell 2024.5.21 
+ * Changed to have the battery voltage edit the behavor
  * @author Caitlin Bonesio, 2024.5.16 */
 char Maw_LeftMtrSpeed(char newSpeed);
 
@@ -44,6 +53,8 @@ char Maw_LeftMtrSpeed(char newSpeed);
  * @param of the motor. 0 stops the motor. A negative value is reverse.
  * @return SUCCESS or ERROR
  * @brief  This function is used to set the speed and direction of the left motor.
+ * @modified Cooper Cantrell 2024.5.21 
+ * Changed to have the battery voltage edit the behavor
  * @author Caitlin Bonesio, 2024.5.16 */
 char Maw_RightMtrSpeed(char newSpeed);
 

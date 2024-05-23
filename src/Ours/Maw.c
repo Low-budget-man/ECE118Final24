@@ -19,10 +19,11 @@
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
 //#define MawTest
-
-//NOTE : PING ECHO = y6
+//NOTE : PING ECHO = y8
 // PING trigger = y10
 #define PWMFRQ 1000
+
+//Motor is outside in: pwm/dir/dir
 #define RIGHT_MOTOR PWM_PORTY12
 #define LEFT_MOTOR PWM_PORTZ06
 #define RIGHT_DIR1 PORTY,PIN11
@@ -31,18 +32,35 @@
 #define LEFT_DIR1 PORTZ,PIN5
 #define LEFT_DIR2 PORTZ,PIN4
 // when Dir1 = 1 and Dir2 = 0 that is forward
+
+//Servo: Brn/red/orn is gnd/pwr/sig
 #define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07
 //Bigger to be more open (closer to 90 deg in)
 #define collect 2100
 // Smaller to be more open (sticking out all of the way)
 #define deposit 700
-
-
+//macro to read the battery voltage
+#define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
+#define MAX_BATT_READ (MAX_MOTOR_VOLTAGE * 1000)/32
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/
 
+/*******************************************************************************
+ * PRIVATE FUNCTIONS                                                           *
+ ******************************************************************************/
+
+/**
+ * @Function ScaleValue(char newSpeed)
+ * @param newSpeed - A value between 0 and 100 which is the abs of new speed 
+ * @param of the motor. and scales it dependent on the battery reading 
+ * @return the properly scaled value that will go into the setPWM function
+ * @brief  This functon will be used to scale 
+ * @author Cooper Cantrell, 2024.5.21 */
+unsigned int ScaleValue(char newSpeed){
+    return (MAX_BATT_READ * newSpeed) / CURRENT_BATT_VOLT;
+}
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                           *
  ******************************************************************************/
@@ -100,7 +118,8 @@ char Maw_LeftMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(LEFT_DIR1);
         IO_PortsClearPortBits(LEFT_DIR2);
     }
-    PWM_SetDutyCycle(LEFT_MOTOR, newSpeed*10);
+    
+    PWM_SetDutyCycle(LEFT_MOTOR, ScaleValue(newSpeed));
     return SUCCESS;
 }
 
@@ -124,7 +143,7 @@ char Maw_RightMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
     }
-    PWM_SetDutyCycle(RIGHT_MOTOR, newSpeed*10);
+    PWM_SetDutyCycle(RIGHT_MOTOR, ScaleValue(newSpeed));
     return SUCCESS;
 }
 

@@ -155,9 +155,15 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
+<<<<<<< HEAD
             // Initialize all sub-state machines [NOT YET STILL TESTING]]
             // InitWanderSubHSM();
             // InitDepositSubHSM();
+=======
+            // Initialize all sub-state machines
+//            InitWanderSubHSM();
+//			InitDepositSubHSM
+>>>>>>> main
             // now put the machine into the actual initial state
             nextState = StartEnd;
             makeTransition = TRUE;
