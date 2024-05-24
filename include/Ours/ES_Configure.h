@@ -100,8 +100,8 @@ static const char *EventNames[] = {
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC PostSensorService
 #define TIMER1_RESP_FUNC PostSensorService
-#define TIMER2_RESP_FUNC TIMER_UNUSED
-#define TIMER3_RESP_FUNC TIMER_UNUSED
+#define TIMER2_RESP_FUNC PostMawHSM
+#define TIMER3_RESP_FUNC PostMawHSM
 #define TIMER4_RESP_FUNC TIMER_UNUSED
 #define TIMER5_RESP_FUNC TIMER_UNUSED
 #define TIMER6_RESP_FUNC TIMER_UNUSED
@@ -123,6 +123,8 @@ static const char *EventNames[] = {
 // the timer number matches where the timer event will be routed
 #define BUMPER_DEBOUNCE_T 0
 #define PING_DEBOUNCE_T 1
+#define WANDER_TIMER 2
+#define GAME_TIMER 3
 /****************************************************************************/
 // The maximum number of services sets an upper bound on the number of 
 // services that the framework will handle. Reasonable values are 8 and 16

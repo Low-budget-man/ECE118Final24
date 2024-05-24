@@ -196,6 +196,62 @@ uint16_t TapebrRead;
 uint16_t TapeblRead;
 // used to store the moving Avrg for the ping sensor
 uint16_t PingReadings[PING_FILTER];
+
+/*******************************************************************************
+ * PRIVATE FUNCTION PROTOTYPES                                                 *
+ ******************************************************************************/
+
+/**
+ * @Function SetTapeLED(state)
+ * @param state true if the LEDs will be turned on 0 if off
+ * @return non
+ * @brief This function will turn on and off the LEDs for the tape sensor reader
+ * @author Cooper Cantrell 5/11/2024 2:19PM
+ */
+void SetTapeLED(char state) {
+    // assume only use 1 port for all of the LEDS and the track wire 
+    // if not will need to change
+    uint16_t pattern = 0;
+    pattern |= TAPE_LEDfrrPin;
+#ifndef ONETAPE
+    pattern |= TAPE_LEDfrPin;
+    pattern |= TAPE_LEDflPin;
+    pattern |= TAPE_LEDfllPin;
+    pattern |= TAPE_LEDbrPin;
+    pattern |= TAPE_LEDblPin;
+#endif
+    if (state) {
+        IO_PortsClearPortBits(TAPE_LEDfrrPort, pattern);
+    } else {
+        IO_PortsSetPortBits(TAPE_LEDfrrPort,pattern);
+    }
+}
+/**
+ * @Function PingFilter(state)
+ * @param The current Reading of the Ping Sensor
+ * @return The new moving avg value
+ * @brief This Function will return a moving avrage for the ping sensor to 
+ * reduce noise
+ * @author Cooper Cantrell 5/23/2024 4:09PM
+ */
+uint16_t PingFilter(uint16_t Reading){
+    uint16_t out = 0;
+    // This is from stack overflow, hope it works
+    //shifts the memory over 1 item  and adds so the avg can me moving
+    static uint16_t cursor = 0;
+    PingReadings[cursor] = Reading;
+    cursor = (++cursor)%PING_FILTER;
+    //get the avg of the list
+    
+    for (size_t i = 0; i < PING_FILTER; i++)
+    {
+        out += PingReadings[i];
+    }
+    out /= PING_FILTER;
+    return out;
+}
+
+
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
