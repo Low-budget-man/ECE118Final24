@@ -54,6 +54,7 @@ typedef enum {
     BEACON,
     BUMPER,
     PING,
+    DEPOSITED,
     NUMBEROFEVENTS
 } ES_EventTyp_t;
 

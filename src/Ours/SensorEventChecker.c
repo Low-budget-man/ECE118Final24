@@ -234,7 +234,7 @@ uint16_t TapefllRead;
 uint16_t TapebrRead;
 uint16_t TapeblRead;
 // used to store the moving Avrg for the ping sensor
-uint16_t PingReadings[PING_FILTER]
+uint16_t PingReadings[PING_FILTER];
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
