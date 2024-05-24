@@ -77,7 +77,7 @@ static const char *EventNames[] = {
     "BEACON",
     "BUMPER",
     "PING",
-    "DEPOSITED"
+    "DEPOSITED",
     "PINGCLOSE",
 	"NUMBEROFEVENTS"
 };
