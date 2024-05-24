@@ -201,7 +201,9 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
                 ThisEvent.EventType = ES_NO_EVENT;
             }
             else if(ThisEvent.EventParam == GAME_TIMER){
-
+                nextState = StartEnd;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
             }
             break;
         default:
@@ -213,13 +215,18 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         switch (ThisEvent.EventType)
         {
         case ES_NO_EVENT:
-        default:
             break;
         case DEPOSITED: // Maybe also BUMPER_HIT
             nextState = Wander;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
             break;
+            case ES_TIMEOUT:
+            if(ThisEvent.EventParam == GAME_TIMER){
+                nextState = StartEnd;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
+            } 
         }
         break;
     default: // all unhandled states fall into here
