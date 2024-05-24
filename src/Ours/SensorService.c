@@ -25,8 +25,8 @@
 #define BEACON_LED (0x4)
 #define DEBOUNCE_WaitB 2
 #define DEBOUNCE_WaitP 32
-#define FAR 0
-#define CLOSE 1
+#define CLOSE_THRESH 300
+#define CLOSE_HYST 32
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -36,10 +36,13 @@
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
-
+enum sensor {
+    NOT_DETECTED, DETECTED
+};
 static uint8_t MyPriority;
 static uint8_t LastBump;
 static uint16_t LastPing;
+static enum sensor Dist;
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
@@ -156,7 +159,20 @@ ES_Event RunSensorService(ES_Event ThisEvent)
             printf("\r\n Debounced Bumper Event with param %x", LastBump);
         }
         else if (ThisEvent.EventParam == PING_DEBOUNCE_T){
-            printf("\r\n Debounced Ping Event with param %d", LastPing);
+            enum sensor ThisDist = Dist;
+            if(LastPing > CLOSE_THRESH + CLOSE_HYST){
+                ThisDist = NOT_DETECTED;
+            }
+            else if(LastPing < CLOSE_THRESH - CLOSE_HYST){
+                ThisDist = DETECTED;
+            }
+            if(ThisDist != Dist){
+                ES_Event PostEvent;
+                PostEvent.EventType = PINGCLOSE;
+                PostEvent.EventParam = ThisDist;
+                Dist = ThisDist;
+                PostSensorService(PostEvent);
+            }
         }
         else
         {
@@ -167,6 +183,9 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         ES_Timer_InitTimer(PING_DEBOUNCE_T, DEBOUNCE_WaitP);
         LastPing = ThisEvent.EventParam;       
         break; 
+    case PINGCLOSE:
+         printf("\r\n PINGCLOSE Event with param %x", ThisEvent.EventParam);
+        break;   
     // for events we want to ignore
     case ES_NO_EVENT:
         break;
