@@ -90,9 +90,11 @@
 #define TAPE_VOLTAGE_BROWN TAPE_VOLTAGEfll
 #define TAPE_VOLTAGE_GREEN TAPE_VOLTAGEbl
 
-#define TAPE_THRESH 400 
+#define TAPE_THRESH 100 
+#define TAPE_THRESHFRR 150 
+
 // reading voltage
-#define TAPE_HYST 50 
+#define TAPE_HYST 30 
 #define TAPEfrrBit (0)
 #define TAPEfrBit (1)
 #define TAPEflBit (2)
@@ -108,13 +110,13 @@
 // Bumper #defines -------------------------------------------------------------
 #define BUMPERfrPORT PORTW
 #define BUMPERfrPIN PIN5
-#define BUMPERflPORT PORTW
-#define BUMPERflPIN PIN9 //was 4
+#define BUMPERflPORT PORTX
+#define BUMPERflPIN PIN6 //was 4
 #define BUMPERbrPORT PORTW
 #define BUMPERbrPIN PIN7
-#define BUMPERblPORT PORTW //was Y
+#define BUMPERblPORT PORTX //was Y
 //Pin 6 and 8 is haveing issues and does not work
-#define BUMPERblPIN PIN10
+#define BUMPERblPIN PIN8
 #define BUMPERfrBit (1)
 #define BUMPERflBit (0)
 #define BUMPERbrBit (3)
@@ -288,9 +290,10 @@ void SensorInit(void) {
     //for the bumper -----------------------------------------------------------
     // assumes that all bupers will be on the same port for input
     // if not will need to change
-    uint16_t BumperIn = BUMPERfrPIN | BUMPERflPIN | BUMPERbrPIN;
-    IO_PortsSetPortInputs(BUMPERfrPORT,BumperIn);
     IO_PortsSetPortInputs(BUMPERblPORT,BUMPERblPIN);
+    IO_PortsSetPortInputs(BUMPERbrPORT,BUMPERbrPIN);
+    IO_PortsSetPortInputs(BUMPERflPORT,BUMPERflPIN);
+    IO_PortsSetPortInputs(BUMPERfrPORT,BUMPERfrPIN);
 
 }
 
@@ -434,10 +437,10 @@ uint8_t CheckTape(void) {
         // after the check compare to past values and noise to the thresh and raise events
         //only if has at least 1 of each reading
         if (TapefrrNoise && TapefrrRead) {
-            if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH + TAPE_HYST) {
+            if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESHFRR + TAPE_HYST) {
                 CurrentTapefrr = NOT_DETECTED;
             }
-            else if ((TapefrrNoise - TapefrrRead) <= TAPE_THRESH - TAPE_HYST) {
+            else if ((TapefrrNoise - TapefrrRead) <= TAPE_THRESHFRR - TAPE_HYST) {
                 CurrentTapefrr = DETECTED;
             }
             if ((TapefrNoise - TapefrRead) >= TAPE_THRESH + TAPE_HYST) {
