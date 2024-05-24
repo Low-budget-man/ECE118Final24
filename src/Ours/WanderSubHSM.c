@@ -38,15 +38,15 @@
 typedef enum {
     InitPSubState,
     Forward,
-	DodgeBump,
-	DodgeTape,
+	Reverse,
+	Spin,
 } WanderSubHSMState_t;
 
 static const char *StateNames[] = {
     "InitPSubState",
     "Forward",
-	"DodgeBump",
-	"DodgeTape",
+	"Reverse",
+	"Spin",
 };
 
 
@@ -134,13 +134,35 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
         switch (CurrentState) {
         case Forward:
             switch (ThisEvent.EventType) {
+				case ENTRY_EVENT:
+					Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(100);
+					break;
                 case TAPE_DETECTED:
-                    nextState = DodgeTape;
+                case BUMPER_HIT:
+                    nextState = Reverse;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
-                case BUMPER_HIT:
-                    nextState = DodgeBump;
+				case PING: // May need specific param to state value is low enough to dodge
+					nextState = Spin;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
+            break;
+
+        case Reverse:
+            switch (ThisEvent.EventType) {
+				case ENTRY_EVENT:
+					Maw_LeftMtrSpeed(-100);
+					Maw_RightMtrSpeed(-100);
+					break;
+                case ES_TIMEOUT:
+                    nextState = Spin;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
@@ -151,34 +173,14 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
             }
             break;
 
-        case DodgeBump:
+        case Spin:
             switch (ThisEvent.EventType) {
+				case ENTRY_EVENT:
+					Maw_LeftMtrSpeed(-100);
+					Maw_RightMtrSpeed(100);
+					break;
                 case ES_TIMEOUT:
                     nextState = Forward;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-                case TAPE_DETECTED:
-                    nextState = DodgeTape;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-                case ES_NO_EVENT:
-                default:
-                    // Unhandled events pass back up to the next level
-                    break;
-            }
-            break;
-
-        case DodgeTape:
-            switch (ThisEvent.EventType) {
-                case ES_TIMEOUT:
-                    nextState = Forward;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-                case BUMPER_HIT:
-                    nextState = DodgeBump;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
