@@ -25,6 +25,7 @@
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
+#include <string.h>
 #include "serial.h"
 #include "ES_Configure.h"
 #include "SensorEventChecker.h"
@@ -119,10 +120,10 @@
 #define BUMPERbrBit (3)
 #define BUMPERblBit (2)
 // for the Ping sensor, most of the work is done in PingSensor.h
-#define PING_HYST 10
+#define PING_HYST 32
 // this is the number of points in the ping sensor moving avrage bigger is more 
 // filter but slower
-#define PING_FILTER 10
+#define PING_FILTER 9
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -144,46 +145,6 @@ static ES_Event storedEvent;
 #ifdef DEBUG_PRINT
 #include <stdio.h>
 #endif
-/*******************************************************************************
- * PRIVATE FUNCTION PROTOTYPES                                                 *
- ******************************************************************************/
-
-/**
- * @Function SetTapeLED(state)
- * @param state true if the LEDs will be turned on 0 if off
- * @return non
- * @brief This function will turn on and off the LEDs for the tape sensor reader
- * @author Cooper Cantrell 5/11/2024 2:19PM
- */
-void SetTapeLED(char state) {
-    // assume only use 1 port for all of the LEDS and the track wire 
-    // if not will need to change
-    uint16_t pattern = 0;
-    pattern |= TAPE_LEDfrrPin;
-#ifndef ONETAPE
-    pattern |= TAPE_LEDfrPin;
-    pattern |= TAPE_LEDflPin;
-    pattern |= TAPE_LEDfllPin;
-    pattern |= TAPE_LEDbrPin;
-    pattern |= TAPE_LEDblPin;
-#endif
-    if (state) {
-        IO_PortsClearPortBits(TAPE_LEDfrrPort, pattern);
-    } else {
-        IO_PortsSetPortBits(TAPE_LEDfrrPort,pattern);
-    }
-}
-/**
- * @Function PingFilter(state)
- * @param The current Reading of the Ping Sensor
- * @return The new moving avg value
- * @brief This Function will return a moving avrage for the ping sensor to 
- * reduce noise
- * @author Cooper Cantrell 5/23/2024 4:09PM
- */
-uint16_t PingFilter(uint16_t Reading){
-    
-}
 
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
@@ -578,7 +539,7 @@ uint8_t CheckBumper(void){
  * @author Cooper Cantrell 5/15/2024 5:26
  */
 uint8_t CheckPing(void){
-    uint16_t CurrentPing = PINGGetData();
+    uint16_t CurrentPing = PingFilter(PINGGetData());
     uint8_t returnVal = FALSE;
     //printf("\r\n PING SENSOR DIST %d",CurrentPing);
     if (abs(CurrentPing - LastPing) > PING_HYST)
