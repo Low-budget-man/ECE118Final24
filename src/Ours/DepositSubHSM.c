@@ -38,14 +38,14 @@
  ******************************************************************************/
 typedef enum {
     InitPSubState,
-    FindTape,
+    Continue_Wandering,
 	FollowTape,
 	Ramming,
 } DepositSubHSMState_t;
 
 static const char *StateNames[] = {
     "InitPSubState",
-    "FindTape",
+    "Continue_Wandering",
 	"FollowTape",
 	"Ramming",
 };
@@ -133,36 +133,37 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
         }
         break;
 
-    case FindTape: // in the first state, replace this with correct names
-        switch (ThisEvent.EventType) {
-        //RunWanderHSM()?
-		case ES_NO_EVENT:
-        default: // all unhandled events pass the event back up to the next level
-            break;
-        }
-		case TAPE_DETECTED:
-			nextState = FollowTape;
+    case Continue_Wandering: // in the first state, replace this with correct names
+        ThisEvent = RunWanderSubHSM(ThisEvent);
+		switch (ThisEvent.EventType) {
+			case TAPE:
+				nextState = FollowTape;
+				makeTransition = TRUE;
+				ThisEvent.EventType = ES_NO_EVENT; 
+				break;
+			case TRACKWIRE:
+				nextState = Ramming;
+				makeTransition = TRUE;
+				ThisEvent.EventType = ES_NO_EVENT; 
+				break;
+			case ES_NO_EVENT:
+			default: // all unhandled events pass the event back up to the next level
+				break;
+			break;
+		}
+    case FollowTape:
+		switch (ThisEvent.EventType) {
+		ThisEvent = RunFollowTapeSubHSM(ThisEvent);
+		case TRACKWIRE:
+			nextState = Ramming;
 			makeTransition = TRUE;
 			ThisEvent.EventType = ES_NO_EVENT; 
 			break;
         break;
-    case FollowTape:
-		switch (ThisEvent.EventType) {
         case ES_NO_EVENT:
         default: // all unhandled events pass the event back up to the next level
             break;
         }
-		case TAPE_UNDETECTED:
-			nextState = FindTape;
-			makeTransition = TRUE;
-			ThisEvent.EventType = ES_NO_EVENT; 
-			break;
-		case TRACK_WIRE_DETECTED:
-			nextState = Ram;
-			makeTransition = TRUE;
-			ThisEvent.EventType = ES_NO_EVENT; 
-			break;
-        break;
 	case Ramming:
 		ThisEvent = RunRammingSubHSM(ThisEvent);
 		switch (ThisEvent.EventType) {

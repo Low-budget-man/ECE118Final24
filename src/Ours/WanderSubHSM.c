@@ -138,8 +138,11 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
 					break;
-                case TAPE_DETECTED:
-                case BUMPER_HIT:
+                case TAPE:
+					nextState = Reverse;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = TAPE;
+                case BUMPER:
                     nextState = Reverse;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
