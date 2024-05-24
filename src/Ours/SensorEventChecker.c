@@ -263,6 +263,9 @@ void SensorInit(void) {
     uint16_t BumperIn = BUMPERfrPIN | BUMPERflPIN | BUMPERbrPIN;
     IO_PortsSetPortInputs(BUMPERfrPORT,BumperIn);
     IO_PortsSetPortInputs(BUMPERblPORT,BUMPERblPIN);
+    // for the battery reading -------------------------------------------------
+    // init the ADPin for the battery
+    AD_AddPins(BAT_VOLTAGE);
 
 }
 

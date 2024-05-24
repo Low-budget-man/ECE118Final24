@@ -71,11 +71,11 @@ static const char *EventNames[] = {
 	"BATTERY_CONNECTED",
 	"BATTERY_DISCONNECTED",
 	"NUMBEROFEVENTS",
-    "TRACKWIRE",
-    "TAPE",
-    "BEACON",
-    "BUMPER"
-    "PING",
+	"TRACKWIRE",
+	"TAPE",
+	"BEACON",
+	"BUMPER",
+	"PING",
 };
 
 

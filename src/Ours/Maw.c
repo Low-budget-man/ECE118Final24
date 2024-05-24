@@ -14,11 +14,12 @@
 #include "SensorEventChecker.h"
 #include "IO_Ports.h"
 #include "RC_Servo.h"
+#include <stdio.h>
 
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
-//#define MawTest
+#define MawTest
 //NOTE : PING ECHO = y6
 // PING trigger = y10
 #define PWMFRQ 1000
@@ -33,12 +34,12 @@
 #define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07
 //Bigger to be more open (closer to 90 deg in)
-#define collect 2100
+#define collect 2200
 // Smaller to be more open (sticking out all of the way)
 #define deposit 700
 //macro to read the battery voltage
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
-#define MAX_BATT_READ (MAX_MOTOR_VOLTAGE * 1000)/32
+
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/
@@ -54,8 +55,24 @@
  * @return the properly scaled value that will go into the setPWM function
  * @brief  This functon will be used to scale 
  * @author Cooper Cantrell, 2024.5.21 */
-unsigned int ScaleValue(char newSpeed){
-    return (MAX_BATT_READ * newSpeed) / CURRENT_BATT_VOLT;
+ unsigned int ScaleValue(char newSpeed){
+    // convert the Max motor voltage (8V) to the same 32 mV units of the output
+    // of the read pin function
+//    float mathSpeed = newSpeed;
+//    float maxV = (MAX_MOTOR_VOLTAGE*1000)/32;
+//    float CurrentV = (float) CURRENT_BATT_VOLT;
+//    unsigned int out = 0;
+//    if(CurrentV < maxV){
+//        out = 0;
+//        printf("\r\n ERROR ERROR---BATT VOLTAGE TOO LOW TO RUN [%d]---ERROR ERROR",CURRENT_BATT_VOLT);
+//    }
+//    else{
+//        out = (unsigned int) ((mathSpeed * maxV)/CurrentV);
+//    }
+//    return out;
+     
+     //issues with battery reading motor for now
+     return newSpeed* 10;
 }
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                           *
@@ -77,6 +94,7 @@ void Maw_Init(void){
     PWM_AddPins(LEFT_MOTOR | RIGHT_MOTOR);
     // init the sensors
     SensorInit();
+
     //set up servos
     RC_Init();
     //for dir
@@ -92,6 +110,20 @@ void Maw_Init(void){
     // for the servos
     RC_Init();
     RC_AddPins(RIGHT_DOOR|LEFT_DOOR);
+    //sets the servos to collecting
+    Maw_RightDoor(FALSE);
+    Maw_LeftDoor (FALSE);
+    int i;
+    for (i = 0; i < (366000<<2); i++) {
+        asm("nop");
+    }
+    Maw_RightDoor(TRUE);
+
+    for (i = 0; i < (366000<<2); i++) {
+        asm("nop");
+    }
+
+    Maw_LeftDoor(TRUE);
 }
 
 
@@ -179,7 +211,6 @@ char Maw_LeftDoor(uint8_t Position){
 }
 
 #ifdef MawTest
-#include <stdio.h>
 int wait;
 #define DELAY(x)    for (wait = 0; wait <= x; wait++) {asm("nop");}
 #define A_BIT       183000
