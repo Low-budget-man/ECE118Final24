@@ -72,14 +72,13 @@ static const char *EventNames[] = {
 	"ES_TIMERSTOPPED",
 	"BATTERY_CONNECTED",
 	"BATTERY_DISCONNECTED",
-    "TRACKWIRE",
-    "TAPE",
-    "BEACON",
-    "BUMPER",
-    "PING",
-    "DEPOSITED",
-    "PINGCLOSE",
-	"NUMBEROFEVENTS"
+	"TRACKWIRE",
+	"TAPE",
+	"BEACON",
+	"BUMPER",
+	"PING",
+	"DEPOSITED",
+	"PINGCLOSE",
 };
 
 

@@ -43,8 +43,8 @@ typedef enum {
 } WanderSubHSMState_t;
 
 static const char *StateNames[] = {
-    "InitPSubState",
-    "Forward",
+	"InitPSubState",
+	"Forward",
 	"DodgeBump",
 	"DodgeTape",
 };
