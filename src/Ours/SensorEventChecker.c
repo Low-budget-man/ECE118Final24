@@ -120,10 +120,10 @@
 #define BUMPERbrBit (3)
 #define BUMPERblBit (2)
 // for the Ping sensor, most of the work is done in PingSensor.h
-#define PING_HYST 10
+#define PING_HYST 32
 // this is the number of points in the ping sensor moving avrage bigger is more 
 // filter but slower
-#define PING_FILTER 10
+#define PING_FILTER 9
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -238,13 +238,9 @@ uint16_t PingFilter(uint16_t Reading){
     uint16_t out = 0;
     // This is from stack overflow, hope it works
     //shifts the memory over 1 item  and adds so the avg can me moving
-    /*circ buffer code
     static uint16_t cursor = 0;
     PingReadings[cursor] = Reading;
     cursor = (++cursor)%PING_FILTER;
-    */
-    memmove(&PingReadings[0+1], &PingReadings[0], (PING_FILTER-0-1)*sizeof(uint16_t));
-    PingReadings[0] = Reading;
     //get the avg of the list
     
     for (size_t i = 0; i < PING_FILTER; i++)

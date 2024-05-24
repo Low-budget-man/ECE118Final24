@@ -15,6 +15,7 @@
 #include "../../include/Provided/LED.h"
 #include "ES_Timers.h"
 #include <stdio.h>
+#include <stdint.h>
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -22,7 +23,10 @@
 #define TRACK_LED (0x1)
 #define TAPE_LED (0x2)
 #define BEACON_LED (0x4)
-#define DEBOUNCE_Wait 2
+#define DEBOUNCE_WaitB 2
+#define DEBOUNCE_WaitP 32
+#define FAR 0
+#define CLOSE 1
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -35,6 +39,7 @@
 
 static uint8_t MyPriority;
 static uint8_t LastBump;
+static uint16_t LastPing;
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
@@ -142,7 +147,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         }
         break;
     case BUMPER:
-        ES_Timer_InitTimer(BUMPER_DEBOUNCE_T, DEBOUNCE_Wait);
+        ES_Timer_InitTimer(BUMPER_DEBOUNCE_T, DEBOUNCE_WaitB);
         LastBump = ThisEvent.EventParam;
         break;
     case ES_TIMEOUT:
@@ -150,13 +155,17 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         {
             printf("\r\n Debounced Bumper Event with param %x", LastBump);
         }
+        else if (ThisEvent.EventParam == PING_DEBOUNCE_T){
+            printf("\r\n Debounced Ping Event with param %d", LastPing);
+        }
         else
         {
             printf("\r\nERROR: Unknown TimerParam in SensorService");
         }
         break;
     case PING:
-        printf("\r\n Ping Event Detected with param: %d", ThisEvent.EventParam);
+        ES_Timer_InitTimer(PING_DEBOUNCE_T, DEBOUNCE_WaitP);
+        LastPing = ThisEvent.EventParam;       
         break; 
     // for events we want to ignore
     case ES_NO_EVENT:
