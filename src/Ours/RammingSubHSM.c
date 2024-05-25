@@ -154,7 +154,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY: //Guessing here. 
                     //Maw_LeftMtrSpeed(-10);
                     //Maw_RightMtrSpeed(10);
-                    ES_Timer_InitTimer(RAM_TIMER, ALIGN_TIME);
+                    //ES_Timer_InitTimer(RAM_TIMER, ALIGN_TIME);
                     break;
                 case ES_TIMEOUT: //More of a watchdog than anything
                     if (ThisEvent.EventParam == RAM_TIMER){
@@ -187,7 +187,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ES_ENTRY:
 					Maw_LeftMtrSpeed(-50);
 					Maw_RightMtrSpeed(-50);
-					ES_Timers_InitTimer(RAM_TIMER, BACKUP_TIME);
+					ES_Timer_InitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
 				case ES_EXIT:
 					Maw_LeftMtrSpeed(0);
@@ -210,8 +210,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case FirstDoor:
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_LeftDoor((uint8_t)deposit);
-					ES_Timers_InitTimer(RAM_TIMER, DOOR_TIME);
+					Maw_LeftDoor(TRUE);
+					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
@@ -229,8 +229,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case SecondDoor:	//Continue moving back in this state, minimal delay, just so doors don't interfere.
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_RightDoor(deposit);
-					ES_Timers_InitTimer(RAM_TIMER, DOOR_TIME);
+					Maw_RightDoor(TRUE);
+					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
@@ -251,7 +251,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ES_ENTRY:
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
-					ES_Timers_InitTimer(RAM_TIMER, RAM_TIME);
+					ES_Timer_InitTimer(RAM_TIMER, RAM_TIME);
 					break;
 				case ES_EXIT:
 					Maw_LeftMtrSpeed(0);
@@ -278,14 +278,14 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 
         case Fans:
             switch (ThisEvent.EventType) {
-				case ENTRY_EVENT://No fan function yet
-					ES_TimersInitTimer(RAM_TIMER, FAN_TIME);
+				case ES_ENTRY://No fan function yet
+					ES_Timer_InitTimer(RAM_TIMER, FAN_TIME);
 					break;
                 case ES_TIMEOUT:
-					if (ThisEvent.EventParams == RAM_TIMER){
+					if (ThisEvent.EventParam == RAM_TIMER){
 						nextState = Back2;
 						makeTransition = TRUE;
-						ThisEvent.EventType = RAM_DONE;
+						ThisEvent.EventType = DEPOSITED;
 					}
                     break;
                 case ES_NO_EVENT:
@@ -297,13 +297,13 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 
 		case Back2:
 			switch (ThisEvent.EventType) {
-				case ENTRY_EVENT:
+				case ES_ENTRY:
 					Maw_LeftMtrSpeed(-50);
 					Maw_RightMtrSpeed(-50);
-					ES_TimersInitTimer(RAM_TIMER, BACKUP_TIME);
+					ES_Timer_InitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
                 case ES_TIMEOUT:
-					if (ThisEvent.EventParams == RAM_TIMER){
+					if (ThisEvent.EventParam == RAM_TIMER){
 						nextState = Return2Arena;
 						makeTransition = TRUE;
 						ThisEvent.EventType = ES_NO_EVENT;
@@ -314,15 +314,16 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                     // Unhandled events pass back up to the next level
                     break;
 			}
+            break;
 		case Return2Arena:
 			switch (ThisEvent.EventType) {
-				case ENTRY_EVENT:
+				case ES_ENTRY:
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
-					ES_TimersInitTimer(RAM_TIMER, ALIGN_TIME);
+					ES_Timer_InitTimer(RAM_TIMER, ALIGN_TIME);
 					break;
                 case ES_TIMEOUT:
-					if (ThisEvent.EventParams == RAM_TIMER){
+					if (ThisEvent.EventParam == RAM_TIMER){
 						ThisEvent.EventType = DEPOSITED;
 					}
                     break;
@@ -335,7 +336,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             // Handle unexpected state
             break;
     }
-}
+
 
 
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY

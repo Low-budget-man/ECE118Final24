@@ -37,9 +37,9 @@
 #define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07
 //Bigger to be more open (closer to 90 deg in)
-//#define collect 2100
+#define collect 2100
 // Smaller to be more open (sticking out all of the way)
-//#define deposit 700
+#define deposit 700
 //macro to read the battery voltage
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
 #define MAX_BATT_READ (MAX_MOTOR_VOLTAGE * 1000)/32
@@ -149,7 +149,7 @@ char Maw_RightMtrSpeed(char newSpeed){
 
 /**
  * @Function Maw_RightDoor(uint8_t Position)
- * @param Position - a true or false value for collect or deposit
+ * @param Position - a true for depositing or false for collecting
  * @return SUCCESS or ERROR
  * @brief  This function is used to open and close the doors
  * @author Cooper Cantrell, 2024.5.16 */
@@ -165,7 +165,7 @@ char Maw_RightDoor(uint8_t Position){
 
 /**
  * @Function Maw_LeftDoor(uint8_t Position)
- * @param Position - a true or false value for collect or deposit
+ * @param Position - a true for depositing or false for collecting
  * @return SUCCESS or ERROR
  * @brief  This function is used to open and close the 
  * @note Because of how the servos are on the bot there it seems like it is 
