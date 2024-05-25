@@ -58,6 +58,7 @@ static const char *StateNames[] = {
 	"Return2Arena",
 };
 
+#define ALIGN_TIME 1000
 #define BACKUP_TIME 1000
 #define RAM_TIME 500
 #define DOOR_TIME 200
@@ -130,11 +131,27 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 
 	//The following switch statement written by ChatGPT, because I'm lazy/exhausted. -Max
     switch (CurrentState) {
+		
+		case InitPSubState: // If current state is initial Psedudo State
+        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+        {
+            // this is where you would put any actions associated with the
+            // transition from the initial pseudo-state into the actual
+            // initial state
+
+            // now put the machine into the actual initial state
+            nextState = FindTape;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+        break;
+		
 		case Align:
 			switch (ThisEvent.EventType) {
 					case ENTRY_EVENT: //Guessing here. 
 						Maw_LeftMtrSpeed(-10);
 						Maw_RightMtrSpeed(10);
+						ES_TimersInitTimer(RAM_TIMER, ALIGN_TIME);
 						break;
 					case ES_TIMEOUT: //More of a watchdog than anything
 						nextState = BackUp;
@@ -159,6 +176,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ENTRY_EVENT:
 					Maw_LeftMtrSpeed(-50);
 					Maw_RightMtrSpeed(-50);
+					ES_TimersInitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
 				case EXIT_EVENT:
 					Maw_LeftMtrSpeed(0);
@@ -180,6 +198,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 			switch (ThisEvent.EventType) {
 				case ENTRY_EVENT:
 					Maw_LeftDoor(true);
+					ES_TimersInitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
                     nextState = SecondDoor;
@@ -196,6 +215,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             switch (ThisEvent.EventType) {
 				case ENTRY_EVENT:
 					Maw_RightDoor(true);
+					ES_TimersInitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
                     nextState = Charge;
@@ -214,6 +234,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ENTRY_EVENT:
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
+					ES_TimersInitTimer(RAM_TIMER, RAM_TIME);
 					break;
 				case EXIT_EVENT:
 					Maw_LeftMtrSpeed(0);
@@ -235,6 +256,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
         case Fans:
             switch (ThisEvent.EventType) {
 				case ENTRY_EVENT://No fan function yet
+					ES_TimersInitTimer(RAM_TIMER, FAN_TIME);
 					break;
                 case ES_TIMEOUT:
                     nextState = Back2;
@@ -253,6 +275,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ENTRY_EVENT:
 					Maw_LeftMtrSpeed(-50);
 					Maw_RightMtrSpeed(-50);
+					ES_TimersInitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
                 case ES_TIMEOUT:
                     nextState = Return2Arena;
@@ -270,6 +293,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ENTRY_EVENT:
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
+					ES_TimersInitTimer(RAM_TIMER, ALIGN_TIME);
 					break;
                 case ES_TIMEOUT:
                     ThisEvent.EventType = DEPOSITED;
