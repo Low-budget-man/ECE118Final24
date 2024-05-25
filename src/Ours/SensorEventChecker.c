@@ -108,15 +108,15 @@
 #define BEACON_PORT PORTW
 #define BEACON_PIN PIN3
 // Bumper #defines -------------------------------------------------------------
-#define BUMPERfrPORT PORTW
-#define BUMPERfrPIN PIN5
-#define BUMPERflPORT PORTX
-#define BUMPERflPIN PIN6 //was 4
-#define BUMPERbrPORT PORTW
-#define BUMPERbrPIN PIN7
-#define BUMPERblPORT PORTX //was Y
+#define BUMPERfrPORT PORTX
+#define BUMPERfrPIN PIN6
+#define BUMPERflPORT PORTW
+#define BUMPERflPIN PIN5 //was 4
+#define BUMPERbrPORT PORTX
+#define BUMPERbrPIN PIN8
+#define BUMPERblPORT PORTW //was Y
 //Pin 6 and 8 is haveing issues and does not work
-#define BUMPERblPIN PIN8
+#define BUMPERblPIN PIN7
 #define BUMPERfrBit (1)
 #define BUMPERflBit (0)
 #define BUMPERbrBit (3)
