@@ -154,9 +154,11 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 						ES_TimersInitTimer(RAM_TIMER, ALIGN_TIME);
 						break;
 					case ES_TIMEOUT: //More of a watchdog than anything
-						nextState = BackUp;
-						makeTransition = TRUE;
-						ThisEvent.EventType = ES_NO_EVENT;
+						if (ThisEvent.EventParams == RAM_TIMER){
+							nextState = BackUp;
+							makeTransition = TRUE;
+							ThisEvent.EventType = ES_NO_EVENT;
+						}
 						break;
 					case TAPE:
 						//Get tapes that are high
@@ -183,9 +185,11 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(0);
 					break;
                 case ES_TIMEOUT:
-                    nextState = FirstDoor;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+					if (ThisEvent.EventParams == RAM_TIMER){
+						nextState = FirstDoor;
+						makeTransition = TRUE;
+						ThisEvent.EventType = ES_NO_EVENT;
+					}
                     break;
                 case ES_NO_EVENT:
                 default:
@@ -201,9 +205,11 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					ES_TimersInitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
-                    nextState = SecondDoor;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+					if (ThisEvent.EventParams == RAM_TIMER){
+						nextState = SecondDoor;
+						makeTransition = TRUE;
+						ThisEvent.EventType = ES_NO_EVENT;
+					}
                     break;
                 case ES_NO_EVENT:
                 default:
@@ -218,9 +224,11 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					ES_TimersInitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
-                    nextState = Charge;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+					if (ThisEvent.EventParams == RAM_TIMER){
+						nextState = Charge;
+						makeTransition = TRUE;
+						ThisEvent.EventType = ES_NO_EVENT;
+					}
                     break;
                 case ES_NO_EVENT:
                 default:
@@ -241,6 +249,12 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(0);
 					break;
                 case ES_TIMEOUT:
+					if (ThisEvent.EventParams == RAM_TIMER){
+						nextState = Fans;
+						makeTransition = TRUE;
+						ThisEvent.EventType = ES_NO_EVENT;
+                    }
+					break;				
 				case BUMPER: //Stop instead of trying to plow through wall
                     nextState = Fans;
                     makeTransition = TRUE;
@@ -259,9 +273,11 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					ES_TimersInitTimer(RAM_TIMER, FAN_TIME);
 					break;
                 case ES_TIMEOUT:
-                    nextState = Back2;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = RAM_DONE;
+					if (ThisEvent.EventParams == RAM_TIMER){
+						nextState = Back2;
+						makeTransition = TRUE;
+						ThisEvent.EventType = RAM_DONE;
+					}
                     break;
                 case ES_NO_EVENT:
                 default:
@@ -278,10 +294,12 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					ES_TimersInitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
                 case ES_TIMEOUT:
-                    nextState = Return2Arena;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
+					if (ThisEvent.EventParams == RAM_TIMER){
+						nextState = Return2Arena;
+						makeTransition = TRUE;
+						ThisEvent.EventType = ES_NO_EVENT;
+                    }
+					break;
                 case ES_NO_EVENT:
                 default:
                     // Unhandled events pass back up to the next level
@@ -296,7 +314,9 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					ES_TimersInitTimer(RAM_TIMER, ALIGN_TIME);
 					break;
                 case ES_TIMEOUT:
-                    ThisEvent.EventType = DEPOSITED;
+					if (ThisEvent.EventParams == RAM_TIMER){
+						ThisEvent.EventType = DEPOSITED;
+					}
                     break;
                 case ES_NO_EVENT:
                 default:
