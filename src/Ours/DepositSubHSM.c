@@ -46,8 +46,8 @@ typedef enum {
 } DepositSubHSMState_t;
 
 static const char *StateNames[] = {
-    "InitPSubState",
-    "Continue_Wandering",
+	"InitPSubState",
+	"Continue_Wandering",
 	"FollowTape",
 	"Ramming",
 };

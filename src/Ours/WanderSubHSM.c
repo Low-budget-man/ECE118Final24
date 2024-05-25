@@ -31,6 +31,7 @@
 #include "ES_Framework.h"
 #include "BOARD.h"
 #include "WanderSubHSM.h"
+#include "Maw.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -43,8 +44,8 @@ typedef enum {
 } WanderSubHSMState_t;
 
 static const char *StateNames[] = {
-    "InitPSubState",
-    "Forward",
+	"InitPSubState",
+	"Forward",
 	"Reverse",
 	"Spin",
 };
@@ -126,7 +127,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 				// initial state
 
 				// now put the machine into the actual initial state
-				nextState = SubFirstState;
+				nextState = Forward;
 				makeTransition = TRUE;
 				ThisEvent.EventType = ES_NO_EVENT;
 			}
@@ -135,9 +136,9 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 		//The following switch statement written by ChatGPT, because I'm exhausted. -Max
 		case Forward:
 			switch (ThisEvent.EventType) {
-				case ENTRY_EVENT:
-					Maw_LeftMtrSpeed(100);
-					Maw_RightMtrSpeed(100);
+				case ES_ENTRY:
+//					Maw_LeftMtrSpeed(100);
+//					Maw_RightMtrSpeed(100);
 					break;
 				case TAPE:
 					nextState = Reverse;
@@ -148,10 +149,12 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 					makeTransition = TRUE;
 					ThisEvent.EventType = ES_NO_EVENT;
 					break;
-				case PING: // May need specific param to state value is low enough to dodge
-					nextState = Spin;
-					makeTransition = TRUE;
-					ThisEvent.EventType = ES_NO_EVENT;
+				case PINGCLOSE: // May need specific param to state value is low enough to dodge
+					if(ThisEvent.EventParam){
+                        nextState = Spin;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
 				case ES_NO_EVENT:
 				default:
 					// Unhandled events pass back up to the next level
@@ -161,15 +164,17 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 
 		case Reverse:
 			switch (ThisEvent.EventType) {
-				case ENTRY_EVENT:
-					Maw_LeftMtrSpeed(-100);
-					Maw_RightMtrSpeed(-100);
-					ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, REVERSE_TIME);
+				case ES_ENTRY:
+//					Maw_LeftMtrSpeed(-100);
+//					Maw_RightMtrSpeed(-100);
+//					ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, REVERSE_TIME);
 					break;
 				case ES_TIMEOUT:
-					nextState = Spin;
-					makeTransition = TRUE;
-					ThisEvent.EventType = ES_NO_EVENT;
+                    if(ThisEvent.EventParam == WANDER_SUBSTATE_TIMER){
+                        nextState = Spin;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
 					break;
 				case ES_NO_EVENT:
 				default:
@@ -180,15 +185,17 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 
 		case Spin:
 			switch (ThisEvent.EventType) {
-				case ENTRY_EVENT: // ccw to line up with door slightly more easily
-					Maw_LeftMtrSpeed(-100);
-					Maw_RightMtrSpeed(100);
-					ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
+				case ES_ENTRY: // ccw to line up with door slightly more easily
+//					Maw_LeftMtrSpeed(-100);
+//					Maw_RightMtrSpeed(100);
+//					ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
 					break;
 				case ES_TIMEOUT:
-					nextState = Forward;
-					makeTransition = TRUE;
-					ThisEvent.EventType = ES_NO_EVENT;
+                    if(ThisEvent.EventParam == WANDER_SUBSTATE_TIMER){
+                        nextState = Forward;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
 					break;
 				case ES_NO_EVENT:
 				default:

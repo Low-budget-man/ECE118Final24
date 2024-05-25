@@ -32,7 +32,7 @@
 #include "BOARD.h"
 #include "MawHSM.h"
 // #include all sub state machines called
-//#include "WanderSubHSM.h"
+#include "WanderSubHSM.h"
 //#include "DepositSubHSM.h"
 #include "ES_Timers.h"
 /*******************************************************************************
@@ -159,7 +159,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             // InitWanderSubHSM();
             // InitDepositSubHSM();
             // Initialize all sub-state machines
-//            InitWanderSubHSM();
+           InitWanderSubHSM();
 //			InitDepositSubHSM
             // now put the machine into the actual initial state
             nextState = StartEnd;
@@ -190,7 +190,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         // NOTE: the SubState Machine runs and responds to events before anything in the this
         // state machine does 
         // NOTE: Right now this is to test if the TopLevel HSM can work uncomment later
-        // ThisEvent = RunWanderSubHSM(ThisEvent);
+        ThisEvent = RunWanderSubHSM(ThisEvent);
         switch (ThisEvent.EventType)
         {
         case ES_TIMEOUT:
