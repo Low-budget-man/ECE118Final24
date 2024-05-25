@@ -115,6 +115,19 @@ static pPostFunc const Timer2PostFunc[NUM_TIMERS] = {TIMER0_RESP_FUNC,
 }
 
 /**
+ * 
+ * @param Num
+ * @return The time remaining of the specified timer
+ * @author Caitlin Bonesio
+ */
+uint32_t ES_Timers_GetTimeRemaining(uint8_t Num){
+    if(!((Num >= NUM_TIMERS) || (Timer2PostFunc[Num] == TIMER_UNUSED))){
+        return TMR_TimerArray[Num];
+    } else {
+        return 0;
+    }
+}
+/**
  * @Function ES_Timer_SetTimer(uint8_t Num, uint32_t NewTime)
  * @param Num - the number of the timer to set.
  * @param NewTime -  the number of milliseconds to be counted

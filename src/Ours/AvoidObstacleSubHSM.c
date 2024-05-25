@@ -30,7 +30,6 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "BOARD.h"
-#include "AvoidObstacleHSM.h"
 #include "AvoidObstacleSubHSM.h"
 
 /*******************************************************************************
@@ -151,7 +150,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
 
         case BackUp:
             switch (ThisEvent.EventType) {
-                case ENTRY_EVENT:
+                case ES_ENTRY:
                     Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-100);
 					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, BackUpTime);

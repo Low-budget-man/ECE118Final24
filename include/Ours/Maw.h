@@ -19,6 +19,11 @@
 #define RIGHT_BIAS 0
 #define LEFT_BIAS 0
 
+//Bigger to be more open (closer to 90 deg in)
+#define collect 2100
+// Smaller to be more open (sticking out all of the way)
+#define deposit 700
+
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *
  ******************************************************************************/

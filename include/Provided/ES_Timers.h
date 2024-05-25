@@ -45,6 +45,13 @@ typedef enum { ES_Timer_ERR           = -1,
 void             ES_Timer_Init(void);
 
 /**
+ * 
+ * @param Num - Timer to be read
+ * @return The time remaining of the specified timer
+ * @author Caitlin Bonesio
+ */
+uint32_t        ES_Timers_GetTimeRemaining(uint8_t Num);
+/**
  * @Function ES_Timer_InitTimer(uint8_t Num, uint32_t NewTime)
  * @param Num -  the number of the timer to start
  * @param NewTime - the number of tick to be counted

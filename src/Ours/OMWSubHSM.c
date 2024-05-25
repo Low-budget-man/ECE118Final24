@@ -30,7 +30,6 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "BOARD.h"
-#include "OMWHSM.h"
 #include "OMWSubHSM.h"
 
 /*******************************************************************************

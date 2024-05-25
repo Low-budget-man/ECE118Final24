@@ -93,12 +93,14 @@
 #define TAPE_THRESH 400 
 // reading voltage
 #define TAPE_HYST 50 
+/*
 #define TAPEfrrBit (0)
 #define TAPEfrBit (1)
 #define TAPEflBit (2)
 #define TAPEfllBit (3)
 #define TAPEbrBit (4)
 #define TAPEblBit (5)
+*/
 // Time that is needed for the tape sensor to get a stable reading (in ms)
 // Note that the time waited is 1 ms more than this
 #define TAPEtime 4
@@ -115,10 +117,10 @@
 #define BUMPERblPORT PORTY
 //Pin 6 and 8 is haveing issues and does not work
 #define BUMPERblPIN PIN3
-#define BUMPERfrBit (1)
-#define BUMPERflBit (0)
-#define BUMPERbrBit (3)
-#define BUMPERblBit (2)
+//#define BUMPERfrBit (1)
+//#define BUMPERflBit (0)
+//#define BUMPERbrBit (3)
+//#define BUMPERblBit (2)
 // for the Ping sensor, most of the work is done in PingSensor.h
 #define PING_HYST 32
 // this is the number of points in the ping sensor moving avrage bigger is more 

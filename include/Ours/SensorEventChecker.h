@@ -32,7 +32,17 @@
 /*******************************************************************************
  * PUBLIC #DEFINES                                                             *
  ******************************************************************************/
+#define TAPEfrrBit (0)
+#define TAPEfrBit (1)
+#define TAPEflBit (2)
+#define TAPEfllBit (3)
+#define TAPEbrBit (4)
+#define TAPEblBit (5)
 
+#define BUMPERfrBit (1)
+#define BUMPERflBit (0)
+#define BUMPERbrBit (3)
+#define BUMPERblBit (2)
 
 /*******************************************************************************
  * PUBLIC TYPEDEFS                                                             *

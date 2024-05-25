@@ -51,7 +51,7 @@ typedef enum {
     Align,
 	Forward,
 	OMW,
-	DodgeObstacle,
+	AvoidObstacle,
 } TemplateHSMState_t;
 
 static const char *StateNames[] = {
@@ -199,9 +199,9 @@ ES_Event RunTemplateHSM(ES_Event ThisEvent)
 			}
 		break;
 		
-	case OMW:
+	case AvoidObstacle:
 		switch (ThisEvent.EventType) {
-			ThisEvent = RunDodgeObstacleSubHSM(ThisEvent);
+			ThisEvent = RunAvoidObstacleSubHSM(ThisEvent);
 			case OBSTACLE_AVOIDED: 
 				nextState = OMW;
 				makeTransition = TRUE;
