@@ -144,6 +144,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 					nextState = Reverse;
 					makeTransition = TRUE;
 					ThisEvent.EventType = TAPE;
+                    break;
 				case BUMPER:
 					nextState = Reverse;
 					makeTransition = TRUE;
@@ -155,6 +156,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
+                    break;
 				case ES_NO_EVENT:
 				default:
 					// Unhandled events pass back up to the next level

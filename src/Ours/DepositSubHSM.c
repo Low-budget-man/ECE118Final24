@@ -169,7 +169,12 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 		case Ramming:
 			//ThisEvent = RunRammingSubHSM(ThisEvent);
 			switch (ThisEvent.EventType) {
-				case ES_NO_EVENT:
+				case ES_EXIT:
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    nextState = Continue_Wandering;
+                    makeTransition == TRUE;
+                case ES_NO_EVENT:
+                    break;
 				default:
 					break;
 			}

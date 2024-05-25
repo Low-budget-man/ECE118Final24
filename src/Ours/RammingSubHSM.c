@@ -48,9 +48,10 @@ typedef enum {
 } RammingSubHSMState_t;
 
 static const char *StateNames[] = {
+	"InitPSubState",
 	"Align",
-    "InitPSubState",
-    "BackUp",
+	"BackUp",
+	"FirstDoor",
 	"SecondDoor",
 	"Charge",
 	"Fans",

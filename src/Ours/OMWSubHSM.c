@@ -44,8 +44,8 @@ typedef enum {
 } OMWSubHSMState_t;
 
 static const char *StateNames[] = {
-    "InitPSubState",
-    "Straight",
+	"InitPSubState",
+	"Straight",
 	"TiltRight",
 	"TiltLeft",
 };

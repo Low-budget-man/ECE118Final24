@@ -42,8 +42,8 @@ typedef enum {
 } TemplateSubHSMState_t;
 
 static const char *StateNames[] = {
-    "InitPSubState",
-    "SubFirstState",
+	"InitPSubState",
+	"SubFirstState",
 };
 
 
