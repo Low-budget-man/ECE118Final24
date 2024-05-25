@@ -209,6 +209,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         default:
             break;
         }
+        break;
     case Deposit:
         // NOTE: Right now this is to test if the TopLevel HSM can work uncomment later
         ThisEvent = RunDepositSubHSM(ThisEvent);

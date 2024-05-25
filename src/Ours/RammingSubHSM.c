@@ -29,6 +29,8 @@
 
 #include "ES_Configure.h"
 #include "ES_Framework.h"
+#include "maw.h"
+#include "SensorEventChecker.h"
 #include "BOARD.h"
 #include "RammingSubHSM.h"
 
@@ -141,7 +143,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             // initial state
 
             // now put the machine into the actual initial state
-            nextState = FindTape;
+            nextState = Align;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
@@ -149,13 +151,13 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		
 		case Align:
 			switch (ThisEvent.EventType) {
-					case ENTRY_EVENT: //Guessing here. 
-						Maw_LeftMtrSpeed(-10);
-						Maw_RightMtrSpeed(10);
-						ES_TimersInitTimer(RAM_TIMER, ALIGN_TIME);
+					case ES_ENTRY: //Guessing here. 
+						//Maw_LeftMtrSpeed(-10);
+						//Maw_RightMtrSpeed(10);
+						ES_Timer_InitTimer(RAM_TIMER, ALIGN_TIME);
 						break;
 					case ES_TIMEOUT: //More of a watchdog than anything
-						if (ThisEvent.EventParams == RAM_TIMER){
+						if (ThisEvent.EventParam == RAM_TIMER){
 							nextState = BackUp;
 							makeTransition = TRUE;
 							ThisEvent.EventType = ES_NO_EVENT;
@@ -163,7 +165,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 						break;
 					case TAPE:
 						//Get tapes that are high
-						if(/*correct tapes high*/true){
+						if(ThisEvent.EventParam & TAPEfrrBit){
 							nextState = BackUp;
 							makeTransition = TRUE;
 							ThisEvent.EventType = ES_NO_EVENT;
