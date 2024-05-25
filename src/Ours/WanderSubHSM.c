@@ -178,7 +178,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 
         case Spin:
             switch (ThisEvent.EventType) {
-				case ENTRY_EVENT:
+				case ENTRY_EVENT: // ccw to line up with door slightly more easily
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(100);
 					break;

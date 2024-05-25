@@ -37,20 +37,31 @@
  ******************************************************************************/
 typedef enum {
     InitPSubState,
+	Align,
     BackUp,
+	FirstDoor,
 	SecondDoor,
 	Charge,
 	Fans,
+	Back2,
+	Return2Arena,
 } RammingSubHSMState_t;
 
 static const char *StateNames[] = {
+	"Align",
     "InitPSubState",
     "BackUp",
 	"SecondDoor",
 	"Charge",
 	"Fans",
+	"Back2",
+	"Return2Arena",
 };
 
+#define BACKUP_TIME 1000
+#define RAM_TIME 500
+#define DOOR_TIME 200
+#define FAN_TIME 2000
 
 
 /*******************************************************************************
@@ -119,8 +130,57 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 
 	//The following switch statement written by ChatGPT, because I'm lazy/exhausted. -Max
     switch (CurrentState) {
+		case Align:
+			switch (ThisEvent.EventType) {
+					case ENTRY_EVENT: //Guessing here. 
+						Maw_LeftMtrSpeed(-10);
+						Maw_RightMtrSpeed(10);
+						break;
+					case ES_TIMEOUT: //More of a watchdog than anything
+						nextState = BackUp;
+						makeTransition = TRUE;
+						ThisEvent.EventType = ES_NO_EVENT;
+						break;
+					case TAPE:
+						//Get tapes that are high
+						if(/*correct tapes high*/true){
+							nextState = BackUp;
+							makeTransition = TRUE;
+							ThisEvent.EventType = ES_NO_EVENT;
+							break;
+						}
+					case ES_NO_EVENT:
+					default:
+                    // Unhandled events pass back up to the next level
+                    break;
+						
         case BackUp:
             switch (ThisEvent.EventType) {
+				case ENTRY_EVENT:
+					Maw_LeftMtrSpeed(-50);
+					Maw_RightMtrSpeed(-50);
+					break;
+				case EXIT_EVENT:
+					Maw_LeftMtrSpeed(0);
+					Maw_RightMtrSpeed(0);
+					break;
+                case ES_TIMEOUT:
+                    nextState = FirstDoor;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
+            break;
+			
+		case FirstDoor:
+			switch (ThisEvent.EventType) {
+				case ENTRY_EVENT:
+					Maw_LeftDoor(true);
+					break;
                 case ES_TIMEOUT:
                     nextState = SecondDoor;
                     makeTransition = TRUE;
@@ -132,9 +192,11 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                     break;
             }
             break;
-
 		case SecondDoor:	//Continue moving back in this state, minimal delay, just so doors don't interfere.
             switch (ThisEvent.EventType) {
+				case ENTRY_EVENT:
+					Maw_RightDoor(true);
+					break;
                 case ES_TIMEOUT:
                     nextState = Charge;
                     makeTransition = TRUE;
@@ -149,7 +211,16 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 
         case Charge:
             switch (ThisEvent.EventType) {
+				case ENTRY_EVENT:
+					Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(100);
+					break;
+				case EXIT_EVENT:
+					Maw_LeftMtrSpeed(0);
+					Maw_RightMtrSpeed(0);
+					break;
                 case ES_TIMEOUT:
+				case BUMPER: //Stop instead of trying to plow through wall
                     nextState = Fans;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
@@ -163,8 +234,10 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 
         case Fans:
             switch (ThisEvent.EventType) {
+				case ENTRY_EVENT://No fan function yet
+					break;
                 case ES_TIMEOUT:
-                    nextState = End;
+                    nextState = Back2;
                     makeTransition = TRUE;
                     ThisEvent.EventType = RAM_DONE;
                     break;
@@ -175,6 +248,39 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             }
             break;
 
+		case Back2:
+			switch (ThisEvent.EventType) {
+				case ENTRY_EVENT:
+					Maw_LeftMtrSpeed(-50);
+					Maw_RightMtrSpeed(-50);
+					break;
+                case ES_TIMEOUT:
+                    nextState = Return2Arena;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+			}
+		
+		case Return2Arena:
+			switch (ThisEvent.EventType) {
+				case ENTRY_EVENT:
+					Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(100);
+					break;
+                case ES_TIMEOUT:
+                    ThisEvent.EventType = DEPOSITED;
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+			}
+		}
+		
         default:
             // Handle unexpected state
             break;
