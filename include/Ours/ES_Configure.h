@@ -103,7 +103,7 @@ static const char *EventNames[] = {
 #define TIMER2_RESP_FUNC PostMawHSM
 #define TIMER3_RESP_FUNC PostMawHSM
 #define TIMER4_RESP_FUNC PostRamHSM
-#define TIMER5_RESP_FUNC TIMER_UNUSED
+#define TIMER5_RESP_FUNC PostWanderHSM
 #define TIMER6_RESP_FUNC TIMER_UNUSED
 #define TIMER7_RESP_FUNC TIMER_UNUSED
 #define TIMER8_RESP_FUNC TIMER_UNUSED
@@ -126,6 +126,7 @@ static const char *EventNames[] = {
 #define WANDER_TIMER 2
 #define GAME_TIMER 3
 #define RAM_TIMER 4
+#define WANDER_SUBSTATE_TIMER 5
 /****************************************************************************/
 // The maximum number of services sets an upper bound on the number of 
 // services that the framework will handle. Reasonable values are 8 and 16

@@ -49,6 +49,8 @@ static const char *StateNames[] = {
 	"Spin",
 };
 
+#define REVERSE_TIME 1000
+#define SPIN_TIME 100
 
 
 /*******************************************************************************
@@ -163,6 +165,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 				case ENTRY_EVENT:
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-100);
+					ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, REVERSE_TIME);
 					break;
                 case ES_TIMEOUT:
                     nextState = Spin;
@@ -181,6 +184,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 				case ENTRY_EVENT: // ccw to line up with door slightly more easily
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(100);
+					ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
 					break;
                 case ES_TIMEOUT:
                     nextState = Forward;
