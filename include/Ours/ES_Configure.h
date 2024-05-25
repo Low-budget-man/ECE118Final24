@@ -104,8 +104,8 @@ static const char *EventNames[] = {
 #define TIMER1_RESP_FUNC PostSensorService
 #define TIMER2_RESP_FUNC PostMawHSM
 #define TIMER3_RESP_FUNC PostMawHSM
-#define TIMER4_RESP_FUNC PostRamHSM
-#define TIMER5_RESP_FUNC PostWanderHSM
+#define TIMER4_RESP_FUNC PostMawHSM
+#define TIMER5_RESP_FUNC PostMawHSM
 #define TIMER6_RESP_FUNC TIMER_UNUSED
 #define TIMER7_RESP_FUNC TIMER_UNUSED
 #define TIMER8_RESP_FUNC TIMER_UNUSED
