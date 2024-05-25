@@ -80,10 +80,8 @@ static const char *EventNames[] = {
 	"PING",
 	"DEPOSITED",
 	"PINGCLOSE",
-    "OBSTACLE_AVOIDED",
 	"NUMBEROFEVENTS",
-
-
+	"OBSTACLE_AVOIDED",
 };
 
 

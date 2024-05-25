@@ -157,6 +157,12 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == WANDER_SUBSTATE_TIMER){
+                        nextState = Spin;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
 				case ES_NO_EVENT:
 				default:
 					// Unhandled events pass back up to the next level
@@ -169,7 +175,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 				case ES_ENTRY:
 //					Maw_LeftMtrSpeed(-100);
 //					Maw_RightMtrSpeed(-100);
-//					ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, REVERSE_TIME);
+                    BackUpTime = ES_Timer_GetTime();
 					break;
 				case ES_TIMEOUT:
                     if(ThisEvent.EventParam == WANDER_SUBSTATE_TIMER){
@@ -178,6 +184,24 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
 					break;
+                case TAPE: 
+                    if (TRUE /*ThisEvent.EventParam == WANTED EVENT*/){
+                        nextState = Spin;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                case BUMPER:
+                    //
+                    if (TRUE /*ThisEvent.EventParam == WANTED EVENT*/){
+                        nextState = Forward;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                        
+                        // This timer will not tigger on all exits thus not an 
+                        // exit event
+                        //ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (ES_Timer_GetTimeRemaining(WANDER_SUBSTATE_TIMER))/2);
+                    }
+                    break;
 				case ES_NO_EVENT:
 				default:
 					// Unhandled events pass back up to the next level
