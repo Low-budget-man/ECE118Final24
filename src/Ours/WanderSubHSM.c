@@ -175,7 +175,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
 				case ES_ENTRY:
 //					Maw_LeftMtrSpeed(-100);
 //					Maw_RightMtrSpeed(-100);
-                    BackUpTime = ES_Timer_GetTime();
+//                  ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));
 					break;
 				case ES_TIMEOUT:
                     if(ThisEvent.EventParam == WANDER_SUBSTATE_TIMER){
@@ -199,7 +199,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
                         
                         // This timer will not tigger on all exits thus not an 
                         // exit event
-                        //ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (ES_Timer_GetTimeRemaining(WANDER_SUBSTATE_TIMER))/2);
+                        //ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME - ES_Timer_GetTimeRemaining(WANDER_SUBSTATE_TIMER))/2);
                     }
                     break;
 				case ES_NO_EVENT:
