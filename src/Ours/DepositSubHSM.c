@@ -47,7 +47,7 @@ typedef enum {
 
 static const char *StateNames[] = {
 	"InitPSubState",
-	"Continue_Wandering",
+	"FindTape",
 	"FollowTape",
 	"Ramming",
 };
