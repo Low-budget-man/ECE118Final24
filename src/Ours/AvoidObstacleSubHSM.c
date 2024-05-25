@@ -38,14 +38,36 @@
  ******************************************************************************/
 typedef enum {
     InitPSubState,
-    SubFirstState,
+	BackUp, 
+	Right1,
+	Forward1,
+	Left1,
+	Forward2,
+	Left2,
+	Right2,
+	Forward3,
 } AvoidObstacleSubHSMState_t;
 
 static const char *StateNames[] = {
     "InitPSubState",
-    "SubFirstState",
+    "BackUp", 
+	"Right1",
+	"Forward1",
+	"Left1",
+	"Forward2",
+	"Left2",
+	"Right2",
+	"Forward3",
 };
 
+/*****PLEASE CHANGE THESE AFTER TESTING*****/
+#define BackUpTime 1000 
+#define Right1Time 1000
+#define Forward1Time 1000
+#define Left1Time 1000
+#define Forward2Time 1000
+#define Left2Time 1000
+#define Right2Time 1000
 
 
 /*******************************************************************************
@@ -112,7 +134,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
 
     ES_Tattle(); // trace call stack
 
-    switch (CurrentState) {
+    switch (CurrentState) { //This obnoxiously long switch statement written by ChatGPT.
     case InitPSubState: // If current state is initial Psedudo State
         if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
         {
@@ -121,19 +143,181 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
             // initial state
 
             // now put the machine into the actual initial state
-            nextState = SubFirstState;
+            nextState = BackUp;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
         break;
 
-    case SubFirstState: // in the first state, replace this with correct names
-        switch (ThisEvent.EventType) {
-        case ES_NO_EVENT:
-        default: // all unhandled events pass the event back up to the next level
+        case BackUp:
+            switch (ThisEvent.EventType) {
+                case ENTRY_EVENT:
+                    Maw_LeftMtrSpeed(-100);
+					Maw_RightMtrSpeed(-100);
+					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, BackUpTime);
+                    break;
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
+                        nextState = Right1;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
             break;
-        }
-        break;
+
+        case Right1:
+            switch (ThisEvent.EventType) {
+                case ENTRY_EVENT:
+					Maw_LeftMtrSpeed(50);
+					Maw_RightMtrSpeed(-50);
+					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Right1Time);
+                    break;
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
+                        nextState = Forward1;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
+            break;
+
+        case Forward1:
+            switch (ThisEvent.EventType) {
+                case ENTRY_EVENT:
+					Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(100);
+					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Forward1Time);					
+                    break;
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
+                        nextState = Left1;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
+            break;
+
+        case Left1:
+            switch (ThisEvent.EventType) {
+                case ENTRY_EVENT:
+                    Maw_LeftMtrSpeed(-50);
+					Maw_RightMtrSpeed(50);
+					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Left1Time);
+                    break;
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
+                        nextState = Forward2;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
+            break;
+
+        case Forward2:
+            switch (ThisEvent.EventType) {
+                case ENTRY_EVENT:
+                    Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(100);
+					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Forward2Time);					
+                    break;
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
+                        nextState = Left2;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
+            break;
+
+        case Left2:
+            switch (ThisEvent.EventType) {
+                case ENTRY_EVENT:
+                    Maw_LeftMtrSpeed(-50);
+					Maw_RightMtrSpeed(50);
+					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Left2Time);					
+                    break;
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
+                        nextState = Right2;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
+            break;
+
+        case Right2:
+            switch (ThisEvent.EventType) {
+                case ENTRY_EVENT:
+                    Maw_LeftMtrSpeed(50);
+					Maw_RightMtrSpeed(-50);
+					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Right2Time);					
+                    break;
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
+                        nextState = Forward3;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+				case PINGCLOSE:
+					nextState = Forward3;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
+            break;
+
+        case Forward3:
+            switch (ThisEvent.EventType) {
+                case ENTRY_EVENT:
+                    Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(100);
+					ThisEvent.EventType = OBSTACLE_AVOIDED;
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    // Unhandled events pass back up to the next level
+                    break;
+            }
+            break;
+
+        default:
+            // Handle unexpected state
+            break;
+    }
         
     default: // all unhandled states fall into here
         break;
