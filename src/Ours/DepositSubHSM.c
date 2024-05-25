@@ -88,7 +88,7 @@ uint8_t InitDepositSubHSM(void)
 {
     ES_Event returnEvent;
 
-	InitFollowTapeSubHSM();
+//	InitFollowTapeSubHSM();
 	
     CurrentState = InitPSubState;
     returnEvent = RunDepositSubHSM(INIT_EVENT);
@@ -129,7 +129,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 				// initial state
 
 				// now put the machine into the actual initial state
-				nextState = FindTape;
+				nextState = Continue_Wandering;
 				makeTransition = TRUE;
 				ThisEvent.EventType = ES_NO_EVENT;
 			}
@@ -155,7 +155,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 			}
 		case FollowTape:
 			switch (ThisEvent.EventType) {
-			ThisEvent = RunFollowTapeSubHSM(ThisEvent);
+//			ThisEvent = RunFollowTapeSubHSM(ThisEvent);
 			case TRACKWIRE:
 				nextState = Ramming;
 				makeTransition = TRUE;
@@ -167,7 +167,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 				break;
 			}
 		case Ramming:
-			ThisEvent = RunRammingSubHSM(ThisEvent);
+			//ThisEvent = RunRammingSubHSM(ThisEvent);
 			switch (ThisEvent.EventType) {
 				case ES_NO_EVENT:
 				default:

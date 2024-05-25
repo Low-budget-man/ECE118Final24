@@ -33,7 +33,7 @@
 #include "MawHSM.h"
 // #include all sub state machines called
 #include "WanderSubHSM.h"
-//#include "DepositSubHSM.h"
+#include "DepositSubHSM.h"
 #include "ES_Timers.h"
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
@@ -160,7 +160,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             // InitDepositSubHSM();
             // Initialize all sub-state machines
            InitWanderSubHSM();
-//			InitDepositSubHSM
+           InitDepositSubHSM();
             // now put the machine into the actual initial state
             nextState = StartEnd;
             makeTransition = TRUE;
@@ -211,7 +211,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         }
     case Deposit:
         // NOTE: Right now this is to test if the TopLevel HSM can work uncomment later
-        //ThisEvent = RunDepositSubHSM(ThisEvent);
+        ThisEvent = RunDepositSubHSM(ThisEvent);
         switch (ThisEvent.EventType)
         {
         case ES_NO_EVENT:
