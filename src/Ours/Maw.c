@@ -34,7 +34,7 @@
 #define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07
 //Bigger to be more open (closer to 90 deg in)
-#define collect 2200
+#define collect 2300
 // Smaller to be more open (sticking out all of the way)
 #define deposit 700
 //macro to read the battery voltage
