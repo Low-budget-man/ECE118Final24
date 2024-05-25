@@ -118,90 +118,90 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
     ES_Tattle(); // trace call stack
 
     switch (CurrentState) {
-    case InitPSubState: // If current state is initial Psedudo State
-        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
-        {
-            // this is where you would put any actions associated with the
-            // transition from the initial pseudo-state into the actual
-            // initial state
+		case InitPSubState: // If current state is initial Psedudo State
+			if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+			{
+				// this is where you would put any actions associated with the
+				// transition from the initial pseudo-state into the actual
+				// initial state
 
-            // now put the machine into the actual initial state
-            nextState = SubFirstState;
-            makeTransition = TRUE;
-            ThisEvent.EventType = ES_NO_EVENT;
-        }
-        break;
+				// now put the machine into the actual initial state
+				nextState = SubFirstState;
+				makeTransition = TRUE;
+				ThisEvent.EventType = ES_NO_EVENT;
+			}
+			break;
 
 		//The following switch statement written by ChatGPT, because I'm exhausted. -Max
-        switch (CurrentState) {
-        case Forward:
-            switch (ThisEvent.EventType) {
+		case Forward:
+			switch (ThisEvent.EventType) {
 				case ENTRY_EVENT:
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
 					break;
-                case TAPE:
+				case TAPE:
 					nextState = Reverse;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = TAPE;
-                case BUMPER:
-                    nextState = Reverse;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
+					makeTransition = TRUE;
+					ThisEvent.EventType = TAPE;
+				case BUMPER:
+					nextState = Reverse;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+					break;
 				case PING: // May need specific param to state value is low enough to dodge
 					nextState = Spin;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                case ES_NO_EVENT:
-                default:
-                    // Unhandled events pass back up to the next level
-                    break;
-            }
-            break;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+				case ES_NO_EVENT:
+				default:
+					// Unhandled events pass back up to the next level
+					break;
+			}
+			break;
 
-        case Reverse:
-            switch (ThisEvent.EventType) {
+		case Reverse:
+			switch (ThisEvent.EventType) {
 				case ENTRY_EVENT:
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-100);
 					ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, REVERSE_TIME);
 					break;
-                case ES_TIMEOUT:
-                    nextState = Spin;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-                case ES_NO_EVENT:
-                default:
-                    // Unhandled events pass back up to the next level
-                    break;
-            }
-            break;
+				case ES_TIMEOUT:
+					nextState = Spin;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+					break;
+				case ES_NO_EVENT:
+				default:
+					// Unhandled events pass back up to the next level
+					break;
+			}
+			break;
 
-        case Spin:
-            switch (ThisEvent.EventType) {
+		case Spin:
+			switch (ThisEvent.EventType) {
 				case ENTRY_EVENT: // ccw to line up with door slightly more easily
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(100);
 					ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
 					break;
-                case ES_TIMEOUT:
-                    nextState = Forward;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-                case ES_NO_EVENT:
-                default:
-                    // Unhandled events pass back up to the next level
-                    break;
-            }
-            break;
+				case ES_TIMEOUT:
+					nextState = Forward;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+					break;
+				case ES_NO_EVENT:
+				default:
+					// Unhandled events pass back up to the next level
+					break;
+			}
+			break;
 
-        default:
-            // Handle unexpected state
-            break;
-    }
+		default:
+			// Handle unexpected state
+			break;
+	}
+
 
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event

@@ -31,6 +31,8 @@
 #include "ES_Framework.h"
 #include "BOARD.h"
 #include "DepositSubHSM.h"
+#include "WanderSubHSM.h"
+#include "FollowTapeHSM.h"
 #include "RammingSubHSM.h"
 
 /*******************************************************************************
@@ -86,7 +88,7 @@ uint8_t InitDepositSubHSM(void)
 {
     ES_Event returnEvent;
 
-	InitRammingSubHSM();
+	InitFollowTapeSubHSM();
 	
     CurrentState = InitPSubState;
     returnEvent = RunDepositSubHSM(INIT_EVENT);
@@ -119,62 +121,62 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
     ES_Tattle(); // trace call stack
 
     switch (CurrentState) {
-    case InitPSubState: // If current state is initial Psedudo State
-        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
-        {
-            // this is where you would put any actions associated with the
-            // transition from the initial pseudo-state into the actual
-            // initial state
+		case InitPSubState: // If current state is initial Psedudo State
+			if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+			{
+				// this is where you would put any actions associated with the
+				// transition from the initial pseudo-state into the actual
+				// initial state
 
-            // now put the machine into the actual initial state
-            nextState = FindTape;
-            makeTransition = TRUE;
-            ThisEvent.EventType = ES_NO_EVENT;
-        }
-        break;
-
-    case Continue_Wandering: // in the first state, replace this with correct names
-        ThisEvent = RunWanderSubHSM(ThisEvent);
-		switch (ThisEvent.EventType) {
-			case TAPE:
-				nextState = FollowTape;
+				// now put the machine into the actual initial state
+				nextState = FindTape;
 				makeTransition = TRUE;
-				ThisEvent.EventType = ES_NO_EVENT; 
+				ThisEvent.EventType = ES_NO_EVENT;
+			}
+			break;
+
+		case Continue_Wandering: // in the first state, replace this with correct names
+			ThisEvent = RunWanderSubHSM(ThisEvent);
+			switch (ThisEvent.EventType) {
+				case TAPE:
+					nextState = FollowTape;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT; 
+					break;
+				case TRACKWIRE:
+					nextState = Ramming;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT; 
+					break;
+				case ES_NO_EVENT:
+				default: // all unhandled events pass the event back up to the next level
+					break;
 				break;
+			}
+		case FollowTape:
+			switch (ThisEvent.EventType) {
+			ThisEvent = RunFollowTapeSubHSM(ThisEvent);
 			case TRACKWIRE:
 				nextState = Ramming;
 				makeTransition = TRUE;
 				ThisEvent.EventType = ES_NO_EVENT; 
 				break;
+			break;
 			case ES_NO_EVENT:
 			default: // all unhandled events pass the event back up to the next level
 				break;
+			}
+		case Ramming:
+			ThisEvent = RunRammingSubHSM(ThisEvent);
+			switch (ThisEvent.EventType) {
+				case ES_NO_EVENT:
+				default:
+					break;
+			}
+			break;	//No events handled here and not inside level 3 sm
+		default: // all unhandled states fall into here
 			break;
-		}
-    case FollowTape:
-		switch (ThisEvent.EventType) {
-		ThisEvent = RunFollowTapeSubHSM(ThisEvent);
-		case TRACKWIRE:
-			nextState = Ramming;
-			makeTransition = TRUE;
-			ThisEvent.EventType = ES_NO_EVENT; 
-			break;
-        break;
-        case ES_NO_EVENT:
-        default: // all unhandled events pass the event back up to the next level
-            break;
-        }
-	case Ramming:
-		ThisEvent = RunRammingSubHSM(ThisEvent);
-		switch (ThisEvent.EventType) {
-			case ES_NO_EVENT:
-			default:
-				break;
-			//No events handled here and not inside level 3 sm
-    default: // all unhandled states fall into here
-        break;
-    } // end switch on Current State
-
+	}
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
         RunDepositSubHSM(EXIT_EVENT); // <- rename to your own Run function
