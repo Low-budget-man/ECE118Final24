@@ -31,6 +31,7 @@
 #include "ES_Framework.h"
 #include "BOARD.h"
 #include "WanderSubHSM.h"
+#include "Maw.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -43,12 +44,14 @@ typedef enum {
 } WanderSubHSMState_t;
 
 static const char *StateNames[] = {
-    "InitPSubState",
-    "Forward",
+	"InitPSubState",
+	"Forward",
 	"Reverse",
 	"Spin",
 };
 
+#define REVERSE_TIME 1000
+#define SPIN_TIME 100
 
 
 /*******************************************************************************
@@ -116,85 +119,98 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent)
     ES_Tattle(); // trace call stack
 
     switch (CurrentState) {
-    case InitPSubState: // If current state is initial Psedudo State
-        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
-        {
-            // this is where you would put any actions associated with the
-            // transition from the initial pseudo-state into the actual
-            // initial state
+		case InitPSubState: // If current state is initial Psedudo State
+			if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+			{
+				// this is where you would put any actions associated with the
+				// transition from the initial pseudo-state into the actual
+				// initial state
 
-            // now put the machine into the actual initial state
-            nextState = SubFirstState;
-            makeTransition = TRUE;
-            ThisEvent.EventType = ES_NO_EVENT;
-        }
-        break;
+				// now put the machine into the actual initial state
+				nextState = Forward;
+				makeTransition = TRUE;
+				ThisEvent.EventType = ES_NO_EVENT;
+			}
+			break;
 
 		//The following switch statement written by ChatGPT, because I'm exhausted. -Max
-        switch (CurrentState) {
-        case Forward:
-            switch (ThisEvent.EventType) {
-				case ENTRY_EVENT:
-					Maw_LeftMtrSpeed(100);
-					Maw_RightMtrSpeed(100);
+		case Forward:
+			switch (ThisEvent.EventType) {
+				case ES_ENTRY:
+//					Maw_LeftMtrSpeed(100);
+//					Maw_RightMtrSpeed(100);
 					break;
-                case TAPE_DETECTED:
-                case BUMPER_HIT:
-                    nextState = Reverse;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+				case TAPE:
+					nextState = Reverse;
+					makeTransition = TRUE;
+					ThisEvent.EventType = TAPE;
                     break;
-				case PING: // May need specific param to state value is low enough to dodge
-					nextState = Spin;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                case ES_NO_EVENT:
-                default:
-                    // Unhandled events pass back up to the next level
-                    break;
-            }
-            break;
-
-        case Reverse:
-            switch (ThisEvent.EventType) {
-				case ENTRY_EVENT:
-					Maw_LeftMtrSpeed(-100);
-					Maw_RightMtrSpeed(-100);
+				case BUMPER:
+					nextState = Reverse;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
 					break;
-                case ES_TIMEOUT:
-                    nextState = Spin;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+				case PINGCLOSE: // May need specific param to state value is low enough to dodge
+					if(ThisEvent.EventParam){
+                        nextState = Spin;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
                     break;
-                case ES_NO_EVENT:
-                default:
-                    // Unhandled events pass back up to the next level
-                    break;
-            }
-            break;
-
-        case Spin:
-            switch (ThisEvent.EventType) {
-				case ENTRY_EVENT:
-					Maw_LeftMtrSpeed(-100);
-					Maw_RightMtrSpeed(100);
+				case ES_NO_EVENT:
+				default:
+					// Unhandled events pass back up to the next level
 					break;
-                case ES_TIMEOUT:
-                    nextState = Forward;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-                case ES_NO_EVENT:
-                default:
-                    // Unhandled events pass back up to the next level
-                    break;
-            }
-            break;
+			}
+			break;
 
-        default:
-            // Handle unexpected state
-            break;
-    }
+		case Reverse:
+			switch (ThisEvent.EventType) {
+				case ES_ENTRY:
+//					Maw_LeftMtrSpeed(-100);
+//					Maw_RightMtrSpeed(-100);
+//					ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, REVERSE_TIME);
+					break;
+				case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == WANDER_SUBSTATE_TIMER){
+                        nextState = Spin;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+					break;
+				case ES_NO_EVENT:
+				default:
+					// Unhandled events pass back up to the next level
+					break;
+			}
+			break;
+
+		case Spin:
+			switch (ThisEvent.EventType) {
+				case ES_ENTRY: // ccw to line up with door slightly more easily
+//					Maw_LeftMtrSpeed(-100);
+//					Maw_RightMtrSpeed(100);
+//					ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
+					break;
+				case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == WANDER_SUBSTATE_TIMER){
+                        nextState = Forward;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+					break;
+				case ES_NO_EVENT:
+				default:
+					// Unhandled events pass back up to the next level
+					break;
+			}
+			break;
+
+		default:
+			// Handle unexpected state
+			break;
+	}
+
 
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event

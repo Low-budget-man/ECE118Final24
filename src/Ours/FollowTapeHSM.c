@@ -1,14 +1,15 @@
 /*
  * File: TemplateSubHSM.c
  * Author: J. Edward Carryer
- * Modified: Gabriel H Elkaim
+ * Modified: Gabriel Elkaim and Soja-Marie Morgens
  *
  * Template file to set up a Heirarchical State Machine to work with the Events and
  * Services Framework (ES_Framework) on the Uno32 for the CMPE-118/L class. Note that
  * this file will need to be modified to fit your exact needs, and most of the names
  * will have to be changed to match your code.
  *
- * There is for a substate machine. Make sure it has a unique name
+ * There is another template file for the SubHSM's that is slightly differet, and
+ * should be used for all of the subordinate state machines (flat or heirarchical)
  *
  * This is provided as an example and a good place to start.
  *
@@ -30,37 +31,51 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "BOARD.h"
-#include "TemplateHSM.h"
-#include "TemplateSubHSM.h"
+#include "FollowTapeHSM.h"
+#include "OMWSubHSM.h" 
+#include "AvoidObstacleSubHSM.h" 
+/*******************************************************************************
+ * PRIVATE #DEFINES                                                            *
+ ******************************************************************************/
+//Include any defines you need to do
+
+#define CORRECT_TAPE_MASK 0b101000
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
+
+
 typedef enum {
-    InitPSubState,
-    SubFirstState,
-} TemplateSubHSMState_t;
+    InitPState,
+    Align,
+	Forward,
+	OMW,
+	DodgeObstacle,
+} TemplateHSMState_t;
 
 static const char *StateNames[] = {
-	"InitPSubState",
-	"SubFirstState",
+	"InitPState",
+	"Align",
+	"Forward",
+	"OMW",
+	"DodgeObstacle",
 };
-
 
 
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
 /* Prototypes for private functions for this machine. They should be functions
-   relevant to the behavior of this state machine */
-
+   relevant to the behavior of this state machine
+   Example: char RunAway(uint_8 seconds);*/
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                            *
  ******************************************************************************/
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
 
-static TemplateSubHSMState_t CurrentState = InitPSubState; // <- change name to match ENUM
+static TemplateHSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
 
 
@@ -69,7 +84,7 @@ static uint8_t MyPriority;
  ******************************************************************************/
 
 /**
- * @Function InitTemplateSubHSM(uint8_t Priority)
+ * @Function InitTemplateHSM(uint8_t Priority)
  * @param Priority - internal variable to track which event queue to use
  * @return TRUE or FALSE
  * @brief This will get called by the framework at the beginning of the code
@@ -78,20 +93,20 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTemplateSubHSM(void)
+uint8_t InitTemplateHSM(uint8_t Priority)
 {
-    ES_Event returnEvent;
-
-    CurrentState = InitPSubState;
-    returnEvent = RunTemplateSubHSM(INIT_EVENT);
-    if (returnEvent.EventType == ES_NO_EVENT) {
+    MyPriority = Priority;
+    // put us into the Initial PseudoState
+    CurrentState = InitPState;
+    // post the initial transition event
+    if (ES_PostToService(MyPriority, INIT_EVENT) == TRUE) {
         return TRUE;
+    } else {
+        return FALSE;
     }
-    return FALSE;
 }
-
 /**
- * @Function RunTemplateSubHSM(ES_Event ThisEvent)
+ * @Function RunTemplateHSM(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
  * @return Event - return event (type and param), in general should be ES_NO_EVENT
  * @brief This function is where you implement the whole of the heirarchical state
@@ -105,45 +120,110 @@ uint8_t InitTemplateSubHSM(void)
  *       not consumed as these need to pass pack to the higher level state machine.
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
-ES_Event RunTemplateSubHSM(ES_Event ThisEvent)
+ES_Event RunTemplateHSM(ES_Event ThisEvent)
 {
     uint8_t makeTransition = FALSE; // use to flag transition
-    TemplateSubHSMState_t nextState; // <- change type to correct enum
+    TemplateHSMState_t nextState; // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
 
     switch (CurrentState) {
-    case InitPSubState: // If current state is initial Psedudo State
+    case InitPState: // If current state is initial Pseudo State
         if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
         {
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
-
+            // Initialize all sub-state machines
+            InitTemplateSubHSM();
             // now put the machine into the actual initial state
-            nextState = SubFirstState;
+            nextState = Align;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
+            ;
         }
         break;
 
-    case SubFirstState: // in the first state, replace this with correct names
+    case Align: 
         switch (ThisEvent.EventType) {
-        case ES_NO_EVENT:
-        default: // all unhandled events pass the event back up to the next level
-            break;
-        }
+			case ENTRY_EVENT: 
+					Maw_LeftMtrSpeed(-20);
+					Maw_RightMtrSpeed(20);
+					break;
+			case TAPE: 
+				if(ThisEvent.EventParam == 0){
+					nextState = Forward;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+				}
+				else if ( ThisEvent.EventParam == CORRECT_TAPE_MASK){
+					nextState = OMW;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+				}
+				break;
+			case ES_NO_EVENT:
+			default:
+				break;
+			}
         break;
-        
+		
+	case Forward:
+		switch (ThisEvent.EventType) {
+			case ENTRY_EVENT: 
+					Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(100);
+					break;
+			case TAPE: 
+				if(ThisEvent.EventParam != 0){
+					nextState = Forward;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+				}
+			case ES_NO_EVENT:
+			default:
+				break;
+			}
+		break;
+		
+	case OMW:
+		switch (ThisEvent.EventType) {
+			ThisEvent = RunOMWSubHSM(ThisEvent);
+			case BUMPER: 
+				nextState = DodgeObstacle;
+				makeTransition = TRUE;
+				ThisEvent.EventType = ES_NO_EVENT;
+			case ES_NO_EVENT:
+			default:
+				break;
+			}
+		break;
+		
+	case OMW:
+		switch (ThisEvent.EventType) {
+			ThisEvent = RunDodgeObstacleSubHSM(ThisEvent);
+			case OBSTACLE_AVOIDED: 
+				nextState = OMW;
+				makeTransition = TRUE;
+				ThisEvent.EventType = ES_NO_EVENT;
+			case ES_NO_EVENT:
+			default:
+				break;
+			}
+		break;
+		
+	
+	
+		
     default: // all unhandled states fall into here
         break;
     } // end switch on Current State
 
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
-        RunTemplateSubHSM(EXIT_EVENT); // <- rename to your own Run function
+        RunTemplateHSM(EXIT_EVENT); // <- rename to your own Run function
         CurrentState = nextState;
-        RunTemplateSubHSM(ENTRY_EVENT); // <- rename to your own Run function
+        RunTemplateHSM(ENTRY_EVENT); // <- rename to your own Run function
     }
 
     ES_Tail(); // trace call stack end
@@ -154,4 +234,3 @@ ES_Event RunTemplateSubHSM(ES_Event ThisEvent)
 /*******************************************************************************
  * PRIVATE FUNCTIONS                                                           *
  ******************************************************************************/
-

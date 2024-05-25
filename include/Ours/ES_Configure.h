@@ -56,7 +56,8 @@ typedef enum {
     PING,
     DEPOSITED,
     PINGCLOSE,
-    NUMBEROFEVENTS
+    NUMBEROFEVENTS,
+	OBSTACLE_AVOIDED,
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
@@ -79,6 +80,10 @@ static const char *EventNames[] = {
 	"PING",
 	"DEPOSITED",
 	"PINGCLOSE",
+    "OBSTACLE_AVOIDED",
+	"NUMBEROFEVENTS",
+
+
 };
 
 
@@ -101,9 +106,9 @@ static const char *EventNames[] = {
 #define TIMER1_RESP_FUNC PostSensorService
 #define TIMER2_RESP_FUNC PostMawHSM
 #define TIMER3_RESP_FUNC PostMawHSM
-#define TIMER4_RESP_FUNC TIMER_UNUSED
-#define TIMER5_RESP_FUNC TIMER_UNUSED
-#define TIMER6_RESP_FUNC TIMER_UNUSED
+#define TIMER4_RESP_FUNC PostMawHSM
+#define TIMER5_RESP_FUNC PostMawHSM
+#define TIMER6_RESP_FUNC PostMawHSM
 #define TIMER7_RESP_FUNC TIMER_UNUSED
 #define TIMER8_RESP_FUNC TIMER_UNUSED
 #define TIMER9_RESP_FUNC TIMER_UNUSED
@@ -124,6 +129,9 @@ static const char *EventNames[] = {
 #define PING_DEBOUNCE_T 1
 #define WANDER_TIMER 2
 #define GAME_TIMER 3
+#define RAM_TIMER 4
+#define WANDER_SUBSTATE_TIMER 5
+#define AVOID_OBSTACLE_TIMER 6
 /****************************************************************************/
 // The maximum number of services sets an upper bound on the number of 
 // services that the framework will handle. Reasonable values are 8 and 16
