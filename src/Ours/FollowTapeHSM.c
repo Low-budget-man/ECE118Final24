@@ -38,8 +38,8 @@
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
 //Include any defines you need to do
-
-#define CORRECT_TAPE_MASK 0b101000
+// Temp 1 for testing
+#define CORRECT_TAPE_MASK 1
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
