@@ -52,6 +52,7 @@ typedef enum {
 	Forward,
 	OMW,
 	AvoidObstacle,
+
 } FollowTapeHSMState_t;
 
 static const char *StateNames[] = {

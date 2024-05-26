@@ -19,6 +19,7 @@
 #define RIGHT_BIAS 0
 #define LEFT_BIAS 0
 
+
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *
  ******************************************************************************/
@@ -60,7 +61,7 @@ char Maw_RightMtrSpeed(char newSpeed);
 
 /**
  * @Function Maw_RightDoor(uint8_t Position)
- * @param Position - a true or false value for OPEN or CLOSED
+ * @param Position - a true for depositing or false for collecting
  * @return SUCCESS or ERROR
  * @brief  This function is used to open and close the doors
  * @author Cooper Cantrell, 2024.5.16 */
@@ -68,7 +69,7 @@ char Maw_RightDoor(uint8_t Position);
 
 /**
  * @Function Maw_LeftDoor(uint8_t Position)
- * @param Position - a true or false value for OPEN or CLOSED
+ * @param Position - a true for depositing or false for collecting
  * @return SUCCESS or ERROR
  * @brief  This function is used to open and close the doors
  * @author Cooper Cantrell, 2024.5.16 */

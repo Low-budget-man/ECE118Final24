@@ -124,6 +124,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 		case InitPSubState: // If current state is initial Psedudo State
 			if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
 			{
+                InitRammingSubHSM();
 				// this is where you would put any actions associated with the
 				// transition from the initial pseudo-state into the actual
 				// initial state
@@ -168,7 +169,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 				break;
 			}
 		case Ramming:
-			//ThisEvent = RunRammingSubHSM(ThisEvent);
+			ThisEvent = RunRammingSubHSM(ThisEvent);
 			switch (ThisEvent.EventType) {
 				case ES_EXIT:
                     ThisEvent.EventType = ES_NO_EVENT;

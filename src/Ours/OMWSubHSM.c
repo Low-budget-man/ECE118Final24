@@ -30,7 +30,7 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "BOARD.h"
-#include "OMWHSM.h"
+#include "SensorEventChecker.h"
 #include "OMWSubHSM.h"
 
 /*******************************************************************************
@@ -86,12 +86,7 @@ uint8_t InitOMWSubHSM(void)
 {
     ES_Event returnEvent;
 
-    CurrentState = InitPSubState;
-    returnEvent = RunOMWSubHSM(INIT_EVENT);
-    if (returnEvent.EventType == ES_NO_EVENT) {
-        return TRUE;
-    }
-    return FALSE;
+    return TRUE;
 }
 
 /**
@@ -111,80 +106,24 @@ uint8_t InitOMWSubHSM(void)
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
 ES_Event RunOMWSubHSM(ES_Event ThisEvent)
 {
-    uint8_t makeTransition = FALSE; // use to flag transition
-    OMWSubHSMState_t nextState; // <- change type to correct enum
-
-    ES_Tattle(); // trace call stack
-
-    switch (CurrentState) {
-    case InitPSubState: // If current state is initial Psedudo State
-        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
-        {
-            // this is where you would put any actions associated with the
-            // transition from the initial pseudo-state into the actual
-            // initial state
-
-            // now put the machine into the actual initial state
-            nextState = Straight;
-            makeTransition = TRUE;
-            ThisEvent.EventType = ES_NO_EVENT;
-        }
-        break;
-
-    case Straight: // in the first state, replace this with correct names
-        switch (ThisEvent.EventType) {
-			case ENTRY_EVENT:
-				Maw_LeftMtrSpeed(100);
-				Maw_RightMtrSpeed(100);
-				break;
-			case TAPE:
-				//TODO: Define the parameters that make it go left vs right
-			case ES_NO_EVENT:
-			default: // all unhandled events pass the event back up to the next level
-				break;
-			}
-        break;
-		
-	case TiltLeft: 
-        switch (ThisEvent.EventType) {
-			case ENTRY_EVENT:
-				Maw_LeftMtrSpeed(90);
-				Maw_RightMtrSpeed(100);
-				break;
-			case TAPE: 
-				//TODO: Define tape parameter
-			case ES_NO_EVENT:
-			default: // all unhandled events pass the event back up to the next level
-				break;
-		}
-        break;
-		
-	case TiltRight: // in the first state, replace this with correct names
-        switch (ThisEvent.EventType) {
-			case ENTRY_EVENT:
-				Maw_LeftMtrSpeed(90);
-				Maw_RightMtrSpeed(100);
-				break;
-			case TAPE: 
-				//TODO: Define tape parameter
-			case ES_NO_EVENT:
-			default: // all unhandled events pass the event back up to the next level
-				break;
-        }
-        break;
-        
-    default: // all unhandled states fall into here
-        break;
-    } // end switch on Current State
-
-    if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
-        // recursively call the current state with an exit event
-        RunOMWSubHSM(EXIT_EVENT); // <- rename to your own Run function
-        CurrentState = nextState;
-        RunOMWSubHSM(ENTRY_EVENT); // <- rename to your own Run function
+    ThisEvent.EventType = ES_NO_EVENT;
+        //Both tapes are on turn left
+    if((ThisEvent.EventParam & TAPEfrrBit) && (ThisEvent.EventParam & TAPEfrBit)){
+        //Maw_LeftMtrSpeed(50);
+        //Maw_RightMtrSpeed(100);
+    }else//Both tapes are off turn right
+    if(!(ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+        //Maw_LeftMtrSpeed(100);
+        //Maw_RightMtrSpeed(50);
+    }else//left tape on right tape off NOT EXPECTED STOPPING
+    if(!(ThisEvent.EventParam & TAPEfrrBit) && (ThisEvent.EventParam & TAPEfrBit)){
+        //Maw_LeftMtrSpeed(0);
+        //Maw_RightMtrSpeed(0);
+    }else//left tape off right tape on on course
+    if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+        //Maw_LeftMtrSpeed(100);
+        //Maw_RightMtrSpeed(100);
     }
-
-    ES_Tail(); // trace call stack end
     return ThisEvent;
 }
 
