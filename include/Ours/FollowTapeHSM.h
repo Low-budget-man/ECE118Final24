@@ -51,7 +51,7 @@
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitFollowTapeHSM(uint8_t Priority);
+uint8_t InitFollowTapeHSM(void);
 
 
 

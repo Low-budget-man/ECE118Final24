@@ -127,7 +127,8 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 				// this is where you would put any actions associated with the
 				// transition from the initial pseudo-state into the actual
 				// initial state
-
+                // init all non init SSM that are called here 
+                InitFollowTapeHSM();
 				// now put the machine into the actual initial state
 				nextState = Continue_Wandering;
 				makeTransition = TRUE;
@@ -154,8 +155,8 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 				break;
 			}
 		case FollowTape:
-			switch (ThisEvent.EventType) {
-//			ThisEvent = RunFollowTapeSubHSM(ThisEvent);
+			ThisEvent = RunFollowTapeHSM(ThisEvent);
+            switch (ThisEvent.EventType) {
 			case TRACKWIRE:
 				nextState = Ramming;
 				makeTransition = TRUE;
