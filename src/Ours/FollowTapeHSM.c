@@ -38,8 +38,7 @@
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
 //Include any defines you need to do
-// Temp 1 for testing
-#define CORRECT_TAPE_MASK 1
+
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -133,7 +132,7 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             // Initialize all sub-state machines
-            //InitTemplateSubHSM();
+            //InitAvoidObstacleSubHSM();
             // now put the machine into the actual initial state
             nextState = Align;
             makeTransition = TRUE;
@@ -204,7 +203,7 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
 		
 	case AvoidObstacle:
 		switch (ThisEvent.EventType) {
-			//ThisEvent = RunDodgeObstacleSubHSM(ThisEvent);
+//			ThisEvent = RunDodgeObstacleSubHSM(ThisEvent);
 			case OBSTACLE_AVOIDED: 
 				nextState = OMW;
 				makeTransition = TRUE;

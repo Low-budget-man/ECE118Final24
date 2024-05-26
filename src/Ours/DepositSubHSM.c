@@ -43,6 +43,7 @@ typedef enum {
     Continue_Wandering,
 	FollowTape,
 	Ramming,
+    //OMW,
 } DepositSubHSMState_t;
 
 static const char *StateNames[] = {
@@ -124,12 +125,13 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 		case InitPSubState: // If current state is initial Psedudo State
 			if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
 			{
-                InitRammingSubHSM();
 				// this is where you would put any actions associated with the
 				// transition from the initial pseudo-state into the actual
 				// initial state
                 // init all non init SSM that are called here 
+                InitRammingSubHSM();
                 InitFollowTapeHSM();
+                //InitOMWSubHSM()
 				// now put the machine into the actual initial state
 				nextState = Continue_Wandering;
 				makeTransition = TRUE;
@@ -143,7 +145,30 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 				case TAPE:
 					nextState = FollowTape;
 					makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT; 
+                    /*I don't to have this added unless it has been discussed
+                     * without being drawn out 
+                    */
+//                    if(ThisEvent.EventParam == CORRECT_TAPE_MASK){
+//                        nextState = OMW;
+//                        makeTransition = TRUE;
+//                        ThisEvent.EventType = ES_NO_EVENT; 
+//                    }
 					break;
+//                case OMW:
+//                    ThisEvent = RunOMWSubHSM(ThisEvent);
+//                    switch (ThisEvent.EventType) {
+//                    case TRACKWIRE:
+//                        nextState = Ramming;
+//                        makeTransition = TRUE;
+//                        ThisEvent.EventType = ES_NO_EVENT; 
+//                        break;
+//                    break;
+//                    case ES_NO_EVENT:
+//                    default: // all unhandled events pass the event back up to the next level
+//                        break;
+//                    }
+//                    break
 				case TRACKWIRE:
 					nextState = Ramming;
 					makeTransition = TRUE;

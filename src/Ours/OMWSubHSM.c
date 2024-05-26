@@ -106,23 +106,25 @@ uint8_t InitOMWSubHSM(void)
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
 ES_Event RunOMWSubHSM(ES_Event ThisEvent)
 {
-    ThisEvent.EventType = ES_NO_EVENT;
-        //Both tapes are on turn left
-    if((ThisEvent.EventParam & TAPEfrrBit) && (ThisEvent.EventParam & TAPEfrBit)){
-        //Maw_LeftMtrSpeed(50);
-        //Maw_RightMtrSpeed(100);
-    }else//Both tapes are off turn right
-    if(!(ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
-        //Maw_LeftMtrSpeed(100);
-        //Maw_RightMtrSpeed(50);
-    }else//left tape on right tape off NOT EXPECTED STOPPING
-    if(!(ThisEvent.EventParam & TAPEfrrBit) && (ThisEvent.EventParam & TAPEfrBit)){
-        //Maw_LeftMtrSpeed(0);
-        //Maw_RightMtrSpeed(0);
-    }else//left tape off right tape on on course
-    if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
-        //Maw_LeftMtrSpeed(100);
-        //Maw_RightMtrSpeed(100);
+    if(ThisEvent.EventType == TAPE){
+        ThisEvent.EventType = ES_NO_EVENT;
+            //Both tapes are on turn left
+        if((ThisEvent.EventParam & TAPEfrrBit) && (ThisEvent.EventParam & TAPEfrBit)){
+            //Maw_LeftMtrSpeed(50);
+            //Maw_RightMtrSpeed(100);
+        }else//Both tapes are off turn right
+        if(!(ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+            //Maw_LeftMtrSpeed(100);
+            //Maw_RightMtrSpeed(50);
+        }else//left tape on right tape off NOT EXPECTED STOPPING
+        if(!(ThisEvent.EventParam & TAPEfrrBit) && (ThisEvent.EventParam & TAPEfrBit)){
+            //Maw_LeftMtrSpeed(0);
+            //Maw_RightMtrSpeed(0);
+        }else//left tape off right tape on on course
+        if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+            //Maw_LeftMtrSpeed(100);
+            //Maw_RightMtrSpeed(100);
+        }
     }
     return ThisEvent;
 }
