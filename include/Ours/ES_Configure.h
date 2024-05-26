@@ -56,8 +56,8 @@ typedef enum {
     PING,
     DEPOSITED,
     PINGCLOSE,
-    NUMBEROFEVENTS,
 	OBSTACLE_AVOIDED,
+    NUMBEROFEVENTS
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
