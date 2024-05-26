@@ -99,11 +99,9 @@ uint8_t InitFollowTapeHSM(void)
     // put us into the Initial PseudoState
     CurrentState = InitPState;
     // post the initial transition event
-    if (ES_PostToService(MyPriority, INIT_EVENT) == TRUE) {
-        return TRUE;
-    } else {
-        return FALSE;
-    }
+    ES_Event ThisEvent;
+    ThisEvent.EventType = ES_INIT;
+    RunFollowTapeHSM(ThisEvent);
 }
 /**
  * @Function RunTemplateHSM(ES_Event ThisEvent)
