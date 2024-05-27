@@ -132,7 +132,7 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             // Initialize all sub-state machines
-            //InitAvoidObstacleSubHSM();
+            InitAvoidObstacleSubHSM();
             // now put the machine into the actual initial state
             nextState = Align;
             makeTransition = TRUE;
@@ -189,8 +189,8 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
 		break;
 		
 	case OMW:
+        ThisEvent = RunOMWSubHSM(ThisEvent);
 		switch (ThisEvent.EventType) {
-			//ThisEvent = RunOMWSubHSM(ThisEvent);
 			case BUMPER: 
 				nextState = AvoidObstacle;
 				makeTransition = TRUE;
