@@ -304,6 +304,13 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
 					ThisEvent.EventType = ES_NO_EVENT;
                     break;
                 case TAPE:
+                    // may want to check exactly what we want here or change 
+                    // what state we go into after this as when we hit tape it 
+                    // is not 100% that we will hit it in such a way that OMW 
+                    // will be able to properly handle it (i.e if this hits 
+                    // dead on perpendicular I don't think OMW can handle it)
+                    // however as of now 5/26/2024 6:33PM the state machine 
+                    // to seems behave as it would in our notebook :)
                     ThisEvent.EventType = OBSTACLE_AVOIDED;
                     nextState = BackUp;
                     makeTransition = TRUE;
