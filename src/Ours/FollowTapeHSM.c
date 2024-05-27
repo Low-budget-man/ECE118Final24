@@ -202,8 +202,8 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
 		break;
 		
 	case AvoidObstacle:
+        ThisEvent = RunAvoidObstacleSubHSM(ThisEvent);
 		switch (ThisEvent.EventType) {
-//			ThisEvent = RunDodgeObstacleSubHSM(ThisEvent);
 			case OBSTACLE_AVOIDED: 
 				nextState = OMW;
 				makeTransition = TRUE;
