@@ -86,9 +86,15 @@ static uint8_t MyPriority;
  * @author J. Edward Carryer, 2011.10.23 19:25 */
 uint8_t InitOMWSubHSM(void)
 {
-    ES_Event returnEvent;
+	
+	ES_Event returnEvent;
 
-    return TRUE;
+    CurrentState = InitPSubState;
+    returnEvent = RunAvoidObstacleSubHSM(INIT_EVENT);
+    if (returnEvent.EventType == ES_NO_EVENT) {
+        return TRUE;
+    }
+    return FALSE;
 }
 
 /**
@@ -165,7 +171,16 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
             //Maw_RightMtrSpeed(100);
         }
     }
-    ES_Tail();
+    
+	if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
+        // recursively call the current state with an exit event
+        RunOMWSubHSM(EXIT_EVENT); // <- rename to your own Run function
+        CurrentState = nextState;
+        RunOMWSubHSM(ENTRY_EVENT); // <- rename to your own Run function
+    }
+	
+	ES_Tail();
+	
     return ThisEvent;
 }
 
