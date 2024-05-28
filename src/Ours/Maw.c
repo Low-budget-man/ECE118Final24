@@ -58,21 +58,28 @@
  unsigned int ScaleValue(char newSpeed){
     // convert the Max motor voltage (8V) to the same 32 mV units of the output
     // of the read pin function
-//    float mathSpeed = newSpeed;
-//    float maxV = (MAX_MOTOR_VOLTAGE*1000)/32;
-//    float CurrentV = (float) CURRENT_BATT_VOLT;
-//    unsigned int out = 0;
-//    if(CurrentV < maxV){
-//        out = 0;
-//        printf("\r\n ERROR ERROR---BATT VOLTAGE TOO LOW TO RUN [%d]---ERROR ERROR",CURRENT_BATT_VOLT);
-//    }
-//    else{
-//        out = (unsigned int) ((mathSpeed * maxV)/CurrentV);
-//    }
-//    return out;
+    float mathSpeed = newSpeed;
+    float maxV = (MAX_MOTOR_VOLTAGE*1000)/32;
+    float CurrentV = (float) CURRENT_BATT_VOLT;
+    unsigned int out = 0;
+    if(CurrentV < maxV){
+        out = 0;
+        printf("\r\n ERROR ERROR---BATT VOLTAGE TOO LOW TO RUN [%d]---ERROR ERROR",CURRENT_BATT_VOLT);
+    }
+    else{
+        out = (unsigned int) ((10*mathSpeed * maxV)/CurrentV);
+    }
+    if(out < 0 ){
+        printf("warning motors have been over set, moving within bounds");
+        out = 0;
+    } else if(out > 1000){
+        printf("warning motors have been over set, moving within bounds");
+        out = 1000;
+    }
+    return out;
      
-     //issues with battery reading motor for now
-     return newSpeed* 10;
+    //issues with battery reading motor for now
+    //return newSpeed* 10;
 }
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                           *
@@ -146,7 +153,7 @@ char Maw_LeftMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(LEFT_DIR1);
         IO_PortsClearPortBits(LEFT_DIR2);
     }
-    newSpeed += LEFT_BIAS;
+    newSpeed *= LEFT_BIAS;
     PWM_SetDutyCycle(LEFT_MOTOR, ScaleValue(newSpeed));
     return SUCCESS;
 }
@@ -171,7 +178,7 @@ char Maw_RightMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
     }
-    newSpeed += RIGHT_BIAS;
+    newSpeed *= RIGHT_BIAS;
     PWM_SetDutyCycle(RIGHT_MOTOR, ScaleValue(newSpeed));
     return SUCCESS;
 }

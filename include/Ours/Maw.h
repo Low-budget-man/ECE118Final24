@@ -15,9 +15,9 @@
  ******************************************************************************/
 // This is in Volts
 #define MAX_MOTOR_VOLTAGE 8 
-// the motor Bias is a number that will be added to the motors as you set the speed
-#define RIGHT_BIAS 0
-#define LEFT_BIAS 0
+// the motor Bias is a number that will be multiplied to the motors as you set the speed, keep between 0-1
+#define RIGHT_BIAS 1
+#define LEFT_BIAS 1
 
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *
