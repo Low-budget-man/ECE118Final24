@@ -135,8 +135,8 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
         case Forward:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    //					Maw_LeftMtrSpeed(100);
-                    //					Maw_RightMtrSpeed(100);
+                    Maw_LeftMtrSpeed(100);
+                    Maw_RightMtrSpeed(100);
                     break;
                 case TAPE:
                     nextState = Reverse;
@@ -171,9 +171,9 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
         case Reverse:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    //					Maw_LeftMtrSpeed(-100);
-                    //					Maw_RightMtrSpeed(-100);
-                    //                  ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));
+                    Maw_LeftMtrSpeed(-100);
+                    Maw_RightMtrSpeed(-100);
+                    ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == WANDER_SUBSTATE_TIMER) {
@@ -211,9 +211,9 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
         case Spin:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY: // ccw to line up with door slightly more easily
-                    //					Maw_LeftMtrSpeed(-100);
-                    //					Maw_RightMtrSpeed(100);
-                    //					ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
+                    Maw_LeftMtrSpeed(-100);
+   					Maw_RightMtrSpeed(100);
+                    ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == WANDER_SUBSTATE_TIMER) {
