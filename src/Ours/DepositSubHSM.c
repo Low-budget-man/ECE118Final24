@@ -136,6 +136,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                 // init all non init SSM that are called here 
                 InitRammingSubHSM();
                 InitFollowTapeHSM();
+                InitAlignHSM();
                 InitOMWSubHSM();
 				// now put the machine into the actual initial state
 				nextState = Continue_Wandering;
