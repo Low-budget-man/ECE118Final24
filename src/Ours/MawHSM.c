@@ -173,7 +173,8 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         {
         case ES_ENTRY:
             Maw_RightMtrSpeed(0);
-            Maw_LeftMtrSpeed(0);                
+            Maw_LeftMtrSpeed(0);
+            break;
         case BUMPER:
             nextState = Wander;
             makeTransition = TRUE;
