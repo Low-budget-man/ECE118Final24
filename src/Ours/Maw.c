@@ -19,6 +19,8 @@
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
+#define BAD_READ
+#define ONLY_SERVOS
 #define MawTest
 //NOTE : PING ECHO = y6
 // PING trigger = y10
@@ -34,9 +36,11 @@
 #define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07
 //Bigger to be more open (closer to 90 deg in)
-#define collect 2300
+#define collectR 2250
+#define collectL 750
 // Smaller to be more open (sticking out all of the way)
-#define deposit 700
+#define depositR 2250
+#define depositL 750
 //macro to read the battery voltage
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
 
@@ -61,6 +65,9 @@
     float mathSpeed = newSpeed;
     float maxV = (MAX_MOTOR_VOLTAGE*1000)/32;
     float CurrentV = (float) CURRENT_BATT_VOLT;
+#ifdef BAD_READ
+    CurrentV = 312; //this should be approx 10V
+#endif
     unsigned int out = 0;
     if(CurrentV < maxV){
         out = 0;
@@ -191,10 +198,10 @@ char Maw_RightMtrSpeed(char newSpeed){
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_RightDoor(uint8_t Position){
     if(Position){
-        RC_SetPulseTime(RIGHT_DOOR,collect);
+        RC_SetPulseTime(RIGHT_DOOR,collectR);
     }
     else{
-        RC_SetPulseTime(RIGHT_DOOR,deposit);
+        RC_SetPulseTime(RIGHT_DOOR,depositR);
     }
     return SUCCESS;
 }
@@ -208,11 +215,11 @@ char Maw_RightDoor(uint8_t Position){
  * going to the wrong spot this is to abstract away how the servos are mounted
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_LeftDoor(uint8_t Position){
-    if(!(Position)){
-        RC_SetPulseTime(LEFT_DOOR,collect);
+    if((Position)){
+        RC_SetPulseTime(LEFT_DOOR,collectL);
     }
     else{
-        RC_SetPulseTime(LEFT_DOOR,deposit);
+        RC_SetPulseTime(LEFT_DOOR,depositL);
     }
     return SUCCESS;
 }
@@ -229,6 +236,7 @@ int main(void){
     printf("Maw Test code for the moving parts will begin shortly");
     Maw_Init();
     DELAY(A_BIT);
+#ifndef ONLY_SERVOS
     printf("\r\n Test 1 Right motor");
     DELAY(A_BIT);
     printf("\r\n Right Motor Speed 50");
@@ -263,6 +271,7 @@ int main(void){
     Maw_LeftMtrSpeed(0);
     printf("\r\n Testing of the left motor done ");
     DELAY(A_BIT_MORE);
+#endif
     printf("\r\n Test 3 right servo");
     DELAY(A_BIT);
     printf("\r\n collect");
