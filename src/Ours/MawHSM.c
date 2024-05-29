@@ -54,7 +54,6 @@ typedef enum {
 static const char *StateNames[] = {
 	"InitPState",
 	"Wander",
-	"Deposit",
 };
 
 
