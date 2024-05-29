@@ -140,8 +140,8 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-            //Maw_LeftMtrSpeed(50);
-            //Maw_RightMtrSpeed(100);
+            Maw_LeftMtrSpeed(50);
+            Maw_RightMtrSpeed(100);
         }else//Both tapes are off turn right
         if(!(ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
             if(CurrentState != TiltRight){
@@ -149,8 +149,8 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-            //Maw_LeftMtrSpeed(100);
-            //Maw_RightMtrSpeed(50);
+            Maw_LeftMtrSpeed(100);
+            Maw_RightMtrSpeed(50);
         }else//left tape on right tape off NOT EXPECTED STOPPING
         if(!(ThisEvent.EventParam & TAPEfrrBit) && (ThisEvent.EventParam & TAPEfrBit)){
             if(CurrentState != Panic){
@@ -158,8 +158,8 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-            //Maw_LeftMtrSpeed(0);
-            //Maw_RightMtrSpeed(0);
+            Maw_LeftMtrSpeed(0);
+            Maw_RightMtrSpeed(0);
         }else//left tape off right tape on on course
         if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
             if(CurrentState != Straight){
@@ -167,8 +167,8 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-            //Maw_LeftMtrSpeed(100);
-            //Maw_RightMtrSpeed(100);
+            Maw_LeftMtrSpeed(100);
+            Maw_RightMtrSpeed(100);
         }
     }
     
