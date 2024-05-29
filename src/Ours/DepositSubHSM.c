@@ -35,6 +35,8 @@
 #include "FollowTapeHSM.h"
 #include "RammingSubHSM.h"
 #include "OMWSubHSM.h"
+#include "AlignSubHSM.h"
+#include "SensorEventChecker.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -42,6 +44,7 @@
 typedef enum {
     InitPSubState,
     Continue_Wandering,
+    Align,
 	FollowTape,
 	Ramming,
     //OMW,
@@ -50,6 +53,7 @@ typedef enum {
 static const char *StateNames[] = {
 	"InitPSubState",
 	"Continue_Wandering",
+    "Align",
 	"FollowTape",
 	"Ramming",
 };
@@ -144,7 +148,11 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 			ThisEvent = RunWanderSubHSM(ThisEvent);
 			switch (ThisEvent.EventType) {
 				case TAPE:
-					nextState = FollowTape;
+                    if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+                        nextState = FollowTape;
+                    } else {
+                        nextState = Align;
+                    }
 					makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT; 
                     /*I don't to have this added unless it has been discussed
@@ -180,6 +188,18 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 					break;
 			}
             break;
+        case Align:
+            ThisEvent = RunAlignHSM(ThisEvent);
+            switch (ThisEvent.EventType) {
+                case ALIGNED:
+                    nextState = FollowTape;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    break;
+            }
 		case FollowTape:
 			ThisEvent = RunFollowTapeHSM(ThisEvent);
             switch (ThisEvent.EventType) {
