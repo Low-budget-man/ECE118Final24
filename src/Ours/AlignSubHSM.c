@@ -1,29 +1,3 @@
-/*
- * File: TemplateSubHSM.c
- * Author: J. Edward Carryer
- * Modified: Gabriel Elkaim and Soja-Marie Morgens
- *
- * Template file to set up a Heirarchical State Machine to work with the Events and
- * Services Framework (ES_Framework) on the Uno32 for the CMPE-118/L class. Note that
- * this file will need to be modified to fit your exact needs, and most of the names
- * will have to be changed to match your code.
- *
- * There is another template file for the SubHSM's that is slightly differet, and
- * should be used for all of the subordinate state machines (flat or heirarchical)
- *
- * This is provided as an example and a good place to start.
- *
- * History
- * When           Who     What/Why
- * -------------- ---     --------
- * 09/13/13 15:17 ghe      added tattletail functionality and recursive calls
- * 01/15/12 11:12 jec      revisions for Gen2 framework
- * 11/07/11 11:26 jec      made the queue static
- * 10/30/11 17:59 jec      fixed references to CurrentEvent in RunTemplateSM()
- * 10/23/11 18:20 jec      began conversion from SMTemplate.c (02/20/07 rev)
- */
-
-
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
@@ -31,9 +5,10 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "BOARD.h"
-#include "FollowTapeHSM.h"
+#include "AlignSubHSM.h"
 #include "OMWSubHSM.h" 
 #include "AvoidObstacleSubHSM.h" 
+#include "SensorEventChecker.h"
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
@@ -49,17 +24,13 @@ typedef enum {
     InitPState,
     Align,
 	Forward,
-	OMW,
-	AvoidObstacle,
 
-} FollowTapeHSMState_t;
+} AlignHSMState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
 	"Align",
 	"Forward",
-	"OMW",
-	"AvoidObstacle",
 };
 
 
@@ -75,7 +46,7 @@ static const char *StateNames[] = {
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
 
-static FollowTapeHSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
+static AlignHSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
 
 
@@ -93,14 +64,14 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitFollowTapeHSM(void)
+uint8_t InitAlignHSM(void)
 {
     // put us into the Initial PseudoState
     CurrentState = InitPState;
     // post the initial transition event
     ES_Event ThisEvent;
     ThisEvent.EventType = ES_INIT;
-    RunFollowTapeHSM(ThisEvent);
+    RunAlignHSM(ThisEvent);
 }
 /**
  * @Function RunTemplateHSM(ES_Event ThisEvent)
@@ -117,10 +88,10 @@ uint8_t InitFollowTapeHSM(void)
  *       not consumed as these need to pass pack to the higher level state machine.
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
-ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
+ES_Event RunAlignHSM(ES_Event ThisEvent)
 {
     uint8_t makeTransition = FALSE; // use to flag transition
-    FollowTapeHSMState_t nextState; // <- change type to correct enum
+    AlignHSMState_t nextState; // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
 
@@ -132,7 +103,6 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             // Initialize all sub-state machines
-            InitAvoidObstacleSubHSM();
             // now put the machine into the actual initial state
             nextState = Align;
             makeTransition = TRUE;
@@ -140,31 +110,50 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
             ;
         }
         break;
-    	case OMW:
-        ThisEvent = RunOMWSubHSM(ThisEvent);
-		switch (ThisEvent.EventType) {
-			case BUMPER: 
-				nextState = AvoidObstacle;
-				makeTransition = TRUE;
-				ThisEvent.EventType = ES_NO_EVENT;
+
+    case Align: 
+        switch (ThisEvent.EventType) {
+			case ES_ENTRY: 
+//					Maw_LeftMtrSpeed(-20);
+//					Maw_RightMtrSpeed(20);
+					break;
+			case TAPE: 
+				if(ThisEvent.EventParam == 0){
+					nextState = Forward;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+				}
+                if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+                    ThisEvent.EventType = ALIGNED;
+                }
+				break;
 			case ES_NO_EVENT:
 			default:
 				break;
 			}
-		break;
+        break;
 		
-	case AvoidObstacle:
-        ThisEvent = RunAvoidObstacleSubHSM(ThisEvent);
+	case Forward:
 		switch (ThisEvent.EventType) {
-			case OBSTACLE_AVOIDED: 
-				nextState = OMW;
-				makeTransition = TRUE;
-				ThisEvent.EventType = ES_NO_EVENT;
+			case ES_ENTRY: 
+//					Maw_LeftMtrSpeed(100);
+//					Maw_RightMtrSpeed(100);
+					break;
+			case TAPE: 
+				if(ThisEvent.EventParam != 0){
+					nextState = Align;
+					makeTransition = TRUE;
+					ThisEvent.EventType = ES_NO_EVENT;
+				}
+                if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+                    ThisEvent.EventType = ALIGNED;
+                }
 			case ES_NO_EVENT:
 			default:
 				break;
 			}
 		break;
+	
 		
 	
 	
@@ -172,12 +161,12 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
     default: // all unhandled states fall into here
         break;
     } // end switch on Current State
-
+    
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
-        RunFollowTapeHSM(EXIT_EVENT); // <- rename to your own Run function
+        RunAlignHSM(EXIT_EVENT); // <- rename to your own Run function
         CurrentState = nextState;
-        RunFollowTapeHSM(ENTRY_EVENT); // <- rename to your own Run function
+        RunAlignHSM(ENTRY_EVENT); // <- rename to your own Run function
     }
 
     ES_Tail(); // trace call stack end
@@ -188,3 +177,4 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
 /*******************************************************************************
  * PRIVATE FUNCTIONS                                                           *
  ******************************************************************************/
+

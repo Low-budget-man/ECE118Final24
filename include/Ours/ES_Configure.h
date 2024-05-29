@@ -57,7 +57,8 @@ typedef enum {
     DEPOSITED,
     PINGCLOSE,
 	OBSTACLE_AVOIDED,
-    NUMBEROFEVENTS
+    ALIGNED,
+    NUMBEROFEVENTS,
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
@@ -81,6 +82,7 @@ static const char *EventNames[] = {
 	"DEPOSITED",
 	"PINGCLOSE",
 	"OBSTACLE_AVOIDED",
+    "ALIGNED"
 };
 
 
