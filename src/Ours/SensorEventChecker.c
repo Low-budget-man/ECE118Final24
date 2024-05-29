@@ -603,7 +603,7 @@ uint8_t CheckBumper(void){
 uint8_t CheckPing(void){
     uint16_t CurrentPing = PingFilter(PINGGetData());
     uint8_t returnVal = FALSE;
-    //printf("\r\n PING SENSOR DIST %d",CurrentPing);
+    printf("\r\n PING SENSOR DIST %d",CurrentPing);
     if (abs(CurrentPing - LastPing) > PING_HYST)
     {
         returnVal = TRUE;
