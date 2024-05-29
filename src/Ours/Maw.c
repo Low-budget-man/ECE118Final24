@@ -20,8 +20,8 @@
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
 #define BAD_READ
-#define ONLY_SERVOS
-#define MawTest
+//#define ONLY_SERVOS
+//#define MawTest
 //NOTE : PING ECHO = y6
 // PING trigger = y10
 #define PWMFRQ 1000

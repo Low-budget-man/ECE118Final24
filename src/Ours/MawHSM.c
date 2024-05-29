@@ -172,8 +172,8 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         switch (ThisEvent.EventType)
         {
         case ES_ENTRY:
-//            Maw_RightMtrSpeed(0);
-//            Maw_LeftMtrSpeed(0);                
+            Maw_RightMtrSpeed(0);
+            Maw_LeftMtrSpeed(0);                
         case BUMPER:
             nextState = Wander;
             makeTransition = TRUE;
@@ -181,8 +181,8 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             break;
         case ES_EXIT:
             // When Leaveing this state start the timer
-//            ES_Timer_InitTimer(GAME_TIMER,GAME_TIME);
-//            ES_Timer_InitTimer(WANDER_TIMER,WANDER_TIME);
+            ES_Timer_InitTimer(GAME_TIMER,GAME_TIME);
+            ES_Timer_InitTimer(WANDER_TIMER,WANDER_TIME);
             break;
         default:
             break;
