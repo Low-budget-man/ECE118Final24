@@ -37,10 +37,10 @@
 #define LEFT_DOOR RC_PORTY07
 //Bigger to be more open (closer to 90 deg in)
 #define collectR 2250
-#define collectL 750
+#define depositR 750
 // Smaller to be more open (sticking out all of the way)
-#define depositR 2250
-#define depositL 750
+#define depositL 2250
+#define collectL 750
 //macro to read the battery voltage
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
 
