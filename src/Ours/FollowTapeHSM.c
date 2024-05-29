@@ -144,9 +144,9 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
     case Align: 
         switch (ThisEvent.EventType) {
 			case ES_ENTRY: 
-//					Maw_LeftMtrSpeed(-20);
-//					Maw_RightMtrSpeed(20);
-					break;
+				Maw_LeftMtrSpeed(-80);
+				Maw_RightMtrSpeed(80);
+				break;
 			case TAPE: 
 				if(ThisEvent.EventParam == 0){
 					nextState = Forward;
@@ -168,8 +168,8 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
 	case Forward:
 		switch (ThisEvent.EventType) {
 			case ES_ENTRY: 
-//					Maw_LeftMtrSpeed(100);
-//					Maw_RightMtrSpeed(100);
+					Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(100);
 					break;
 			case TAPE: 
 				if(ThisEvent.EventParam != 0){
