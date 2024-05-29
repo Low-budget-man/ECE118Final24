@@ -108,15 +108,15 @@
 #define BEACON_PORT PORTW
 #define BEACON_PIN PIN3
 // Bumper #defines -------------------------------------------------------------
-#define BUMPERfrPORT PORTW
-#define BUMPERfrPIN PIN5
+#define BUMPERfrPORT PORTX
+#define BUMPERfrPIN PIN8
 #define BUMPERflPORT PORTW
-#define BUMPERflPIN PIN4
-#define BUMPERbrPORT PORTW
-#define BUMPERbrPIN PIN7
-#define BUMPERblPORT PORTY
+#define BUMPERflPIN PIN5
+#define BUMPERbrPORT PORTX
+#define BUMPERbrPIN PIN11
+#define BUMPERblPORT PORTW
 //Pin 6 and 8 is haveing issues and does not work
-#define BUMPERblPIN PIN3
+#define BUMPERblPIN PIN7
 //#define BUMPERfrBit (1)
 //#define BUMPERflBit (0)
 //#define BUMPERbrBit (3)
@@ -290,8 +290,9 @@ void SensorInit(void) {
     //for the bumper -----------------------------------------------------------
     // assumes that all bupers will be on the same port for input
     // if not will need to change
-    uint16_t BumperIn = BUMPERfrPIN | BUMPERflPIN | BUMPERbrPIN;
-    IO_PortsSetPortInputs(BUMPERfrPORT,BumperIn);
+    IO_PortsSetPortInputs(BUMPERfrPORT,BUMPERfrPIN);
+    IO_PortsSetPortInputs(BUMPERflPORT,BUMPERflPIN);
+    IO_PortsSetPortInputs(BUMPERbrPORT,BUMPERbrPIN);
     IO_PortsSetPortInputs(BUMPERblPORT,BUMPERblPIN);
     // for the battery reading -------------------------------------------------
     // init the ADPin for the battery

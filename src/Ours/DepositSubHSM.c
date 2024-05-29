@@ -53,7 +53,7 @@ typedef enum {
 static const char *StateNames[] = {
 	"InitPSubState",
 	"Continue_Wandering",
-    "Align",
+	"Align",
 	"FollowTape",
 	"Ramming",
 };
@@ -137,6 +137,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                 InitRammingSubHSM();
                 InitFollowTapeHSM();
                 InitOMWSubHSM();
+                InitAlignHSM();
 				// now put the machine into the actual initial state
 				nextState = Continue_Wandering;
 				makeTransition = TRUE;

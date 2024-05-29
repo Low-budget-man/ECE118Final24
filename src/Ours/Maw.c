@@ -129,15 +129,9 @@ void Maw_Init(void){
     RC_Init();
     RC_AddPins(RIGHT_DOOR|LEFT_DOOR);
     //sets the servos to collecting
-    Maw_RightDoor(FALSE);
-    Maw_LeftDoor (FALSE);
-    int i;
-    for (i = 0; i < (366000<<2); i++) {
-        asm("nop");
-    }
     Maw_RightDoor(TRUE);
-
-    for (i = 0; i < (366000<<2); i++) {
+    int i;
+    for (i = 0; i < (366000); i++) {
         asm("nop");
     }
 

@@ -20,9 +20,9 @@
 
 
 //defines for keyboard input
-#define USE_KEYBOARD_INPUT
+//#define USE_KEYBOARD_INPUT
 //What State machine are we testing
-#define POSTFUNCTION_FOR_KEYBOARD_INPUT PostMawHSM
+//#define POSTFUNCTION_FOR_KEYBOARD_INPUT PostMawHSM
 
 //define for TattleTale
 #define USE_TATTLETALE
@@ -82,7 +82,8 @@ static const char *EventNames[] = {
 	"DEPOSITED",
 	"PINGCLOSE",
 	"OBSTACLE_AVOIDED",
-    "ALIGNED"
+	"ALIGNED",
+	"NUMBEROFEVENTS",
 };
 
 
