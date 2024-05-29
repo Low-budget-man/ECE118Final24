@@ -32,6 +32,7 @@
 #include "BOARD.h"
 #include "SensorEventChecker.h"
 #include "OMWSubHSM.h"
+#include "Maw.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *

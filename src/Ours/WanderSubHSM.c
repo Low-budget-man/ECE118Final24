@@ -32,6 +32,7 @@
 #include "BOARD.h"
 #include "WanderSubHSM.h"
 #include "Maw.h"
+#include "ES_Timers.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -173,7 +174,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(-100);
                     Maw_RightMtrSpeed(-100);
-                    ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));
+                    ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == WANDER_SUBSTATE_TIMER) {
@@ -213,7 +214,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                 case ES_ENTRY: // ccw to line up with door slightly more easily
                     Maw_LeftMtrSpeed(-100);
    					Maw_RightMtrSpeed(100);
-                    ES_TimersInitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
+                    ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == WANDER_SUBSTATE_TIMER) {

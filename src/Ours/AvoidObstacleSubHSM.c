@@ -31,6 +31,7 @@
 #include "ES_Framework.h"
 #include "BOARD.h"
 #include "AvoidObstacleSubHSM.h"
+#include "Maw.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -153,7 +154,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-100);
-					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, BackUpTime);
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackUpTime);
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -174,7 +175,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
 					Maw_LeftMtrSpeed(80);
 					Maw_RightMtrSpeed(-80);
-					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Right1Time);
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right1Time);
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -195,7 +196,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
-					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Forward1Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward1Time);					
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -216,7 +217,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(-80);
 					Maw_RightMtrSpeed(80);
-					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Left1Time);
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left1Time);
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -237,7 +238,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
-					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Forward2Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward2Time);					
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -258,7 +259,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                   Maw_LeftMtrSpeed(-50);
 					Maw_RightMtrSpeed(50);
-					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Left2Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left2Time);					
                     break;
 				case PINGCLOSE:
                     if(ThisEvent.EventParam){
@@ -279,7 +280,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(50);
 					Maw_RightMtrSpeed(-50);
-					ES_TimersInitTimer(AVOID_OBSTACLE_TIMER, Right2Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right2Time);					
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {

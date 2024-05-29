@@ -34,6 +34,7 @@
 #include "FollowTapeHSM.h"
 #include "OMWSubHSM.h" 
 #include "AvoidObstacleSubHSM.h" 
+#include "Maw.h"
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
