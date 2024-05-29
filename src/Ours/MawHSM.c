@@ -31,6 +31,8 @@
 #include "ES_Framework.h"
 #include "BOARD.h"
 #include "MawHSM.h"
+#include "ES_Timers.h"
+#include "Maw.h"
 // #include all sub state machines called
 #include "WanderSubHSM.h"
 #include "DepositSubHSM.h"
@@ -155,9 +157,6 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
-            // Initialize all sub-state machines [NOT YET STILL TESTING]]
-            // InitWanderSubHSM();
-            // InitDepositSubHSM();
             // Initialize all sub-state machines
            InitWanderSubHSM();
            InitDepositSubHSM();
@@ -169,9 +168,12 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         }
         break;
     case StartEnd:
-        // Stays in In the StartEnd state untill the bumpers are pressed
+        // Stays in In the StartEnd state until the bumpers are pressed
         switch (ThisEvent.EventType)
         {
+        case ES_ENTRY:
+//            Maw_RightMtrSpeed(0);
+//            Maw_LeftMtrSpeed(0);                
         case BUMPER:
             nextState = Wander;
             makeTransition = TRUE;
@@ -179,6 +181,8 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             break;
         case ES_EXIT:
             // When Leaveing this state start the timer
+//            ES_Timer_InitTimer(GAME_TIMER,GAME_TIME);
+//            ES_Timer_InitTimer(WANDER_TIMER,WANDER_TIME);
             break;
         default:
             break;
