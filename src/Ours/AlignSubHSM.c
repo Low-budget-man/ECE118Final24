@@ -9,6 +9,7 @@
 #include "OMWSubHSM.h" 
 #include "AvoidObstacleSubHSM.h" 
 #include "SensorEventChecker.h"
+#include "Maw.h"
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
@@ -114,8 +115,8 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
     case Align: 
         switch (ThisEvent.EventType) {
 			case ES_ENTRY: 
-//					Maw_LeftMtrSpeed(-20);
-//					Maw_RightMtrSpeed(20);
+					Maw_LeftMtrSpeed(-80);
+					Maw_RightMtrSpeed(80);
 					break;
 			case TAPE: 
 				if(ThisEvent.EventParam == 0){
@@ -136,8 +137,8 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
 	case Forward:
 		switch (ThisEvent.EventType) {
 			case ES_ENTRY: 
-//					Maw_LeftMtrSpeed(100);
-//					Maw_RightMtrSpeed(100);
+					Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(100);
 					break;
 			case TAPE: 
 				if(ThisEvent.EventParam != 0){
