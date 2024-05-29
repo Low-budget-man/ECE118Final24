@@ -16,6 +16,7 @@
 #include "ES_Timers.h"
 #include <stdio.h>
 #include <stdint.h>
+#include "MawHSM.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -26,7 +27,7 @@
 #define DEBOUNCE_WaitB 2
 #define DEBOUNCE_WaitP 32
 #define CLOSE_THRESH 300
-#define CLOSE_HYST 32
+#define CLOSE_HYST 50
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -112,7 +113,8 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         // This section is used to reset service for some reason
         break;
     case TRACKWIRE:
-        printf("\r\nTrack Event with the param,0x%x", ThisEvent.EventParam);
+ //       printf("\r\nTrack Event with the param,0x%x", ThisEvent.EventParam);
+        PostMawHSM(ThisEvent);
         if (ThisEvent.EventParam)
         {
             // detected
@@ -125,8 +127,9 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         }
         break;
     case TAPE:
+        PostMawHSM(ThisEvent);
         // Temp case to see if the event is raised properly
-        printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
+//        printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
         //            if(ThisEvent.EventParam){
         //                // detected
         //                LED_OnBank(LED_BANK1,TAPE_LED);
@@ -137,7 +140,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         //            }
         break;
     case BEACON:
-        printf("\r\n Beacon Event param: %x", ThisEvent.EventParam);
+//        printf("\r\n Beacon Event param: %x", ThisEvent.EventParam);
         if (ThisEvent.EventParam)
         {
             // detected
@@ -156,7 +159,11 @@ ES_Event RunSensorService(ES_Event ThisEvent)
     case ES_TIMEOUT:
         if (ThisEvent.EventParam == BUMPER_DEBOUNCE_T)
         {
-            printf("\r\n Debounced Bumper Event with param %x", LastBump);
+//            printf("\r\n Debounced Bumper Event with param %x", LastBump);
+            ES_Event PostEvent;
+            PostEvent.EventParam = LastBump;
+            PostEvent.EventType = BUMPER;
+            PostMawHSM(PostEvent);
         }
         else if (ThisEvent.EventParam == PING_DEBOUNCE_T){
             enum sensor ThisDist = Dist;
@@ -176,7 +183,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         }
         else
         {
-            printf("\r\nERROR: Unknown TimerParam in SensorService");
+//            printf("\r\nERROR: Unknown TimerParam in SensorService");
         }
         break;
     case PING:
@@ -184,7 +191,8 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         LastPing = ThisEvent.EventParam;       
         break; 
     case PINGCLOSE:
-         printf("\r\n PINGCLOSE Event with param %x", ThisEvent.EventParam);
+//         printf("\r\n PINGCLOSE Event with param %x", ThisEvent.EventParam);
+            PostMawHSM(ThisEvent);
         break;   
     // for events we want to ignore
     case ES_NO_EVENT:
@@ -196,7 +204,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
     default:
         printf("\r\nERROR: Unknown event in SensorService: %s",EventNames[ThisEvent.EventType]);
     }
-
+    // Post All Events to the HSM
     return ReturnEvent;
 }
 

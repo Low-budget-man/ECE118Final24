@@ -33,6 +33,7 @@
 #include "WanderSubHSM.h"
 #include "Maw.h"
 #include "ES_Timers.h"
+#include "SensorEventChecker.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -52,7 +53,7 @@ static const char *StateNames[] = {
 };
 
 #define REVERSE_TIME 1000
-#define SPIN_TIME 100
+#define SPIN_TIME 2000
 
 
 /*******************************************************************************
@@ -145,9 +146,12 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                     ThisEvent.EventType = TAPE;
                     break;
                 case BUMPER:
-                    nextState = Reverse;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+                    //only when a bumper is pressed
+                    if(ThisEvent.EventParam){
+                        nextState = Reverse;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
                     break;
                 case PINGCLOSE: // May need specific param to state value is low enough to dodge
                     if (ThisEvent.EventParam) {
@@ -191,8 +195,8 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                     }
                     break;
                 case BUMPER:
-                    //
-                    if (TRUE /*ThisEvent.EventParam == WANTED EVENT*/) {
+                    // Back Bumpers
+                    if (ThisEvent.EventParam) {
                         nextState = Forward;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
