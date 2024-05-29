@@ -49,7 +49,7 @@ static const char *StateNames[] = {
 	"Straight",
 	"TiltRight",
 	"TiltLeft",
-    "Panic",
+	"Panic",
 };
 
 
@@ -90,7 +90,7 @@ uint8_t InitOMWSubHSM(void)
 	ES_Event returnEvent;
 
     CurrentState = InitPSubState;
-    returnEvent = RunAvoidObstacleSubHSM(INIT_EVENT);
+    returnEvent = RunOMWSubHSM(INIT_EVENT);
     if (returnEvent.EventType == ES_NO_EVENT) {
         return TRUE;
     }
