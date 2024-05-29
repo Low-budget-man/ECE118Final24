@@ -7,6 +7,10 @@
 // My includes
 #include "AD.h"
 #include "LED.h"
+
+//NOT A TEMPLATE FILE, THIS IS THE ACTUAL MAIN
+//CAN NOT RENAME BECAUSE MPLABX IS FUCKED
+
 void main(void)
 {
     ES_Return_t ErrorType;
