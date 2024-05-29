@@ -37,10 +37,10 @@
 #define LEFT_DOOR RC_PORTY07
 //Bigger to be more open (closer to 90 deg in)
 #define collectR 2250
-#define depositR 750
+#define depositR 850
 // Smaller to be more open (sticking out all of the way)
 #define depositL 2250
-#define collectL 750
+#define collectL 850
 //macro to read the battery voltage
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
 
@@ -272,27 +272,27 @@ int main(void){
     printf("\r\n Testing of the left motor done ");
     DELAY(A_BIT_MORE);
 #endif
-    printf("\r\n Test 3 right servo");
-    DELAY(A_BIT);
-    printf("\r\n collect");
-    Maw_RightDoor(TRUE);
-    DELAY(YET_A_BIT_LONGER);
-    printf("\r\n deposit");
-    Maw_RightDoor(FALSE);
-    DELAY(YET_A_BIT_LONGER);
-    printf("\r\n Testing of the right servo done");
-    DELAY(A_BIT_MORE);
-    printf("\r\n Test 4 left servo");
-    DELAY(A_BIT);
-    printf("\r\n collect");
-    Maw_LeftDoor(TRUE);
-    DELAY(YET_A_BIT_LONGER);
-    printf("\r\n deposit");
-    Maw_LeftDoor(FALSE);
-    DELAY(YET_A_BIT_LONGER);
-    printf("\r\n Testing of the left servo done");
-    DELAY(A_BIT_MORE);
-    printf("\r\n All Tests Done Goodbye");
+//    printf("\r\n Test 3 right servo");
+//    DELAY(A_BIT);
+//    printf("\r\n collect");
+//    Maw_RightDoor(TRUE);
+//    DELAY(YET_A_BIT_LONGER);
+//    printf("\r\n deposit");
+//    Maw_RightDoor(FALSE);
+//    DELAY(YET_A_BIT_LONGER);
+//    printf("\r\n Testing of the right servo done");
+//    DELAY(A_BIT_MORE);
+//    printf("\r\n Test 4 left servo");
+//    DELAY(A_BIT);
+//    printf("\r\n collect");
+//    Maw_LeftDoor(TRUE);
+//    DELAY(YET_A_BIT_LONGER);
+//    printf("\r\n deposit");
+//    Maw_LeftDoor(FALSE);
+//    DELAY(YET_A_BIT_LONGER);
+//    printf("\r\n Testing of the left servo done");
+//    DELAY(A_BIT_MORE);
+//    printf("\r\n All Tests Done Goodbye");
     return SUCCESS;
 }
 #endif
