@@ -70,7 +70,7 @@ static const char *StateNames[] = {
 
 static WanderSubHSMState_t CurrentState = InitPSubState; // <- change name to match ENUM
 static uint8_t MyPriority;
-
+static uint8_t LastBump;
 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
@@ -139,6 +139,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(100);
                     Maw_RightMtrSpeed(100);
+                    LastBump = 0;
                     //Maw_RightDoor(1);
                     break;
                 case TAPE:
@@ -152,6 +153,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                         nextState = Reverse;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
+                        LastBump = ThisEvent.EventParam;
                     }
                     break;
                 case PINGCLOSE: // May need specific param to state value is low enough to dodge
@@ -217,8 +219,15 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
         case Spin:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY: // ccw to line up with door slightly more easily
+                    if (LastBump & (1<<BUMPERfrBit))
+                    {
+                        Maw_LeftMtrSpeed(100);
+   					    Maw_RightMtrSpeed(-100);
+                    }
+                    else {
                     Maw_LeftMtrSpeed(-100);
    					Maw_RightMtrSpeed(100);
+                    }
                     ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
                     //Maw_RightDoor(2);
                     break;
