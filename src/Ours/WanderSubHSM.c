@@ -52,8 +52,8 @@ static const char *StateNames[] = {
 	"Spin",
 };
 
-#define REVERSE_TIME 1000
-#define SPIN_TIME 2000
+#define REVERSE_TIME 250
+#define SPIN_TIME 476
 
 
 /*******************************************************************************
