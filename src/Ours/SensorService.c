@@ -29,7 +29,7 @@
 #define CLOSE_THRESH 180
 #define CLOSE_HYST 50
 
-#define ServiceTestHarness
+//#define ServiceTestHarness
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -133,11 +133,11 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         break;
     case TAPE:
 #ifdef ServiceTestHarness
+        printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
 #else
         PostMawHSM(ThisEvent);
 #endif
         // Temp case to see if the event is raised properly
-        printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
         //            if(ThisEvent.EventParam){
         //                // detected
         //                LED_OnBank(LED_BANK1,TAPE_LED);
@@ -165,6 +165,11 @@ ES_Event RunSensorService(ES_Event ThisEvent)
     case BUMPER:
         ES_Timer_InitTimer(BUMPER_DEBOUNCE_T, DEBOUNCE_WaitB);
         LastBump = ThisEvent.EventParam;
+#ifdef ServiceTestHarness
+        printf("\r\nBumper Event with the param,0x%x", ThisEvent.EventParam);
+#else
+        PostMawHSM(ThisEvent);
+#endif
         break;
     case ES_TIMEOUT:
         if (ThisEvent.EventParam == BUMPER_DEBOUNCE_T)

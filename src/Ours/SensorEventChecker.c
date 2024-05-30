@@ -90,7 +90,7 @@
 #define TAPE_VOLTAGE_BROWN TAPE_VOLTAGEfll
 #define TAPE_VOLTAGE_GREEN TAPE_VOLTAGEbl
 
-#define TAPE_THRESH 200 
+#define TAPE_THRESH 150 
 // reading voltage
 #define TAPE_HYST 50
 /*
