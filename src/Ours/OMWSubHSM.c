@@ -22,7 +22,6 @@
  * 10/23/11 18:20 jec      began conversion from SMOMW.c (02/20/07 rev)
  */
 
-
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
@@ -37,24 +36,7 @@
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
-typedef enum {
-    InitPSubState,
-    Straight,
-	TiltRight,
-	TiltLeft,
-    Panic,
-} OMWSubHSMState_t;
-
-static const char *StateNames[] = {
-	"InitPSubState",
-	"Straight",
-	"TiltRight",
-	"TiltLeft",
-	"Panic",
-};
-
-
-
+#define BRAINDEAD
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -66,10 +48,31 @@ static const char *StateNames[] = {
  ******************************************************************************/
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
+typedef enum
+{
+    InitPSubState,
+    Straight,
+    TiltRight,
+    TiltLeft,
+    Panic,
+#ifdef BRAINDEAD
+    HardLeft,
+#endif
+} OMWSubHSMState_t;
+
+static const char *StateNames[] = {
+    "InitPSubState",
+    "Straight",
+    "TiltRight",
+    "TiltLeft",
+    "Panic",
+#ifdef BRAINDEAD
+    "HardLeft",
+#endif
+};
 
 static OMWSubHSMState_t CurrentState = InitPSubState; // <- change name to match ENUM
 static uint8_t MyPriority;
-
 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
@@ -87,12 +90,13 @@ static uint8_t MyPriority;
  * @author J. Edward Carryer, 2011.10.23 19:25 */
 uint8_t InitOMWSubHSM(void)
 {
-	
-	ES_Event returnEvent;
+
+    ES_Event returnEvent;
 
     CurrentState = InitPSubState;
     returnEvent = RunOMWSubHSM(INIT_EVENT);
-    if (returnEvent.EventType == ES_NO_EVENT) {
+    if (returnEvent.EventType == ES_NO_EVENT)
+    {
         return TRUE;
     }
     return FALSE;
@@ -115,13 +119,16 @@ uint8_t InitOMWSubHSM(void)
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
 ES_Event RunOMWSubHSM(ES_Event ThisEvent)
 {
-    
+
     uint8_t makeTransition = FALSE; // use to flag transition
-    OMWSubHSMState_t nextState; // <- change type to correct enum
+    OMWSubHSMState_t nextState;     // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
-    if(CurrentState == InitPSubState){
-        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+
+#ifndef BRAINDEAD
+    if (CurrentState == InitPSubState)
+    {
+        if (ThisEvent.EventType == ES_INIT) // only respond to ES_Init
         {
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
@@ -133,80 +140,146 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
             ThisEvent.EventType = ES_NO_EVENT;
         }
     }
-    
-    if(ThisEvent.EventType == ES_ENTRY){
-        switch (CurrentState){
-            case TiltLeft:
-                Maw_LeftMtrSpeed(50);
-                Maw_RightMtrSpeed(100);
-                break;
-            case TiltRight:
-                Maw_LeftMtrSpeed(100);
-                Maw_RightMtrSpeed(50);
-                break;
-            case Straight:
-            default:
-                Maw_LeftMtrSpeed(100);
-                Maw_RightMtrSpeed(100);
-                break;
-            case Panic:
-                Maw_LeftMtrSpeed(0);
-                Maw_RightMtrSpeed(0);
-                break;
+
+    if (ThisEvent.EventType == ES_ENTRY)
+    {
+        switch (CurrentState)
+        {
+        case TiltLeft:
+            Maw_LeftMtrSpeed(50);
+            Maw_RightMtrSpeed(100);
+            break;
+        case TiltRight:
+            Maw_LeftMtrSpeed(100);
+            Maw_RightMtrSpeed(50);
+            break;
+        case Straight:
+        default:
+            Maw_LeftMtrSpeed(100);
+            Maw_RightMtrSpeed(100);
+            break;
+        case Panic:
+            Maw_LeftMtrSpeed(0);
+            Maw_RightMtrSpeed(0);
+            break;
         }
     }
-    
-    
-    //FRR is bit 0, FR is bit 1.
-    //Let's try doing this manually in case the #defines are somehow off
-    if(ThisEvent.EventType == TAPE){
-                
-            //Both tapes are on turn left
-        if((ThisEvent.EventParam & 0x1) && (ThisEvent.EventParam & 0x2)){
-            if(CurrentState != TiltLeft){
+
+    // FRR is bit 0, FR is bit 1.
+    // Let's try doing this manually in case the #defines are somehow off
+    if (ThisEvent.EventType == TAPE)
+    {
+
+        // Both tapes are on turn left
+        if ((ThisEvent.EventParam & 0x1) && (ThisEvent.EventParam & 0x2))
+        {
+            if (CurrentState != TiltLeft)
+            {
                 nextState = TiltLeft;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-            
-        }else//Both tapes are off turn right
-        if((ThisEvent.EventParam & !0x1) && (ThisEvent.EventParam & !0x2)){
-            if(CurrentState != TiltRight){
+        }
+        else // Both tapes are off turn right
+            if ((ThisEvent.EventParam & !0x1) && (ThisEvent.EventParam & !0x2))
+            {
+                if (CurrentState != TiltRight)
+                {
+                    nextState = TiltRight;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                }
+            }
+            else // left tape on right tape off NOT EXPECTED STOPPING
+                if ((ThisEvent.EventParam & 0x1) && (ThisEvent.EventParam & !0x2))
+                { // Literally just moved the ! into the parens
+                    if (CurrentState != Panic)
+                    {
+                        nextState = Panic;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                }
+                else // left tape off right tape on on course
+                    if ((ThisEvent.EventParam & !0x1) && (ThisEvent.EventParam & 0x2))
+                    {
+                        if (CurrentState != Straight)
+                        {
+                            nextState = Straight;
+                            makeTransition = TRUE;
+                            ThisEvent.EventType = ES_NO_EVENT;
+                        }
+                    }
+    }
+
+#else
+    switch (CurrentState)
+    {
+    case InitPSubState:
+        if (ThisEvent.EventParam == ES_INIT)
+        {
+            // Init Stuff here
+
+            nextState = TiltRight;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+
+        break;
+    case TiltRight:
+        switch (ThisEvent.EventType)
+        {
+        case ES_ENTRY:
+            Maw_LeftMtrSpeed(100);
+            Maw_RightMtrSpeed(50);
+            break;
+        case TAPE:
+            // sees tape
+            if (ThisEvent.EventParam)
+            {
+                nextState = HardLeft;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
+            }
+
+        default:
+            break;
+        }
+    case HardLeft:
+        switch (ThisEvent.EventType)
+        {
+        case ES_ENTRY:
+            Maw_RightMtrSpeed(100);
+            Maw_LeftMtrSpeed(-100);
+            break;
+        case TAPE:
+            // sees no tape
+            if (!(ThisEvent.EventParam))
+            {
                 nextState = TiltRight;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-        }else//left tape on right tape off NOT EXPECTED STOPPING
-        if((ThisEvent.EventParam & 0x1) && (ThisEvent.EventParam & !0x2)){ //Literally just moved the ! into the parens
-            if(CurrentState != Panic){
-                nextState = Panic;
-                makeTransition = TRUE;
-                ThisEvent.EventType = ES_NO_EVENT;
-            }
-        }else//left tape off right tape on on course
-        if((ThisEvent.EventParam & !0x1) && (ThisEvent.EventParam & 0x2)){
-            if(CurrentState != Straight){
-                nextState = Straight;
-                makeTransition = TRUE;
-                ThisEvent.EventType = ES_NO_EVENT;
-            }
+            break;
         }
+
+    default:
+        break;
     }
-    
-	if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
+#endif
+    if (makeTransition == TRUE)
+    { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
         RunOMWSubHSM(EXIT_EVENT); // <- rename to your own Run function
         CurrentState = nextState;
         RunOMWSubHSM(ENTRY_EVENT); // <- rename to your own Run function
     }
-	
-	ES_Tail();
-	
+
+    ES_Tail();
+
     return ThisEvent;
 }
-
 
 /*******************************************************************************
  * PRIVATE FUNCTIONS                                                           *
  ******************************************************************************/
-
