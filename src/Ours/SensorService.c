@@ -26,7 +26,7 @@
 #define BEACON_LED (0x4)
 #define DEBOUNCE_WaitB 2
 #define DEBOUNCE_WaitP 32
-#define CLOSE_THRESH 300
+#define CLOSE_THRESH 180
 #define CLOSE_HYST 50
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *

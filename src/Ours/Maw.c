@@ -42,9 +42,11 @@
 //Bigger to be more open (closer to 90 deg in)
 #define collectR 2250
 #define depositR 850
+#define blockR 1550
 // Smaller to be more open (sticking out all of the way)
 #define depositL 2250
 #define collectL 850
+#define blockL 1550
 //macro to read the battery voltage
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
 
@@ -193,10 +195,17 @@ char Maw_RightMtrSpeed(char newSpeed){
  * @param Position - a true for depositing or false for collecting
  * @return SUCCESS or ERROR
  * @brief  This function is used to open and close the doors
- * @author Cooper Cantrell, 2024.5.16 */
+ * @author Cooper Cantrell, 2024.5.16
+ * @modifyed 5/29/2024
+ * @mod able to give a number larger than 1 to enter a block pos */
 char Maw_RightDoor(uint8_t Position){
     if(Position){
-        RC_SetPulseTime(RIGHT_DOOR,collectR);
+        if(Position > 1){
+            RC_SetPulseTime(RIGHT_DOOR, blockR);
+        }
+        else{
+            RC_SetPulseTime(RIGHT_DOOR,collectR);
+        }
     }
     else{
         RC_SetPulseTime(RIGHT_DOOR,depositR);
@@ -211,10 +220,17 @@ char Maw_RightDoor(uint8_t Position){
  * @brief  This function is used to open and close the 
  * @note Because of how the servos are on the bot there it seems like it is 
  * going to the wrong spot this is to abstract away how the servos are mounted
+ * @modifyed 5/29/2024
+ * @mod able to give a number larger than 1 to enter a block pos
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_LeftDoor(uint8_t Position){
     if((Position)){
-        RC_SetPulseTime(LEFT_DOOR,collectL);
+        if(Position > 1){
+            RC_SetPulseTime(RIGHT_DOOR, blockR);
+        }
+        else{
+            RC_SetPulseTime(LEFT_DOOR,collectL);
+        }
     }
     else{
         RC_SetPulseTime(LEFT_DOOR,depositL);
