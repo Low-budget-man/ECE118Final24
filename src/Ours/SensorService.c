@@ -28,6 +28,8 @@
 #define DEBOUNCE_WaitP 32
 #define CLOSE_THRESH 180
 #define CLOSE_HYST 50
+
+#define ServiceTestHarness
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -113,8 +115,11 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         // This section is used to reset service for some reason
         break;
     case TRACKWIRE:
- //       printf("\r\nTrack Event with the param,0x%x", ThisEvent.EventParam);
+#ifdef ServiceTestHarness
+        printf("\r\nTrack Event with the param,0x%x", ThisEvent.EventParam);
+#else
         PostMawHSM(ThisEvent);
+#endif
         if (ThisEvent.EventParam)
         {
             // detected
@@ -127,9 +132,12 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         }
         break;
     case TAPE:
+#ifdef ServiceTestHarness
+#else
         PostMawHSM(ThisEvent);
+#endif
         // Temp case to see if the event is raised properly
-//        printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
+        printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
         //            if(ThisEvent.EventParam){
         //                // detected
         //                LED_OnBank(LED_BANK1,TAPE_LED);
@@ -140,7 +148,9 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         //            }
         break;
     case BEACON:
-//        printf("\r\n Beacon Event param: %x", ThisEvent.EventParam);
+#ifdef ServiceTestHarness
+        printf("\r\n Beacon Event param: %x", ThisEvent.EventParam);
+#endif
         if (ThisEvent.EventParam)
         {
             // detected
@@ -159,11 +169,15 @@ ES_Event RunSensorService(ES_Event ThisEvent)
     case ES_TIMEOUT:
         if (ThisEvent.EventParam == BUMPER_DEBOUNCE_T)
         {
-//            printf("\r\n Debounced Bumper Event with param %x", LastBump);
+            
             ES_Event PostEvent;
             PostEvent.EventParam = LastBump;
             PostEvent.EventType = BUMPER;
-            PostMawHSM(PostEvent);
+#ifdef ServiceTestHarness
+            printf("\r\n Debounced Bumper Event with param %x", LastBump);
+#else
+        PostMawHSM(ThisEvent);
+#endif
         }
         else if (ThisEvent.EventParam == PING_DEBOUNCE_T){
             enum sensor ThisDist = Dist;
@@ -191,8 +205,11 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         LastPing = ThisEvent.EventParam;       
         break; 
     case PINGCLOSE:
-//         printf("\r\n PINGCLOSE Event with param %x", ThisEvent.EventParam);
-            PostMawHSM(ThisEvent);
+#ifdef ServiceTestHarness
+            printf("\r\n PINGCLOSE Event with param %x", ThisEvent.EventParam);
+#else
+        PostMawHSM(ThisEvent);
+#endif
         break;   
     // for events we want to ignore
     case ES_NO_EVENT:

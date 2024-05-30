@@ -32,6 +32,7 @@
 #include "SensorEventChecker.h"
 #include "OMWSubHSM.h"
 #include "Maw.h"
+#include "stdio.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -101,7 +102,7 @@ uint8_t InitOMWSubHSM(void)
     }
     return FALSE;
 }
-
+#ifdef REALSSM
 /**
  * @Function RunOMWSubHSM(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
@@ -279,7 +280,39 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
 
     return ThisEvent;
 }
-
+#else
+ES_Event RunOMWSubHSM(ES_Event ThisEvent){
+    if(ThisEvent.EventType == TAPE){
+        ThisEvent.EventType = ES_NO_EVENT;
+        //GuideTapes is a two bit number, the left bit is if TAPEfr is on and the Right bit is if TAPEfrr is on
+        uint8_t GuideTapes = (((ThisEvent.EventParam & 1 << TAPEfrrBit) >> (TAPEfrrBit)) | (((ThisEvent.EventParam & 1 << TAPEfrBit) >> (TAPEfrBit-1))));
+        switch (GuideTapes){
+            case 0b00://left is off and right is off: turn right
+                Maw_LeftMtrSpeed(100);
+                Maw_RightMtrSpeed(0);
+                printf("left is off and right is off: turn right");
+                break;
+            case 0b01://left is off and right is on: on track go forward
+                Maw_LeftMtrSpeed(100);
+                Maw_RightMtrSpeed(100);
+                printf("left is off and right is on: on track go forward");
+                break;
+            case 0b10://left is on and right is off: unexpected, assume way to far left turn hard Left (was panic mode)
+                //I've chosen to not have the robot move forward during this as the assumption may be wrong in which case it would drive itself off the edge
+                Maw_LeftMtrSpeed(-100);
+                Maw_RightMtrSpeed(100);
+                printf("left is on and right is off: Panic! at the disco");
+                break;
+            case 0b11://Left is on and right is on: fully on tape turn left
+                Maw_LeftMtrSpeed(0);
+                Maw_RightMtrSpeed(100);
+                printf("Left is on and right is on: fully on tape turn left");
+                break;
+        }
+    }
+}
+        
+#endif
 /*******************************************************************************
  * PRIVATE FUNCTIONS                                                           *
  ******************************************************************************/

@@ -90,9 +90,9 @@
 #define TAPE_VOLTAGE_BROWN TAPE_VOLTAGEfll
 #define TAPE_VOLTAGE_GREEN TAPE_VOLTAGEbl
 
-#define TAPE_THRESH 400 
+#define TAPE_THRESH 200 
 // reading voltage
-#define TAPE_HYST 50 
+#define TAPE_HYST 50
 /*
 #define TAPEfrrBit (0)
 #define TAPEfrBit (1)
@@ -440,42 +440,132 @@ uint8_t CheckTape(void) {
         // after the check compare to past values and noise to the thresh and raise events
         //only if has at least 1 of each reading
         if (TapefrrNoise && TapefrrRead) {
-            if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH + TAPE_HYST) {
-                CurrentTapefrr = NOT_DETECTED;
+            if(LastTapefrr == DETECTED){
+                if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH + TAPE_HYST) {
+                    CurrentTapefrr = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapefrr = DETECTED;
+                }
+            } else {
+                if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH - TAPE_HYST) {
+                    CurrentTapefrr = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapefrr = DETECTED;
+                }
             }
-            else if ((TapefrrNoise - TapefrrRead) <= TAPE_THRESH - TAPE_HYST) {
-                CurrentTapefrr = DETECTED;
+            if(LastTapefr == DETECTED){
+                if ((TapefrNoise - TapefrRead) >= TAPE_THRESH + TAPE_HYST) {
+                    CurrentTapefr = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapefr = DETECTED;
+                }
+            } else {
+                if ((TapefrNoise - TapefrRead) >= TAPE_THRESH - TAPE_HYST) {
+                    CurrentTapefr = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapefr = DETECTED;
+                }
             }
-            if ((TapefrNoise - TapefrRead) >= TAPE_THRESH + TAPE_HYST) {
-                CurrentTapefr = NOT_DETECTED;
+            if(LastTapebr == DETECTED){
+                if ((TapebrNoise - TapebrRead) >= TAPE_THRESH + TAPE_HYST) {
+                    CurrentTapebr = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapebr = DETECTED;
+                }
+            } else {
+                if ((TapebrNoise - TapebrRead) >= TAPE_THRESH - TAPE_HYST) {
+                    CurrentTapebr = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapebr = DETECTED;
+                }
             }
-            else if ((TapefrNoise - TapefrRead) <= TAPE_THRESH - TAPE_HYST) {
-                CurrentTapefr = DETECTED;
+            if(LastTapebl == DETECTED){
+                if ((TapeblNoise - TapeblRead) >= TAPE_THRESH + TAPE_HYST) {
+                    CurrentTapebl = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapebl = DETECTED;
+                }
+            } else {
+                if ((TapeblNoise - TapeblRead) >= TAPE_THRESH - TAPE_HYST) {
+                    CurrentTapebl = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapebl = DETECTED;
+                }
             }
-            if ((TapeflNoise - TapeflRead) >= TAPE_THRESH + TAPE_HYST) {
-                CurrentTapefl = NOT_DETECTED;
+            if(LastTapefl == DETECTED){
+                if ((TapeflNoise - TapeflRead) >= TAPE_THRESH + TAPE_HYST) {
+                    CurrentTapefl = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapefl = DETECTED;
+                }
+            } else {
+                if ((TapeflNoise - TapeflRead) >= TAPE_THRESH - TAPE_HYST) {
+                    CurrentTapefl = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapefl = DETECTED;
+                }
             }
-            else if ((TapeflNoise - TapeflRead) <= TAPE_THRESH - TAPE_HYST) {
-                CurrentTapefl = DETECTED;
+            if(LastTapefll == DETECTED){
+                if ((TapefllNoise - TapefllRead) >= TAPE_THRESH + TAPE_HYST) {
+                    CurrentTapefll = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapefll = DETECTED;
+                }
+            } else {
+                if ((TapefllNoise - TapefllRead) >= TAPE_THRESH - TAPE_HYST) {
+                    CurrentTapefll = NOT_DETECTED;
+                }
+                else {
+                    CurrentTapefll = DETECTED;
+                }
             }
-            if ((TapefllNoise - TapefllRead) >= TAPE_THRESH + TAPE_HYST) {
-                CurrentTapefll = NOT_DETECTED;
-            }
-            else if ((TapefllNoise - TapefllRead) <= TAPE_THRESH - TAPE_HYST) {
-                CurrentTapefll = DETECTED;
-            }
-            if ((TapebrNoise - TapebrRead) >= TAPE_THRESH + TAPE_HYST) {
-                CurrentTapebr = NOT_DETECTED;
-            }
-            else if ((TapebrNoise - TapebrRead) <= TAPE_THRESH - TAPE_HYST) {
-                CurrentTapebr = DETECTED;
-            }
-            if ((TapeblNoise - TapeblRead) >= TAPE_THRESH + TAPE_HYST) {
-                CurrentTapebl = NOT_DETECTED;
-            }
-            else if ((TapeblNoise - TapeblRead) <= TAPE_THRESH - TAPE_HYST) {
-                CurrentTapebl = DETECTED;
-            }
+//            if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH + TAPE_HYST) {
+//                CurrentTapefrr = NOT_DETECTED;
+//            }
+//            else if ((TapefrrNoise - TapefrrRead) <= TAPE_THRESH - TAPE_HYST) {
+//                CurrentTapefrr = DETECTED;
+//            }
+//            if ((TapefrNoise - TapefrRead) >= TAPE_THRESH + TAPE_HYST) {
+//                CurrentTapefr = NOT_DETECTED;
+//            }
+//            else if ((TapefrNoise - TapefrRead) <= TAPE_THRESH - TAPE_HYST) {
+//                CurrentTapefr = DETECTED;
+//            }
+//            if ((TapeflNoise - TapeflRead) >= TAPE_THRESH + TAPE_HYST) {
+//                CurrentTapefl = NOT_DETECTED;
+//            }
+//            else if ((TapeflNoise - TapeflRead) <= TAPE_THRESH - TAPE_HYST) {
+//                CurrentTapefl = DETECTED;
+//            }
+//            if ((TapefllNoise - TapefllRead) >= TAPE_THRESH + TAPE_HYST) {
+//                CurrentTapefll = NOT_DETECTED;
+//            }
+//            else if ((TapefllNoise - TapefllRead) <= TAPE_THRESH - TAPE_HYST) {
+//                CurrentTapefll = DETECTED;
+//            }
+//            if ((TapebrNoise - TapebrRead) >= TAPE_THRESH + TAPE_HYST) {
+//                CurrentTapebr = NOT_DETECTED;
+//            }
+//            else if ((TapebrNoise - TapebrRead) <= TAPE_THRESH - TAPE_HYST) {
+//                CurrentTapebr = DETECTED;
+//            }
+//            if ((TapeblNoise - TapeblRead) >= TAPE_THRESH + TAPE_HYST) {
+//                CurrentTapebl = NOT_DETECTED;
+//            }
+//            else if ((TapeblNoise - TapeblRead) <= TAPE_THRESH - TAPE_HYST) {
+//                CurrentTapebl = DETECTED;
+//            }
 
             // compare past values with current values
             if (CurrentTapefrr != LastTapefrr) {
@@ -518,6 +608,8 @@ uint8_t CheckTape(void) {
         PostSensorService(ThisEvent);
 #else
         SaveEvent(ThisEvent);
+        printf("\r\n %d", (TapefllNoise - TapefllRead));
+        printf("\r\n %d", (TapeblNoise - TapeblRead));
 #endif
     }
 
@@ -617,7 +709,7 @@ uint8_t CheckPing(void){
 #endif
         PostSensorService(ThisEvent);
 #else
-        SaveEvent(ThisEvent);
+        //SaveEvent(ThisEvent);
 #endif
     }
     return returnVal;
