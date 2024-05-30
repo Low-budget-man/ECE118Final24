@@ -133,43 +133,63 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
             ThisEvent.EventType = ES_NO_EVENT;
         }
     }
+    
+    if(ThisEvent.EventType == ES_ENTRY){
+        switch (CurrentState){
+            case TiltLeft:
+                Maw_LeftMtrSpeed(50);
+                Maw_RightMtrSpeed(100);
+                break;
+            case TiltRight:
+                Maw_LeftMtrSpeed(100);
+                Maw_RightMtrSpeed(50);
+                break;
+            case Straight:
+            default:
+                Maw_LeftMtrSpeed(100);
+                Maw_RightMtrSpeed(100);
+                break;
+            case Panic:
+                Maw_LeftMtrSpeed(0);
+                Maw_RightMtrSpeed(0);
+                break;
+        }
+    }
+    
+    
+    //FRR is bit 0, FR is bit 1.
+    //Let's try doing this manually in case the #defines are somehow off
     if(ThisEvent.EventType == TAPE){
+                
             //Both tapes are on turn left
-        if((ThisEvent.EventParam & TAPEfrrBit) && (ThisEvent.EventParam & TAPEfrBit)){
+        if((ThisEvent.EventParam & 0x1) && (ThisEvent.EventParam & 0x2)){
             if(CurrentState != TiltLeft){
                 nextState = TiltLeft;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-            Maw_LeftMtrSpeed(50);
-            Maw_RightMtrSpeed(100);
+            
         }else//Both tapes are off turn right
-        if(!(ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+        if((ThisEvent.EventParam & !0x1) && (ThisEvent.EventParam & !0x2)){
             if(CurrentState != TiltRight){
                 nextState = TiltRight;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-            Maw_LeftMtrSpeed(100);
-            Maw_RightMtrSpeed(50);
         }else//left tape on right tape off NOT EXPECTED STOPPING
-        if(!(ThisEvent.EventParam & TAPEfrrBit) && (ThisEvent.EventParam & TAPEfrBit)){
+        if((ThisEvent.EventParam & 0x1) && (ThisEvent.EventParam & !0x2)){ //Literally just moved the ! into the parens
             if(CurrentState != Panic){
                 nextState = Panic;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-            Maw_LeftMtrSpeed(0);
-            Maw_RightMtrSpeed(0);
         }else//left tape off right tape on on course
-        if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+        if((ThisEvent.EventParam & !0x1) && (ThisEvent.EventParam & 0x2)){
             if(CurrentState != Straight){
                 nextState = Straight;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
-            Maw_LeftMtrSpeed(100);
-            Maw_RightMtrSpeed(100);
         }
     }
     

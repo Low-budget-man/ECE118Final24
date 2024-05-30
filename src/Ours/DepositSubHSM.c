@@ -138,7 +138,6 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                 InitFollowTapeHSM();
                 InitAlignHSM();
                 InitOMWSubHSM();
-                InitAlignHSM();
 				// now put the machine into the actual initial state
 				nextState = Continue_Wandering;
 				makeTransition = TRUE;
