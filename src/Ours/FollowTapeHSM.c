@@ -135,7 +135,7 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
             // Initialize all sub-state machines
             InitAvoidObstacleSubHSM();
             // now put the machine into the actual initial state
-            nextState = Align;
+            nextState = OMW;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
             ;
