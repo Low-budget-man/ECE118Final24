@@ -61,11 +61,11 @@ static const char *StateNames[] = {
 };
 
 /*****PLEASE CHANGE THESE AFTER TESTING*****/
-#define BackUpTime 1500 
-#define Right1Time 1000
-#define Forward1Time 1000
-#define Left1Time 1000
-#define Forward2Time 1000
+#define BackUpTime 2000 
+#define Right1Time 2000
+#define Forward1Time 2000
+#define Left1Time 2000
+#define Forward2Time 3000
 #define Left2Time 1000
 #define Right2Time 500
 
