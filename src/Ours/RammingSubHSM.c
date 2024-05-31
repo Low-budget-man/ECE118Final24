@@ -33,6 +33,7 @@
 #include "SensorEventChecker.h"
 #include "BOARD.h"
 #include "RammingSubHSM.h"
+#include "IO_Ports.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -67,7 +68,8 @@ static const char *StateNames[] = {
 #define DOOR_TIME 200
 #define WAIT_TIME 1000
 
-
+#define FAN_PORT PORTZ
+#define FAN_PIN PIN9
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -141,7 +143,9 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
-
+            // INIT the fans
+            IO_PortsSetPortOutputs(FAN_PORT,FAN_PIN);
+            IO_PortsClearPortBits(FAN_PORT,FAN_PIN);        
             // now put the machine into the actual initial state
             nextState = Align;
             makeTransition = TRUE;
@@ -244,6 +248,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
                     //Turn On Fans
+                    IO_PortsSetPortBits(FAN_PORT,FAN_PIN);    
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
 					ES_Timer_InitTimer(RAM_TIMER, RAM_TIME);
@@ -285,6 +290,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                     break;
                 case ES_EXIT:
                     //turn off fans
+                    IO_PortsClearPortBits(FAN_PORT,FAN_PIN);    
                     break;
                 case ES_NO_EVENT:
                 default:
