@@ -176,9 +176,13 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             Maw_LeftMtrSpeed(0);
             break;
         case BUMPER:
-            nextState = Wander;
-            makeTransition = TRUE;
-            ThisEvent.EventType = ES_NO_EVENT;
+            // so that it only triggers on bumper raises
+            if (!(ThisEvent.EventParam))
+            {
+                nextState = Wander;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
+            }
             break;
         case ES_EXIT:
             // When Leaveing this state start the timer
