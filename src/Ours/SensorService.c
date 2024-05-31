@@ -26,10 +26,10 @@
 #define BEACON_LED (0x4)
 #define DEBOUNCE_WaitB 2
 #define DEBOUNCE_WaitP 32
-#define CLOSE_THRESH 180
+#define CLOSE_THRESH 360
 #define CLOSE_HYST 50
 
-//#define ServiceTestHarness
+#define ServiceTestHarness
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/

@@ -28,6 +28,7 @@
 
 #include "ES_Configure.h"
 #include "ES_Framework.h"
+#include "ES_Timers.h"
 #include "BOARD.h"
 #include "SensorEventChecker.h"
 #include "OMWSubHSM.h"
@@ -283,6 +284,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
 }
 #else
 ES_Event RunOMWSubHSM(ES_Event ThisEvent){
+    static uint8_t guideBackFlag = 0;
     if(ThisEvent.EventType == TAPE){
         ThisEvent.EventType = ES_NO_EVENT;
         //GuideTapes is a two bit number, the left bit is if TAPEfr is on and the Right bit is if TAPEfrr is on
@@ -292,29 +294,33 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 Maw_LeftMtrSpeed(100);
                 Maw_RightMtrSpeed(60);
                 Maw_RightDoor(2);
-                printf("\r\nleft is off and right is off: turn right\r\n");
+                //printf("\r\nleft is off and right is off: turn right\r\n");
                 break;
             case 0b10://left is off and right is on: on track go forward
                 Maw_LeftMtrSpeed(100);
                 Maw_RightMtrSpeed(100);
                 Maw_RightDoor(1);
-                printf("\r\nleft is off and right is on: on track go forward\r\n");
+                guideBackFlag = 0;
+                //printf("\r\nleft is off and right is on: on track go forward\r\n");
                 break;
             case 0b01://left is on and right is off: unexpected, assume way to far left turn hard Left (was panic mode)
                 //I've chosen to not have the robot move forward during this as the assumption may be wrong in which case it would drive itself off the edge
                 Maw_LeftMtrSpeed(-100);
                 Maw_RightMtrSpeed(100);
                 Maw_RightDoor(1);
-                printf("\r\nleft is on and right is off: Panic!\r\n");
+                //printf("\r\nleft is on and right is off: Panic!\r\n");
                 break;
             case 0b11://Left is on and right is on: fully on tape turn left
                 Maw_LeftMtrSpeed(60);
                 Maw_RightMtrSpeed(100);
                 Maw_RightDoor(2);
-                printf("\r\nLeft is on and right is on: fully on tape turn left\r\n");
+                //printf("\r\nLeft is on and right is on: fully on tape turn left\r\n");
                 break;
         }
-        if(ThisEvent.EventParam & (TAPEfllBit | TAPEflBit | TAPEblBit )){
+        //this code overwrites any previous motor sets, used when the bot is almost over the edge
+        if((ThisEvent.EventParam & (TAPEfllBit | TAPEflBit | TAPEblBit )) || guideBackFlag){
+            
+            guideBackFlag = 1;
             Maw_LeftMtrSpeed(-100);
             Maw_RightMtrSpeed(100);
             Maw_RightDoor(2);
