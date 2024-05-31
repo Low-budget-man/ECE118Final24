@@ -26,7 +26,7 @@
 #define BEACON_LED (0x4)
 #define DEBOUNCE_WaitB 2
 #define DEBOUNCE_WaitP 32
-#define DEBOUNCE_WaitT 5
+#define DEBOUNCE_WaitT 32
 #define CLOSE_THRESH 360
 #define CLOSE_HYST 50
 
@@ -46,6 +46,7 @@ enum sensor {
 static uint8_t MyPriority;
 static uint8_t LastBump;
 static uint8_t LastTrack;
+static uint8_t LastTrackP; //Last Track Posted
 static uint16_t LastPing;
 static enum sensor Dist;
 /*******************************************************************************
@@ -201,6 +202,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         }
         else if (ThisEvent.EventParam == TRACK_DEBOUNCE_T)
         {
+            if(LastTrack != LastTrackP){
 #ifdef ServiceTestHarness
             printf("\r\nTrack Event with the param,0x%x", LastTrack);
 #else
@@ -209,6 +211,8 @@ ES_Event RunSensorService(ES_Event ThisEvent)
             PostEvent.EventParam = LastTrack;
             PostMawHSM(PostEvent);
 #endif
+        }
+           LastTrackP = LastTrack;
         }
         
         else
