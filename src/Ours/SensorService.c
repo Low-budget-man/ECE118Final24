@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "MawHSM.h"
-
+#include "LED.h"
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -118,20 +118,12 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         // This section is used to reset service for some reason
         break;
     case TRACKWIRE:
+        LED_InvertBank(LED_BANK1,TRACK_LED);
         ES_Timer_InitTimer(TRACK_DEBOUNCE_T,DEBOUNCE_WaitT);
         LastTrack = ThisEvent.EventParam;
-        if (ThisEvent.EventParam)
-        {
-            // detected
-            LED_OnBank(LED_BANK1, TRACK_LED);
-        }
-        else
-        {
-            // not detected
-            LED_OffBank(LED_BANK1, TRACK_LED);
-        }
         break;
     case TAPE:
+        LED_InvertBank(LED_BANK1,TAPE_LED);
 #ifdef ServiceTestHarness
         printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
 #else
@@ -151,16 +143,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
 #ifdef ServiceTestHarness
         printf("\r\n Beacon Event param: %x", ThisEvent.EventParam);
 #endif
-        if (ThisEvent.EventParam)
-        {
-            // detected
-            LED_OnBank(LED_BANK1, BEACON_LED);
-        }
-        else
-        {
-            // not detected
-            LED_OffBank(LED_BANK1, BEACON_LED);
-        }
+
         break;
     case BUMPER:
         ES_Timer_InitTimer(BUMPER_DEBOUNCE_T, DEBOUNCE_WaitB);

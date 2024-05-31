@@ -14,6 +14,7 @@
 #include "SensorEventChecker.h"
 #include "IO_Ports.h"
 #include "RC_Servo.h"
+#include "LED.h"
 #include <stdio.h>
 
 /*******************************************************************************
@@ -130,6 +131,9 @@ void Maw_Init(void){
     // for the servos
     RC_Init();
     RC_AddPins(RIGHT_DOOR|LEFT_DOOR);
+    // SET up the LEDs
+    LED_Init();
+    LED_AddBanks(LED_BANK1);
     //sets the servos to collecting
     Maw_RightDoor(TRUE);
     int i;
@@ -138,6 +142,7 @@ void Maw_Init(void){
     }
 
     Maw_LeftDoor(TRUE);
+    
 }
 
 
