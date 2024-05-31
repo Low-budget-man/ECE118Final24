@@ -117,6 +117,7 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
 			case ES_ENTRY: 
 					Maw_LeftMtrSpeed(-80);
 					Maw_RightMtrSpeed(80);
+                    Maw_RightDoor(2);
 					break;
 			case TAPE: 
 				if(ThisEvent.EventParam == 0){

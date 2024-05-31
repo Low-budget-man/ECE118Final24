@@ -221,12 +221,12 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                 case ES_ENTRY: // ccw to line up with door slightly more easily
                     if (LastBump & (1<<BUMPERfrBit))
                     {
-                        Maw_LeftMtrSpeed(100);
-   					    Maw_RightMtrSpeed(-100);
+                        Maw_LeftMtrSpeed(-100);
+   					    Maw_RightMtrSpeed(100);
                     }
                     else {
-                    Maw_LeftMtrSpeed(-100);
-   					Maw_RightMtrSpeed(100);
+                    Maw_LeftMtrSpeed(100);
+   					Maw_RightMtrSpeed(-100);
                     }
                     ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
                     Maw_RightDoor(2);
