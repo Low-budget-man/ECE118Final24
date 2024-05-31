@@ -37,6 +37,7 @@
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
+//#define REALSSM
 #define BRAINDEAD
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
@@ -289,25 +290,34 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
         switch (GuideTapes){
             case 0b00://left is off and right is off: turn right
                 Maw_LeftMtrSpeed(100);
-                Maw_RightMtrSpeed(0);
-                printf("left is off and right is off: turn right");
+                Maw_RightMtrSpeed(60);
+                Maw_RightDoor(2);
+                printf("\r\nleft is off and right is off: turn right\r\n");
                 break;
-            case 0b01://left is off and right is on: on track go forward
+            case 0b10://left is off and right is on: on track go forward
                 Maw_LeftMtrSpeed(100);
                 Maw_RightMtrSpeed(100);
-                printf("left is off and right is on: on track go forward");
+                Maw_RightDoor(1);
+                printf("\r\nleft is off and right is on: on track go forward\r\n");
                 break;
-            case 0b10://left is on and right is off: unexpected, assume way to far left turn hard Left (was panic mode)
+            case 0b01://left is on and right is off: unexpected, assume way to far left turn hard Left (was panic mode)
                 //I've chosen to not have the robot move forward during this as the assumption may be wrong in which case it would drive itself off the edge
                 Maw_LeftMtrSpeed(-100);
                 Maw_RightMtrSpeed(100);
-                printf("left is on and right is off: Panic! at the disco");
+                Maw_RightDoor(1);
+                printf("\r\nleft is on and right is off: Panic!\r\n");
                 break;
             case 0b11://Left is on and right is on: fully on tape turn left
-                Maw_LeftMtrSpeed(0);
+                Maw_LeftMtrSpeed(60);
                 Maw_RightMtrSpeed(100);
-                printf("Left is on and right is on: fully on tape turn left");
+                Maw_RightDoor(2);
+                printf("\r\nLeft is on and right is on: fully on tape turn left\r\n");
                 break;
+        }
+        if(ThisEvent.EventParam & (TAPEfllBit | TAPEflBit | TAPEblBit )){
+            Maw_LeftMtrSpeed(-100);
+            Maw_RightMtrSpeed(100);
+            Maw_RightDoor(2);
         }
     }
 }

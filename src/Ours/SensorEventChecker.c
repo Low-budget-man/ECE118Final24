@@ -45,7 +45,7 @@
 #define BATTERY_DISCONNECT_THRESHOLD 175
 // Track wire #defines ---------------------------------------------------------
 #define TRACK_VOLTAGE AD_PORTW4
-#define TRACK_THRESH 200
+#define TRACK_THRESH 100
 #define TRACK_HYST 60
 // Tape #defines ---------------------------------------------------------------
 // for tape sensor testing will only use the frr (front right right) tape sensor
@@ -90,7 +90,7 @@
 #define TAPE_VOLTAGE_BROWN TAPE_VOLTAGEfll
 #define TAPE_VOLTAGE_GREEN TAPE_VOLTAGEbl
 
-#define TAPE_THRESH 200 
+#define TAPE_THRESH 175 
 // reading voltage
 #define TAPE_HYST 50
 /*
@@ -358,10 +358,18 @@ uint8_t CheckTrack(void) {
     } CurrentTrack;
     uint16_t TrackVoltage = AD_ReadADPin(TRACK_VOLTAGE);
     // checks to see what the current value is
-    if (TrackVoltage > TRACK_THRESH + TRACK_HYST) {
-        CurrentTrack = DETECTED;
-    } else if (TrackVoltage < TRACK_THRESH - TRACK_HYST) {
-        CurrentTrack = NOT_DETECTED;
+    if(LastTrack == DETECTED){
+        if (TrackVoltage > TRACK_THRESH + TRACK_HYST) {
+            CurrentTrack = DETECTED;
+        } else  {
+            CurrentTrack = NOT_DETECTED;
+        }
+    } else {
+        if (TrackVoltage > TRACK_THRESH - TRACK_HYST) {
+            CurrentTrack = DETECTED;
+        } else  {
+            CurrentTrack = NOT_DETECTED;
+        }
     }
     // checks if there is a change from current to past and acts properly
     if (CurrentTrack != LastTrack) {

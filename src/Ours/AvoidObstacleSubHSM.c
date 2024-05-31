@@ -61,13 +61,13 @@ static const char *StateNames[] = {
 };
 
 /*****PLEASE CHANGE THESE AFTER TESTING*****/
-#define BackUpTime 1000 
+#define BackUpTime 1500 
 #define Right1Time 1000
 #define Forward1Time 1000
 #define Left1Time 1000
 #define Forward2Time 1000
 #define Left2Time 1000
-#define Right2Time 1000
+#define Right2Time 500
 
 
 /*******************************************************************************
@@ -173,8 +173,8 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case Right1:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-					Maw_LeftMtrSpeed(80);
-					Maw_RightMtrSpeed(-80);
+					Maw_LeftMtrSpeed(-80);
+					Maw_RightMtrSpeed(80);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right1Time);
                     break;
                 case ES_TIMEOUT:
@@ -215,8 +215,8 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case Left1:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    Maw_LeftMtrSpeed(-80);
-					Maw_RightMtrSpeed(80);
+                    Maw_LeftMtrSpeed(80);
+					Maw_RightMtrSpeed(-80);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left1Time);
                     break;
                 case ES_TIMEOUT:
@@ -257,8 +257,8 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case Left2:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                  Maw_LeftMtrSpeed(-50);
-					Maw_RightMtrSpeed(50);
+                    Maw_LeftMtrSpeed(80);
+					Maw_RightMtrSpeed(-80);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left2Time);					
                     break;
 				case PINGCLOSE:
@@ -278,8 +278,8 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case Right2:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    Maw_LeftMtrSpeed(50);
-					Maw_RightMtrSpeed(-50);
+                    Maw_LeftMtrSpeed(-80);
+					Maw_RightMtrSpeed(80);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right2Time);					
                     break;
                 case ES_TIMEOUT:

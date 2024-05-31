@@ -139,8 +139,8 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(100);
                     Maw_RightMtrSpeed(100);
-                    LastBump = 0;
-                    //Maw_RightDoor(1);
+                    Maw_RightDoor(1);
+
                     break;
                 case TAPE:
                     nextState = Reverse;
@@ -221,15 +221,15 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                 case ES_ENTRY: // ccw to line up with door slightly more easily
                     if (LastBump & (1<<BUMPERfrBit))
                     {
-                        Maw_LeftMtrSpeed(100);
-   					    Maw_RightMtrSpeed(-100);
+                        Maw_LeftMtrSpeed(-100);
+   					    Maw_RightMtrSpeed(100);
                     }
                     else {
-                    Maw_LeftMtrSpeed(-100);
-   					Maw_RightMtrSpeed(100);
+                    Maw_LeftMtrSpeed(100);
+   					Maw_RightMtrSpeed(-100);
                     }
                     ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
-                    //Maw_RightDoor(2);
+                    Maw_RightDoor(2);
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == WANDER_SUBSTATE_TIMER) {
