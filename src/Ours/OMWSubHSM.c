@@ -293,7 +293,9 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
             case 0b00://left is off and right is off: turn right
                 Maw_LeftMtrSpeed(100);
                 Maw_RightMtrSpeed(60);
-                Maw_RightDoor(2);
+                // this is for testing may allow us to catch a 
+                //few more balls
+                Maw_RightDoor(1);
                 //printf("\r\nleft is off and right is off: turn right\r\n");
                 break;
             case 0b10://left is off and right is on: on track go forward

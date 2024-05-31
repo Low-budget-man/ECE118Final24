@@ -33,6 +33,7 @@
 #include "SensorEventChecker.h"
 #include "BOARD.h"
 #include "RammingSubHSM.h"
+#include "IO_Ports.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -62,12 +63,13 @@ static const char *StateNames[] = {
 };
 
 #define ALIGN_TIME 1000
-#define BACKUP_TIME 1000
-#define RAM_TIME 500
+#define BACKUP_TIME 3000
+#define RAM_TIME 3500
 #define DOOR_TIME 200
-#define WAIT_TIME 2000
+#define WAIT_TIME 1000
 
-
+#define FAN_PORT PORTZ
+#define FAN_PIN PIN9
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -141,7 +143,9 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
-
+            // INIT the fans
+            IO_PortsSetPortOutputs(FAN_PORT,FAN_PIN);
+            IO_PortsClearPortBits(FAN_PORT,FAN_PIN);        
             // now put the machine into the actual initial state
             nextState = Align;
             makeTransition = TRUE;
@@ -152,8 +156,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case Align:
 			switch (ThisEvent.EventType) {
                 case ES_ENTRY: //Guessing here. 
-                    Maw_LeftMtrSpeed(70);
-                    Maw_RightMtrSpeed(70);
+                    Maw_LeftMtrSpeed(80);
+                    Maw_RightMtrSpeed(80);
                     ES_Timer_InitTimer(RAM_TIMER, ALIGN_TIME);
                     break;
                 case ES_TIMEOUT: //More of a watchdog than anything
@@ -188,7 +192,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					}
                     break;
                 case BUMPER:
-					if (TRUE){//check if a bumper is on
+					if (ThisEvent.EventParam){//check if a bumper is on
 						nextState = FirstDoor;
 						makeTransition = TRUE;
 						ThisEvent.EventType = ES_NO_EVENT;
@@ -204,7 +208,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case FirstDoor:
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_LeftDoor(TRUE);
+					Maw_LeftDoor(FALSE);
 					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
@@ -223,7 +227,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case SecondDoor:	//Continue moving back in this state, minimal delay, just so doors don't interfere.
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_RightDoor(TRUE);
+					Maw_RightDoor(FALSE);
 					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
@@ -244,6 +248,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
                     //Turn On Fans
+                    IO_PortsSetPortBits(FAN_PORT,FAN_PIN);    
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
 					ES_Timer_InitTimer(RAM_TIMER, RAM_TIME);
@@ -285,6 +290,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                     break;
                 case ES_EXIT:
                     //turn off fans
+                    IO_PortsClearPortBits(FAN_PORT,FAN_PIN);    
                     break;
                 case ES_NO_EVENT:
                 default:
@@ -300,6 +306,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(-80);
 					ES_Timer_InitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
+                case TAPE:
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
 						nextState = Return2Arena;
