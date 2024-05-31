@@ -26,6 +26,7 @@
 #define BEACON_LED (0x4)
 #define DEBOUNCE_WaitB 2
 #define DEBOUNCE_WaitP 32
+#define DEBOUNCE_WaitT 5
 #define CLOSE_THRESH 180
 #define CLOSE_HYST 50
 
@@ -44,6 +45,7 @@ enum sensor {
 };
 static uint8_t MyPriority;
 static uint8_t LastBump;
+static uint8_t LastTrack;
 static uint16_t LastPing;
 static enum sensor Dist;
 /*******************************************************************************
@@ -115,11 +117,8 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         // This section is used to reset service for some reason
         break;
     case TRACKWIRE:
-#ifdef ServiceTestHarness
-        printf("\r\nTrack Event with the param,0x%x", ThisEvent.EventParam);
-#else
-        PostMawHSM(ThisEvent);
-#endif
+        ES_Timer_InitTimer(TRACK_DEBOUNCE_T,DEBOUNCE_WaitT);
+        LastTrack = ThisEvent.EventParam;
         if (ThisEvent.EventParam)
         {
             // detected
@@ -200,6 +199,18 @@ ES_Event RunSensorService(ES_Event ThisEvent)
                 PostSensorService(PostEvent);
             }
         }
+        else if (ThisEvent.EventParam == TRACK_DEBOUNCE_T)
+        {
+#ifdef ServiceTestHarness
+            printf("\r\nTrack Event with the param,0x%x", LastTrack);
+#else
+            ES_Event PostEvent;
+            PostEvent.EventType = TRACKWIRE;
+            PostEvent.EventParam = LastTrack;
+            PostMawHSM(PostEvent);
+#endif
+        }
+        
         else
         {
 //            printf("\r\nERROR: Unknown TimerParam in SensorService");
