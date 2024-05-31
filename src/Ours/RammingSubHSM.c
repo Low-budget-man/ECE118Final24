@@ -62,10 +62,10 @@ static const char *StateNames[] = {
 };
 
 #define ALIGN_TIME 1000
-#define BACKUP_TIME 1000
-#define RAM_TIME 500
+#define BACKUP_TIME 3000
+#define RAM_TIME 3500
 #define DOOR_TIME 200
-#define WAIT_TIME 2000
+#define WAIT_TIME 1000
 
 
 /*******************************************************************************
@@ -152,8 +152,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case Align:
 			switch (ThisEvent.EventType) {
                 case ES_ENTRY: //Guessing here. 
-                    Maw_LeftMtrSpeed(70);
-                    Maw_RightMtrSpeed(70);
+                    Maw_LeftMtrSpeed(80);
+                    Maw_RightMtrSpeed(80);
                     ES_Timer_InitTimer(RAM_TIMER, ALIGN_TIME);
                     break;
                 case ES_TIMEOUT: //More of a watchdog than anything
@@ -188,7 +188,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					}
                     break;
                 case BUMPER:
-					if (TRUE){//check if a bumper is on
+					if (ThisEvent.EventParam){//check if a bumper is on
 						nextState = FirstDoor;
 						makeTransition = TRUE;
 						ThisEvent.EventType = ES_NO_EVENT;
@@ -204,7 +204,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case FirstDoor:
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_LeftDoor(TRUE);
+					Maw_LeftDoor(FALSE);
 					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
@@ -223,7 +223,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case SecondDoor:	//Continue moving back in this state, minimal delay, just so doors don't interfere.
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_RightDoor(TRUE);
+					Maw_RightDoor(FALSE);
 					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
@@ -300,6 +300,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(-80);
 					ES_Timer_InitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
+                case TAPE:
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
 						nextState = Return2Arena;
