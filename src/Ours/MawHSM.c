@@ -186,8 +186,6 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             break;
         case ES_EXIT:
             // When Leaveing this state start the timer
-            ES_Timer_InitTimer(GAME_TIMER,GAME_TIME);
-            ES_Timer_InitTimer(WANDER_TIMER,WANDER_TIME);
             break;
         default:
             break;
@@ -202,7 +200,9 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         ThisEvent = RunWanderSubHSM(ThisEvent);
         switch (ThisEvent.EventType)
         {
-        case ES_TIMEOUT:
+            case ES_ENTRY:
+                ES_Timer_InitTimer(WANDER_TIMER,WANDER_TIME);
+            case ES_TIMEOUT:
             if (ThisEvent.EventParam == WANDER_TIMER)
             {
                 nextState = Deposit;
