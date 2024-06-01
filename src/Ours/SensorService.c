@@ -158,8 +158,6 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         LastBump = ThisEvent.EventParam;
 #ifdef ServiceTestHarness
         printf("\r\nBumper Event with the param,0x%x", ThisEvent.EventParam);
-#else
-        PostMawHSM(ThisEvent);
 #endif
         break;
     case ES_TIMEOUT:
@@ -172,7 +170,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
 #ifdef ServiceTestHarness
             printf("\r\n Debounced Bumper Event with param %x", LastBump);
 #else
-        PostMawHSM(ThisEvent);
+        PostMawHSM(PostEvent);
 #endif
         }
         else if (ThisEvent.EventParam == PING_DEBOUNCE_T){

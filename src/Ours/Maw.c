@@ -73,7 +73,7 @@
     float maxV = (MAX_MOTOR_VOLTAGE*1000)/32;
     float CurrentV = (float) CURRENT_BATT_VOLT;
 #ifdef BAD_READ
-    CurrentV = 312; //this should be approx 10V
+    CurrentV = 310; //this should be approx 10V
 #endif
     unsigned int out = 0;
     if(CurrentV < maxV){

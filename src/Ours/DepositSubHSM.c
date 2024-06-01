@@ -149,7 +149,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 			ThisEvent = RunWanderSubHSM(ThisEvent);
 			switch (ThisEvent.EventType) {
 				case TAPE:
-                    if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+                    if((ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){
                         nextState = FollowTape;
                     } else {
                         nextState = Align;
@@ -201,6 +201,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                 default:
                     break;
             }
+            break;
 		case FollowTape:
 			ThisEvent = RunFollowTapeHSM(ThisEvent);
             switch (ThisEvent.EventType) {
