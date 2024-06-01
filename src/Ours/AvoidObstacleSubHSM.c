@@ -39,14 +39,20 @@
 
 /*****PLEASE CHANGE THESE AFTER TESTING*****/
 #define DEBUGPRINT
-#define BackUpTime 250 
-#define Right1Time 250
-#define Forward1Time 250
-#define Left1Time 250
-#define Forward2Time 375
-#define Left2Time 1250
-#define Right2Time 250
+#define BackUpTime 480 
+#define Right1Time 832
+#define Forward1Time 1598
+#define Left1Time 832
+#define Forward2Time 2820
+//#define Left2Time 1250
+#define Right2Time 406
 
+/*******************************************************************************
+ * DEBUGPRINT                                               *
+ ******************************************************************************/
+#ifdef DEBUGPRINT
+#include <stdio.h>
+#endif
 
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
@@ -134,7 +140,13 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
     AvoidObstacleSubHSMState_t nextState; // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
-
+    if (ThisEvent.EventType == BUMPER && ThisEvent.EventParam){
+        // uh oh this is bad
+            nextState = BackUp;
+            makeTransition = TRUE;
+            ThisEvent.EventType = OBSTACLE_AVOIDED;
+            ThisEvent.EventParam = FALSE;
+    }
     switch (CurrentState) { //This obnoxiously long switch statement written by ChatGPT.
     case InitPSubState: // If current state is initial Psedudo State
         if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
@@ -275,7 +287,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(-100);
-					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left2Time);
+//					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left2Time);
 #ifdef DEBUGPRINT
                     printf("\r\nGo Left\r\n   \r\n  <M\r\n[ ]");
 #endif				
@@ -338,6 +350,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     // however as of now 5/26/2024 6:33PM the state machine 
                     // to seems behave as it would in our notebook :)
                     ThisEvent.EventType = OBSTACLE_AVOIDED;
+                    ThisEvent.EventParam = TRUE;
                     nextState = BackUp;
                     makeTransition = TRUE;
                     break;

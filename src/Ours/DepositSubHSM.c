@@ -205,11 +205,17 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 		case FollowTape:
 			ThisEvent = RunFollowTapeHSM(ThisEvent);
             switch (ThisEvent.EventType) {
-			case TRACKWIRE:
-				nextState = Ramming;
-				makeTransition = TRUE;
-				ThisEvent.EventType = ES_NO_EVENT; 
-				break;
+                case TRACKWIRE:
+                    nextState = Ramming;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT; 
+                    break;
+                case OBSTACLE_AVOIDED:
+                    nextState = Continue_Wandering;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+                    
 			break;
 			case ES_NO_EVENT:
 			default: // all unhandled events pass the event back up to the next level

@@ -70,10 +70,10 @@
     // convert the Max motor voltage (8V) to the same 32 mV units of the output
     // of the read pin function
     float mathSpeed = newSpeed;
-    float maxV = (MAX_MOTOR_VOLTAGE*1000)/32;
+    float maxV = (MAX_MOTOR_VOLTAGE) * 31;
     float CurrentV = (float) CURRENT_BATT_VOLT;
 #ifdef BAD_READ
-    CurrentV = 310; //this should be approx 10V
+    CurrentV = 9.95 * 31; //this should be approx 10V
 #endif
     unsigned int out = 0;
     if(CurrentV < maxV){
