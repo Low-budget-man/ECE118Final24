@@ -49,7 +49,7 @@ static uint8_t LastTrack;
 static uint8_t LastTrackP; //Last Track Posted
 static uint16_t LastPing;
 static enum sensor Dist;
-uint16_t CLOSE_THRESH PINGCLOSEc;
+uint16_t CLOSE_THRESH = PINGCLOSEc;
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
