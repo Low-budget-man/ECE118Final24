@@ -50,7 +50,7 @@ void             ES_Timer_Init(void);
  * @return The time remaining of the specified timer
  * @author Caitlin Bonesio
  */
-uint32_t        ES_Timers_GetTimeRemaining(uint8_t Num);
+uint32_t        ES_Timer_GetTimeRemaining(uint8_t Num);
 /**
  * @Function ES_Timer_InitTimer(uint8_t Num, uint32_t NewTime)
  * @param Num -  the number of the timer to start

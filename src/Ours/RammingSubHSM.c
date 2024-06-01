@@ -156,8 +156,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case Align:
 			switch (ThisEvent.EventType) {
                 case ES_ENTRY: //Guessing here. 
-                    Maw_LeftMtrSpeed(80);
-                    Maw_RightMtrSpeed(80);
+                    Maw_LeftMtrSpeed(100);
+                    Maw_RightMtrSpeed(100);
                     ES_Timer_InitTimer(RAM_TIMER, ALIGN_TIME);
                     break;
                 case ES_TIMEOUT: //More of a watchdog than anything
@@ -176,8 +176,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
         case BackUp:
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_LeftMtrSpeed(-80);
-					Maw_RightMtrSpeed(-80);
+					Maw_LeftMtrSpeed(-100);
+					Maw_RightMtrSpeed(-100);
 					ES_Timer_InitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
 				case ES_EXIT:
@@ -302,8 +302,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case Back2:
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_LeftMtrSpeed(-80);
-					Maw_RightMtrSpeed(-80);
+					Maw_LeftMtrSpeed(-100);
+					Maw_RightMtrSpeed(-100);
 					ES_Timer_InitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
                 case TAPE:
