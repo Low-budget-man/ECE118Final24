@@ -194,7 +194,7 @@ static const char *EventNames[] = {
 // the name of the run function
 #define SERV_3_RUN RunMawHSM
 // How big should this services Queue be?
-#define SERV_3_QUEUE_SIZE 3
+#define SERV_3_QUEUE_SIZE 6
 #endif
 
 
