@@ -36,6 +36,29 @@
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
+
+/*****PLEASE CHANGE THESE AFTER TESTING*****/
+#define DEBUGPRINT
+#define BackUpTime 250 
+#define Right1Time 250
+#define Forward1Time 250
+#define Left1Time 250
+#define Forward2Time 375
+#define Left2Time 1250
+#define Right2Time 250
+
+
+/*******************************************************************************
+ * PRIVATE FUNCTION PROTOTYPES                                                 *
+ ******************************************************************************/
+/* Prototypes for private functions for this machine. They should be functions
+   relevant to the behavior of this state machine */
+
+/*******************************************************************************
+ * PRIVATE MODULE VARIABLES                                                            *
+ ******************************************************************************/
+/* You will need MyPriority and the state variable; you may need others as well.
+ * The type of state variable should match that of enum in header file. */
 typedef enum {
     InitPSubState,
 	BackUp, 
@@ -59,28 +82,6 @@ static const char *StateNames[] = {
 	"Right2",
 	"Forward3",
 };
-
-/*****PLEASE CHANGE THESE AFTER TESTING*****/
-#define BackUpTime 1000 
-#define Right1Time 1000
-#define Forward1Time 1000
-#define Left1Time 1000
-#define Forward2Time 1500
-#define Left2Time 5000
-#define Right2Time 250
-
-
-/*******************************************************************************
- * PRIVATE FUNCTION PROTOTYPES                                                 *
- ******************************************************************************/
-/* Prototypes for private functions for this machine. They should be functions
-   relevant to the behavior of this state machine */
-
-/*******************************************************************************
- * PRIVATE MODULE VARIABLES                                                            *
- ******************************************************************************/
-/* You will need MyPriority and the state variable; you may need others as well.
- * The type of state variable should match that of enum in header file. */
 
 static AvoidObstacleSubHSMState_t CurrentState = InitPSubState; // <- change name to match ENUM
 static uint8_t MyPriority;
@@ -155,6 +156,9 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-100);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackUpTime);
+#ifdef DEBUGPRINT
+                    printf("\r\r\nBack Up\n[ ]\n M\n |\n v");
+#endif
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -176,6 +180,9 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(100);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right1Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nTurn Right\n[ ]\n\n M->");
+#endif
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -196,7 +203,10 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
-					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward1Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward1Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Forward\n[ ]\n\n   M->");
+#endif					
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -218,6 +228,9 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(-100);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left1Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nTurn Left\r\n[ ]\r\n   ^\r\n   M");
+#endif	
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -238,7 +251,10 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
-					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward2Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward2Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Forward\r\n   ^\r\n   M\r\n[ ]");
+#endif
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -259,7 +275,10 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(-100);
-					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left2Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left2Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Left\r\n   \r\n  <M\r\n[ ]");
+#endif				
                     break;
 				case PINGCLOSE:
                     if(ThisEvent.EventParam){
@@ -280,7 +299,10 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(100);
-					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right2Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right2Time);		
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Left\r\n   \r\n  M\n[ ]");
+#endif				
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -303,6 +325,9 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
 					ThisEvent.EventType = ES_NO_EVENT;
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Left\r\n M \r\n\r\n[ ]");
+#endif	
                     break;
                 case TAPE:
                     // may want to check exactly what we want here or change 
