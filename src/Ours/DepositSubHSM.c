@@ -211,6 +211,8 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     ThisEvent.EventType = ES_NO_EVENT; 
                     break;
                 case OBSTACLE_AVOIDED:
+                    // This should only happen on OBSTACLE_AVOIDED false as the 
+                    // true event would be handled by the FOLLOW TAPE HSM
                     nextState = Continue_Wandering;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;

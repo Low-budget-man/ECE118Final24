@@ -199,14 +199,14 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                     break;
                 case BUMPER:
                     // Back Bumpers
-                    if (ThisEvent.EventParam) {
+                    if (ThisEvent.EventParam & ((1<<BUMPERblBit) | (1<<BUMPERbrBit))) {
                         nextState = Forward;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
 
                         // This timer will not tigger on all exits thus not an 
                         // exit event
-                        //ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME - ES_Timer_GetTimeRemaining(WANDER_SUBSTATE_TIMER))/2);
+                        ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME - ES_Timer_GetTimeRemaining(WANDER_SUBSTATE_TIMER))/2);
                     }
                     break;
                 case ES_NO_EVENT:

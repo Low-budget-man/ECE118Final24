@@ -268,6 +268,14 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     printf("\r\nGo Forward\r\n   ^\r\n   M\r\n[ ]");
 #endif
                     break;
+                case TAPE:
+                    if(ThisEvent.EventParam){
+                        ThisEvent.EventType = OBSTACLE_AVOIDED;
+                        ThisEvent.EventParam = TRUE;
+                        nextState = BackUp;
+                        makeTransition = TRUE;
+                    }
+                break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
                         nextState = Left2;
