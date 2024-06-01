@@ -148,8 +148,8 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                     ThisEvent.EventType = TAPE;
                     break;
                 case BUMPER:
-                    //only when a bumper is pressed
-                    if(ThisEvent.EventParam){
+                    //only when a front bumper is pressed
+                    if(ThisEvent.EventParam & ((1<<BUMPERflBit) | (1<<BUMPERfrBit))){
                         nextState = Reverse;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
@@ -206,7 +206,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
 
                         // This timer will not tigger on all exits thus not an 
                         // exit event
-                        ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME - ES_Timer_GetTimeRemaining(WANDER_SUBSTATE_TIMER))/2);
+                        ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME - ES_Timer_GetTimeRemaining(WANDER_SUBSTATE_TIMER))/2);
                     }
                     else {
                         ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));    

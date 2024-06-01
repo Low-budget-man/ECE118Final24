@@ -120,7 +120,7 @@ static pPostFunc const Timer2PostFunc[NUM_TIMERS] = {TIMER0_RESP_FUNC,
  * @return The time remaining of the specified timer
  * @author Caitlin Bonesio
  */
-uint32_t ES_Timers_GetTimeRemaining(uint8_t Num){
+uint32_t ES_Timer_GetTimeRemaining(uint8_t Num){
     if(!((Num >= NUM_TIMERS) || (Timer2PostFunc[Num] == TIMER_UNUSED))){
         return TMR_TimerArray[Num];
     } else {
