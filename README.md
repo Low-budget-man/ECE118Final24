@@ -13,18 +13,19 @@ This is the git repo that will deal with the code for the final project of ECE 1
   - [x] Beacon detector
   - [x] Ping Sensor
 
-- [ ] Integrate sensors into ES framwork
+- [x] Integrate sensors into ES framwork
   - [x] Track Wire detector
   - [x] Tape Detector 
   - [x] Beacon detector
-  - [ ] Ping Sensor
-- [ ] Create helper functions for PWM motor control
+  - [x] Ping Sensor
+- [x] Create helper functions for PWM motor control
   - [x] Write test cases for Motors and servos
   - [x] Test Motors
-  - [ ] Test Servos
+  - [x] Test Servos
 - [ ] Create bot behavior state machines 
-  - [ ] Create an HSM that that the sensors can post to
-  - [ ] Create Sub State machines
+  - [x] Create an HSM that that the sensors can post to
+  - [x] Create Sub State machines
+  - [ ] Debug state machines 
   
 - [ ] Finish Bot Code
 
