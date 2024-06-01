@@ -27,7 +27,7 @@
 #define DEBOUNCE_WaitB 2
 #define DEBOUNCE_WaitP 32
 #define DEBOUNCE_WaitT 32
-#define CLOSE_THRESH 360
+
 #define CLOSE_HYST 50
 
 //#define ServiceTestHarness
@@ -49,10 +49,19 @@ static uint8_t LastTrack;
 static uint8_t LastTrackP; //Last Track Posted
 static uint16_t LastPing;
 static enum sensor Dist;
+uint16_t CLOSE_THRESH = PINGCLOSEc;
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
-
+/**
+ * @Function ChangePingThres(uint16_t Newval)
+ * @param Newval - the new value for the ping close thesh
+ * @return void
+ * @brief This function will change the PingClose Threshold 
+ * @author Cooper Cantrell 6/1/2024 4:14 PM*/
+void ChangePingThres(uint16_t Newval){
+    CLOSE_THRESH = Newval;
+}
 /**
  * @Function InitSensorService(uint8_t Priority)
  * @param Priority - internal variable to track which event queue to use

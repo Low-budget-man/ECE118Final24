@@ -17,7 +17,8 @@
 /*******************************************************************************
  * PUBLIC #DEFINES                                                             *
  ******************************************************************************/
-
+#define PINGCLOSEc 320
+#define PINGCLOSEf 640
 
 /*******************************************************************************
  * PUBLIC TYPEDEFS                                                             *
@@ -27,7 +28,13 @@
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *
  ******************************************************************************/
-
+/**
+ * @Function ChangePingThres(uint16_t Newval)
+ * @param Newval - the new value for the ping close thesh
+ * @return void
+ * @brief This function will change the PingClose Threshold 
+ * @author Cooper Cantrell 6/1/2024 4:14 PM*/
+void ChangePingThres(uint16_t Newval);
  
 /**
  * @Function InitSensorService(uint8_t Priority)

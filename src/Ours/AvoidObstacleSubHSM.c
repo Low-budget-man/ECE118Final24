@@ -32,7 +32,7 @@
 #include "BOARD.h"
 #include "AvoidObstacleSubHSM.h"
 #include "Maw.h"
-
+#include "SensorService.h"
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -295,6 +295,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(-100);
+                    ChangePingThres(PINGCLOSEf);
 //					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left2Time);
 #ifdef DEBUGPRINT
                     printf("\r\nGo Left\r\n   \r\n  <M\r\n[ ]");
@@ -306,6 +307,9 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
+                    break;
+                case ES_EXIT:
+                    ChangePingThres(PINGCLOSEc);
                     break;
                 case ES_NO_EVENT:
                 default:
