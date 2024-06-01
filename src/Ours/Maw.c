@@ -84,7 +84,7 @@
         out = (unsigned int) ((10*mathSpeed * maxV)/CurrentV);
     }
     if(out < 0 ){
-        printf("warning motors have been over set, moving within bounds");
+        printf("warning motors have been under set, moving within bounds");
         out = 0;
     } else if(out > 1000){
         printf("warning motors have been over set, moving within bounds");
@@ -134,6 +134,7 @@ void Maw_Init(void){
     // SET up the LEDs
     LED_Init();
     LED_AddBanks(LED_BANK1);
+    LED_OffBank(LED_BANK1, 0xf);
     //sets the servos to collecting
     Maw_RightDoor(TRUE);
     int i;

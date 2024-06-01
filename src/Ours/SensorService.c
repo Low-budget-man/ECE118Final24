@@ -118,12 +118,20 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         // This section is used to reset service for some reason
         break;
     case TRACKWIRE:
-        LED_InvertBank(LED_BANK1,TRACK_LED);
+        if(ThisEvent.EventParam){
+            LED_OnBank(LED_BANK1,TRACK_LED);
+        } else {
+            LED_OffBank(LED_BANK1,TRACK_LED);
+        }
         ES_Timer_InitTimer(TRACK_DEBOUNCE_T,DEBOUNCE_WaitT);
         LastTrack = ThisEvent.EventParam;
         break;
     case TAPE:
-        LED_InvertBank(LED_BANK1,TAPE_LED);
+        if(ThisEvent.EventParam){
+            LED_OnBank(LED_BANK1,TAPE_LED);
+        } else {
+            LED_OffBank(LED_BANK1,TAPE_LED);
+        }
 #ifdef ServiceTestHarness
         printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
 #else
