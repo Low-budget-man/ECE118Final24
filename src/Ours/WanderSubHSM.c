@@ -209,7 +209,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                         ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME - ES_Timer_GetTimeRemaining(WANDER_SUBSTATE_TIMER))/2);
                     }
                     else {
-                        ES_TimerInitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));    
+                        ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));    
                     }
                     break;
                 case ES_NO_EVENT:
