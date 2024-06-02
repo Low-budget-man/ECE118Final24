@@ -62,11 +62,13 @@ static const char *StateNames[] = {
 	"Return2Arena",
 };
 
-#define ALIGN_TIME 1000
-#define BACKUP_TIME 3000
-#define RAM_TIME 3500
+#define ALIGN_TIME 500
+#define BACKUP_TIME 1000
+#define RAM_TIME 1250
 #define DOOR_TIME 200
-#define WAIT_TIME 1000
+#define WAIT_TIME 500
+#define BACKUP2_TIME 1000
+#define RETURN_TIME 852
 
 #define FAN_PORT PORTZ
 #define FAN_PIN PIN9
@@ -196,6 +198,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 						nextState = FirstDoor;
 						makeTransition = TRUE;
 						ThisEvent.EventType = ES_NO_EVENT;
+                        ES_Timer_StopTimer(RAM_TIMER);
 					}
                     break;
                 case ES_NO_EVENT:
@@ -265,9 +268,11 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                     }
 					break;				
 				case BUMPER: //Stop instead of trying to plow through wall
-                    nextState = Wait;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+                    if(ThisEvent.EventParam){
+                        nextState = Wait;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
                     break;
                 case ES_NO_EVENT:
                 default:
@@ -304,7 +309,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ES_ENTRY:
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-100);
-					ES_Timer_InitTimer(RAM_TIMER, BACKUP_TIME);
+					ES_Timer_InitTimer(RAM_TIMER, BACKUP2_TIME);
+                    Maw_LeftDoor(1);
 					break;
                 case TAPE:
                 case ES_TIMEOUT:
@@ -323,9 +329,10 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case Return2Arena:
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_LeftMtrSpeed(-100);
+					Maw_LeftMtrSpeed(0);
 					Maw_RightMtrSpeed(100);
-					ES_Timer_InitTimer(RAM_TIMER, ALIGN_TIME);
+					ES_Timer_InitTimer(RAM_TIMER, RETURN_TIME);
+                    Maw_RightDoor(1);
 					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
@@ -342,6 +349,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                     // Unhandled events pass back up to the next level
                     break;
 			}
+            break;
         default:
             // Handle unexpected state
             break;

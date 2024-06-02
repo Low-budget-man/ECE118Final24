@@ -42,7 +42,7 @@
  ******************************************************************************/
 // Include any defines you need to do
 // 30 seconds
-#define WANDER_TIME 1000 
+#define WANDER_TIME 10000 
 // 2 min may need to break this up depending on how the timers work
 #define GAME_TIME 120000 
 //
@@ -231,7 +231,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
             break;
-            case ES_TIMEOUT:
+        case ES_TIMEOUT:
             if(ThisEvent.EventParam == GAME_TIMER){
                 nextState = StartEnd;
                 makeTransition = TRUE;
