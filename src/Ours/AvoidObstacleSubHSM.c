@@ -45,8 +45,16 @@
 #define Left1Time 832
 #define Forward2Time 2820
 //#define Left2Time 1250
-#define Right2Time 406
+#define Right2Time 832
 
+//#define USEPING
+
+//not ping special defines
+#define TurnLTime 426
+#define BackLTime 426
+#define DriftRTime 2500
+#define TankRTime 1000
+#define PuppyTime 4000
 /*******************************************************************************
  * DEBUGPRINT                                               *
  ******************************************************************************/
@@ -65,6 +73,7 @@
  ******************************************************************************/
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
+#ifdef USEPING
 typedef enum {
     InitPSubState,
 	BackUp, 
@@ -77,6 +86,7 @@ typedef enum {
 	Forward3,
 } AvoidObstacleSubHSMState_t;
 
+
 static const char *StateNames[] = {
 	"InitPSubState",
 	"BackUp",
@@ -88,6 +98,25 @@ static const char *StateNames[] = {
 	"Right2",
 	"Forward3",
 };
+#else
+typedef enum {
+    InitPSubState,
+	BackUp, 
+	TurnL,
+	DriftR,
+    TankR,
+	BackL,
+} AvoidObstacleSubHSMState_t;
+
+static const char *StateNames[] = {
+	"InitPSubState",
+	"BackUp", 
+	"TurnL",
+	"DriftR",
+    "TankR",
+	"BackL",
+};
+#endif
 
 static AvoidObstacleSubHSMState_t CurrentState = InitPSubState; // <- change name to match ENUM
 static uint8_t MyPriority;
@@ -136,6 +165,7 @@ uint8_t InitAvoidObstacleSubHSM(void)
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
 ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
 {
+#ifdef USEPING
     uint8_t makeTransition = FALSE; // use to flag transition
     AvoidObstacleSubHSMState_t nextState; // <- change type to correct enum
 
@@ -386,6 +416,162 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
 
     ES_Tail(); // trace call stack end
     return ThisEvent;
+#endif
+#ifndef USEPING
+    uint8_t makeTransition = FALSE; // use to flag transition
+    AvoidObstacleSubHSMState_t nextState; // <- change type to correct enum
+
+    ES_Tattle(); // trace call stack
+    switch (CurrentState) { //This obnoxiously long switch statement written by ChatGPT.
+    case InitPSubState: // If current state is initial Psedudo State
+        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+        {
+            // this is where you would put any actions associated with the
+            // transition from the initial pseudo-state into the actual
+            // initial state
+
+            // now put the machine into the actual initial state
+            nextState = BackUp;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+        break;
+        case BackUp:
+            switch(ThisEvent.EventType){
+                case ES_ENTRY:
+                    Maw_LeftMtrSpeed(-100);
+                    Maw_RightMtrSpeed(-100);
+
+                    break;
+                case BUMPER:
+                    if(!ThisEvent.EventParam){
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackUpTime);
+                    }
+                    break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = TurnL;
+                        ThisEvent = NO_EVENT;
+                    }
+            }
+            break;
+        case TurnL:
+            switch(ThisEvent.EventType){
+                case ES_ENTRY:
+                    Maw_LeftMtrSpeed(-100);
+                    Maw_RightMtrSpeed(100);
+                    ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, TurnLTime);
+                    break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = DriftR;
+                        ThisEvent = NO_EVENT;
+                    }
+            }
+            break;
+        case DriftR:
+            switch (ThisEvent.EventType)
+            {
+            case ES_ENTRY:
+                    Maw_LeftMtrSpeed(100);
+                    Maw_RightMtrSpeed(70);
+                    ES_Timer_InitTimer (AVOID_OBSTACLE_TIMER,DriftRTime);
+                    ES_Timer_InitTimer(AVOID_WATCH_PUPPY_TIMER, PuppyTime);
+                break;
+            case BUMPER:
+                // only turn into backleft is a bumper is pressed down
+                if (ThisEvent.EventParam)
+                {
+                    makeTransition = TRUE;
+                    nextState = BackL;
+                    ThisEvent = NO_EVENT;
+                }
+            case TAPE:
+             // if the front Tape sensors are detected at all it OMW *should* be able to handle
+             // any odd issues if this is the case reset
+             if (ThisEvent.EventParam & ((1<<TAPEfrrBit)|(1<<TAPEfrBit)|(1<<TAPEflBit)
+             |(1<<TAPEfllBit)))
+             {
+                    makeTransition = TRUE;
+                    nextState = BackUp;
+                    ThisEvent.EventType = OBSTACLE_AVOIDED;
+                    ThisEvent.EventParam = TRUE;
+             }
+             case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_WATCH_PUPPY_TIMER){
+                        makeTransition = TRUE;
+                        nextState = BackL;
+                        ThisEvent = NO_EVENT;
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
+                    }
+                    else if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = TankR;
+                        ThisEvent = NO_EVENT;
+                    }
+            default:
+                break;
+            }
+            break;
+        case TankR:
+            switch(ThisEvent.EventType){
+                case ES_ENTRY:
+                    Maw_RightMtrSpeed(-100);
+                    Maw_LeftMtrSpeed(100);
+                    ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, TankRTime);
+                    break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_WATCH_PUPPY_TIMER){
+                        makeTransition = TRUE;
+                        nextState = BackL;
+                        ThisEvent = NO_EVENT;
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
+                    }
+                    else if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = BackL;
+                        ThisEvent = NO_EVENT;
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
+                    }
+                break;
+            }
+            break;
+        case BackL:
+            switch(ThisEvent.EventType){
+                case ES_ENTRY:
+                    Maw_LeftMtrSpeed(-100);
+                    Maw_RightMtrSpeed(0);
+                    break;
+                case BUMPER:
+                    if(!ThisEvent.EventParam){
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
+                    }
+                    break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = DriftR;
+                        ThisEvent = NO_EVENT;
+                    }
+                    break;
+                default: // all unhandled states fall into here
+                    break;
+            }
+        break;
+    } // end switch on Current State
+
+    if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
+        // recursively call the current state with an exit event
+        RunAvoidObstacleSubHSM(EXIT_EVENT); // <- rename to your own Run function
+        CurrentState = nextState;
+        RunAvoidObstacleSubHSM(ENTRY_EVENT); // <- rename to your own Run function
+    }
+
+    ES_Tail(); // trace call stack end
+    return ThisEvent;
+#endif
 }
 
 
