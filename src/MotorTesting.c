@@ -32,8 +32,18 @@ void main(void)
     // Your hardware initialization function calls go here
     Maw_Init();
     // now initialize the Events and Services Framework and start it running
-
-    while(TRUE);
+    while(TRUE){
+    Maw_Fans(TRUE);
+    for (size_t i = 0; i < (1<<20); i++)
+    {
+        asm("nop");
+    }
+    Maw_Fans(FALSE);
+    for (size_t i = 0; i < (1<<20); i++)
+    {
+        asm("nop");
+    }
+    }
 };
 
 /*------------------------------- Footnotes -------------------------------*/
