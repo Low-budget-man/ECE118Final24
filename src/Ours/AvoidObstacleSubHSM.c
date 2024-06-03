@@ -86,6 +86,19 @@ typedef enum {
 	Forward3,
 } AvoidObstacleSubHSMState_t;
 
+static const char *StateNames[] = {
+	"InitPSubState",
+	"BackUp",
+	"Right1",
+	"Forward1",
+	"Left1",
+	"Forward2",
+	"Left2",
+	"Right2",
+	"Forward3",
+};
+
+
 
 static const char *StateNames[] = {
 	"InitPSubState",

@@ -140,7 +140,8 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 #define PING_HYST 32
 // this is the number of points in the ping sensor moving avrage bigger is more 
 // filter but slower
-#define PING_FILTER 9
+#define PING_FILTER 8
+#define TAPE_FILTER 8
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -162,6 +163,16 @@ static ES_Event storedEvent;
 #ifdef DEBUG_PRINT
 #include <stdio.h>
 #endif
+
+/*******************************************************************************
+ * PRIVATE Types                                                           *
+ ******************************************************************************/
+typedef struct CircBuff_t
+{
+    uint16_t Data[TAPE_FILTER];
+    uint8_t Cursor;
+}CircBuff_t;
+
 
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
@@ -235,27 +246,29 @@ void SetTapeLED(char state) {
     }
 }
 /**
- * @Function PingFilter(state)
- * @param The current Reading of the Ping Sensor
+ * @Function MovAvgFilter(Reading, *Readings, size, *cursor)
+ * @param Reading - the current reading that the sensor provides
+ * @param Readings - a pointer to the array that will store the data
+ * @param size - size of the array that is being pointed to (the number of elements in the array)
+ * @param cursor - a pointer to the cursor of the array
  * @return The new moving avg value
- * @brief This Function will return a moving avrage for the ping sensor to 
- * reduce noise
- * @author Cooper Cantrell 5/23/2024 4:09PM
+ * @brief This Function will return a moving avrage for any sensor to reduce noise
+ * @author Cooper Cantrell 6/3/2024 2:37PM
  */
-uint16_t PingFilter(uint16_t Reading){
+uint16_t MovAvgFilter(uint16_t Reading, uint16_t* Readings, uint8_t size, uint8_t* cursor){
     uint16_t out = 0;
     // This is from stack overflow, hope it works
     //shifts the memory over 1 item  and adds so the avg can me moving
-    static uint16_t cursor = 0;
-    PingReadings[cursor] = Reading;
-    cursor = (++cursor)%PING_FILTER;
+    //static uint16_t cursor = 0;
+    Readings[*cursor] = Reading;
+    *cursor = (++(*cursor))%size;
     //get the avg of the list
     
-    for (size_t i = 0; i < PING_FILTER; i++)
+    for (size_t i = 0; i < size; i++)
     {
-        out += PingReadings[i];
+        out += Readings[i];
     }
-    out /= PING_FILTER;
+    out /= size;
     return out;
 }
 
@@ -407,6 +420,8 @@ uint8_t CheckTrack(void) {
  * @author Cooper Cantrell 5/10/2024 12:07
  */
 uint8_t CheckTape(void) {
+    static CircBuff_t TapeFilterArray[NUMTAPE];
+    uint16_t TapeReadings[NUMTAPE];
     // if there is no noise to compare to turn the led off so we can get a noise reading
     if (!TapeNoise[0]) {
         TapeLED = OFF;
@@ -451,21 +466,22 @@ uint8_t CheckTape(void) {
         //only if has at least 1 of each reading
         if((!TapeRead[0]) || (!TapeNoise[0])){ return returnVal;}
         for(int i = 0; i < NUMTAPE; i++){//use for loop to use the same code on different tape sensors
+            TapeReadings[i] = MovAvgFilter((TapeNoise[i] - TapeRead[i]), (TapeFilterArray[i].Data), TAPE_FILTER, &(TapeFilterArray[i].Cursor));
             uint16_t threshold;
-            //if(i == 5){printf("\r\n%d\r\n", TapeNoise[i] - TapeRead[i]);}//debug code to set hysteresis bounds
-            if(LastTape[i] == DETECTED){
+            if(i == 5){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
+            if(i == 5){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
+            if(LastTape[i]){
                 threshold = TAPE_THRESH[i] + TAPE_HYST[i];
             } else {
                 threshold = TAPE_THRESH[i] - TAPE_HYST[i];
             }
-            if ((TapeNoise[i] - TapeRead[i]) >= threshold) {
-                CurrentTape[i] = NOT_DETECTED;
-            }
-            else {
-                CurrentTape[i] = DETECTED;
-            }    
+            CurrentTape[i] = (TapeReadings[i] < threshold);
+               
             if (CurrentTape[i] != LastTape[i]) {
                 returnVal = TRUE;
+                if(i == 4){
+                    printf("\r\n e-%d t-%d", TapeReadings[i],threshold);
+                }
                 LastTape[i] = CurrentTape[i];
             }
             param += (CurrentTape[i] << i);
@@ -563,7 +579,8 @@ uint8_t CheckBumper(void){
  * @author Cooper Cantrell 5/15/2024 5:26
  */
 uint8_t CheckPing(void){
-    uint16_t CurrentPing = PingFilter(PINGGetData());
+    static uint8_t PingCursor = 0;
+    uint16_t CurrentPing = MovAvgFilter(PINGGetData(), PingReadings, PING_FILTER, &PingCursor);
     uint8_t returnVal = FALSE;
     //printf("\r\n PING SENSOR DIST %d",CurrentPing);
     if (abs(CurrentPing - LastPing) > PING_HYST)
