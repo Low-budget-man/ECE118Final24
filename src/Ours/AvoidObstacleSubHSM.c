@@ -96,40 +96,31 @@ static const char *StateNames[] = {
 	"Left2",
 	"Right2",
 	"Forward3",
+	"PanicDodge",
 };
 
+/*****PLEASE CHANGE THESE AFTER TESTING*****/
+#define BackUpTime 1500 
+#define Right1Time 1000
+#define Forward1Time 1000
+#define Left1Time 1000
+#define Forward2Time 1000
+#define Left2Time 1000
+#define Right2Time 500
+#define PanicDodgeTime 500
 
 
-static const char *StateNames[] = {
-	"InitPSubState",
-	"BackUp",
-	"Right1",
-	"Forward1",
-	"Left1",
-	"Forward2",
-	"Left2",
-	"Right2",
-	"Forward3",
-};
-#else
-typedef enum {
-    InitPSubState,
-	BackUp, 
-	TurnL,
-	DriftR,
-    TankR,
-	BackL,
-} AvoidObstacleSubHSMState_t;
+/*******************************************************************************
+ * PRIVATE FUNCTION PROTOTYPES                                                 *
+ ******************************************************************************/
+/* Prototypes for private functions for this machine. They should be functions
+   relevant to the behavior of this state machine */
 
-static const char *StateNames[] = {
-	"InitPSubState",
-	"BackUp", 
-	"TurnL",
-	"DriftR",
-    "TankR",
-	"BackL",
-};
-#endif
+/*******************************************************************************
+ * PRIVATE MODULE VARIABLES                                                            *
+ ******************************************************************************/
+/* You will need MyPriority and the state variable; you may need others as well.
+ * The type of state variable should match that of enum in header file. */
 
 static AvoidObstacleSubHSMState_t CurrentState = InitPSubState; // <- change name to match ENUM
 static uint8_t MyPriority;
