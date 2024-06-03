@@ -175,7 +175,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                 default:
                 // Unhandled events pass back up to the next level
                 break;
-            }		
+            }
+            break;		
         case BackUp:
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
