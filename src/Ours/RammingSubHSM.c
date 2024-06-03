@@ -251,8 +251,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ES_ENTRY:
                     //Turn On Fans
                     IO_PortsSetPortBits(FAN_PORT,FAN_PIN);    
-					Maw_LeftMtrSpeed(100);
-					Maw_RightMtrSpeed(100);
+					Maw_MaxMtr(1);
 					ES_Timer_InitTimer(RAM_TIMER, RAM_TIME);
 					break;
                 case ES_TIMEOUT:

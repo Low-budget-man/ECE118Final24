@@ -170,7 +170,23 @@ char Maw_LeftMtrSpeed(char newSpeed){
     PWM_SetDutyCycle(LEFT_MOTOR, ScaleValue(newSpeed));
     return SUCCESS;
 }
-
+/**
+ * @Function Maw_MaxMtr(uint8_t Dir)
+ * @param Dir - a true for forward or false for reverse
+ * @return SUCCESS or ERROR
+ * @brief  This function sets both motors to their max speed forward, regardless of battery voltage
+ * @author Caitlin Bonesio, 2024.6.3 */
+char Maw_MaxMtr(uint8_t dir){
+    if(dir == 0){
+        IO_PortsSetPortBits(LEFT_DIR2);
+        IO_PortsClearPortBits(LEFT_DIR1);
+    } else {
+        IO_PortsSetPortBits(LEFT_DIR1);
+        IO_PortsClearPortBits(LEFT_DIR2);
+    }
+    PWM_SetDutyCycle(RIGHT_MOTOR, 1000);
+    PWM_SetDutyCycle(LEFT_MOTOR, 1000);
+}
 /**
  * @Function Maw_RightMtrSpeed(char newSpeed)
  * @param newSpeed - A value between -100 and 100 which is the new speed
@@ -243,16 +259,7 @@ char Maw_LeftDoor(uint8_t Position){
     }
     return SUCCESS;
 }
-/**
- * @Function Maw_MaxMtr(uint8_t Dir)
- * @param Dir - a true for forward or false for reverse
- * @return SUCCESS or ERROR
- * @brief  This function sets both motors to their max speed forward, regardless of battery voltage
- * @author Caitlin Bonesio, 2024.6.3 */
-char Maw_MaxMtr(uint8_t dir){
-    PWM_SetDutyCycle(RIGHT_MOTOR, 1000);
-    PWM_SetDutyCycle(LEFT_MOTOR, 1000);
-}
+
 
 #ifdef MawTest
 int wait;
