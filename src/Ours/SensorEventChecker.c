@@ -468,8 +468,8 @@ uint8_t CheckTape(void) {
         for(int i = 0; i < NUMTAPE; i++){//use for loop to use the same code on different tape sensors
             TapeReadings[i] = MovAvgFilter((TapeNoise[i] - TapeRead[i]), (TapeFilterArray[i].Data), TAPE_FILTER, &(TapeFilterArray[i].Cursor));
             uint16_t threshold;
-            if(i == 5){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
-            if(i == 5){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
+            //if(i == 5){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
+            //if(i == 5){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
             if(LastTape[i]){
                 threshold = TAPE_THRESH[i] + TAPE_HYST[i];
             } else {
@@ -480,7 +480,7 @@ uint8_t CheckTape(void) {
             if (CurrentTape[i] != LastTape[i]) {
                 returnVal = TRUE;
                 if(i == 4){
-                    printf("\r\n e-%d t-%d", TapeReadings[i],threshold);
+//                    printf("\r\n e-%d t-%d", TapeReadings[i],threshold);
                 }
                 LastTape[i] = CurrentTape[i];
             }
