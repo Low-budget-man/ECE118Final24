@@ -84,7 +84,6 @@ typedef enum {
 	Left2,
 	Right2,
 	Forward3,
-    PanicDodge,
 } AvoidObstacleSubHSMState_t;
 
 static const char *StateNames[] = {
@@ -97,7 +96,6 @@ static const char *StateNames[] = {
 	"Left2",
 	"Right2",
 	"Forward3",
-    "PanicDodge",
 };
 
 
@@ -248,13 +246,6 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-                case BUMPER:
-                    if(ThisEvent.EventParam){
-                        nextState = PanicDodge;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
                 case ES_NO_EVENT:
                 default:
                     // Unhandled events pass back up to the next level
@@ -275,13 +266,6 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
                         nextState = Left1;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-                case BUMPER:
-                    if(ThisEvent.EventParam){
-                        nextState = PanicDodge;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
@@ -310,13 +294,6 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-                case BUMPER:
-                    if(ThisEvent.EventParam){
-                        nextState = PanicDodge;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;    
                 case ES_NO_EVENT:
                 default:
                     // Unhandled events pass back up to the next level
@@ -349,13 +326,6 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-                case BUMPER:
-                    if(ThisEvent.EventParam){
-                        nextState = PanicDodge;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;    
                 case ES_NO_EVENT:
                 default:
                     // Unhandled events pass back up to the next level
@@ -381,6 +351,9 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
+                case ES_EXIT:
+                    ChangePingThres(PINGCLOSEc);
+                    break;
                 case ES_NO_EVENT:
                 default:
                     // Unhandled events pass back up to the next level
@@ -401,13 +374,6 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
                         nextState = Forward3;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-                case BUMPER:
-                    if(ThisEvent.EventParam){
-                        nextState = PanicDodge;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
@@ -447,28 +413,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 default:
                     // Unhandled events pass back up to the next level
                     break;
-        
-        case PanicDodge:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    //Usually hits on left side or head on
-                    Maw_LeftMtrSpeed(-80);
-					Maw_RightMtrSpeed(-100);
-                    ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, PanicDodgeTime);
-					ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
-                        ThisEvent.EventType = OBSTACLE_AVOIDED;
-                        nextState = BackUp;
-                        makeTransition = TRUE;
-                    }
-                    break;
-                default:
-                    break;
             }
-            break;
-    }
 
         
     default: // all unhandled states fall into here
