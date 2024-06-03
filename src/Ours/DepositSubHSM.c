@@ -26,7 +26,6 @@
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
-
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "BOARD.h"
@@ -37,6 +36,7 @@
 #include "OMWSubHSM.h"
 #include "AlignSubHSM.h"
 #include "SensorEventChecker.h"
+#include "MawHSM.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -58,7 +58,7 @@ static const char *StateNames[] = {
 	"Ramming",
 };
 
-
+#define TRACKIGNORETIME 5000
 
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
@@ -74,7 +74,8 @@ static const char *StateNames[] = {
 
 static DepositSubHSMState_t CurrentState = InitPSubState; // <- change name to match ENUM
 static uint8_t MyPriority;
-
+static uint8_t TrackFlag = 0;
+static uint32_t TrackFlagFRT = 0;
 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
@@ -206,9 +207,18 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 			ThisEvent = RunFollowTapeHSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case TRACKWIRE:
-                    nextState = Ramming;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT; 
+                    #ifdef NAV2
+                    if(TrackFlagFRT + TRACKIGNORETIME < ES_Timer_GetTime()){
+                        TrackFlag = 1;
+                    }
+                    if(TrackFlag){
+                    #endif
+                        nextState = Ramming;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT; 
+                    #ifdef NAV2
+                    }
+                    #endif
                     break;
                 case OBSTACLE_AVOIDED:
                     // This should only happen on OBSTACLE_AVOIDED false as the 
@@ -227,11 +237,18 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 		case Ramming:
 			ThisEvent = RunRammingSubHSM(ThisEvent);
 			switch (ThisEvent.EventType) {
+                #ifndef NAV2
 				case ES_EXIT:
+                #else 
+                case DEPOSITED:
+                #endif
                     ThisEvent.EventType = ES_NO_EVENT;
                     CurrentState = -1;//prevents ES_EXIT from calling Ramming with ES_EXIT
                     nextState = Continue_Wandering;
                     makeTransition = TRUE;
+                    TrackFlag = 0;
+                    TrackFlagFRT = ES_Timer_GetTime();
+                    break;
                 case ES_NO_EVENT:
                     break;
 				default:
