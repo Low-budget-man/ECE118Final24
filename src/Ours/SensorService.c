@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "MawHSM.h"
-
+#include "LED.h"
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -26,7 +26,8 @@
 #define BEACON_LED (0x4)
 #define DEBOUNCE_WaitB 2
 #define DEBOUNCE_WaitP 32
-#define CLOSE_THRESH 180
+#define DEBOUNCE_WaitT 32
+
 #define CLOSE_HYST 50
 
 //#define ServiceTestHarness
@@ -44,12 +45,23 @@ enum sensor {
 };
 static uint8_t MyPriority;
 static uint8_t LastBump;
+static uint8_t LastTrack;
+static uint8_t LastTrackP; //Last Track Posted
 static uint16_t LastPing;
 static enum sensor Dist;
+uint16_t CLOSE_THRESH = PINGCLOSEc;
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
-
+/**
+ * @Function ChangePingThres(uint16_t Newval)
+ * @param Newval - the new value for the ping close thesh
+ * @return void
+ * @brief This function will change the PingClose Threshold 
+ * @author Cooper Cantrell 6/1/2024 4:14 PM*/
+void ChangePingThres(uint16_t Newval){
+    CLOSE_THRESH = Newval;
+}
 /**
  * @Function InitSensorService(uint8_t Priority)
  * @param Priority - internal variable to track which event queue to use
@@ -115,23 +127,20 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         // This section is used to reset service for some reason
         break;
     case TRACKWIRE:
-#ifdef ServiceTestHarness
-        printf("\r\nTrack Event with the param,0x%x", ThisEvent.EventParam);
-#else
-        PostMawHSM(ThisEvent);
-#endif
-        if (ThisEvent.EventParam)
-        {
-            // detected
-            LED_OnBank(LED_BANK1, TRACK_LED);
+        if(ThisEvent.EventParam){
+            LED_OnBank(LED_BANK1,TRACK_LED);
+        } else {
+            LED_OffBank(LED_BANK1,TRACK_LED);
         }
-        else
-        {
-            // not detected
-            LED_OffBank(LED_BANK1, TRACK_LED);
-        }
+        ES_Timer_InitTimer(TRACK_DEBOUNCE_T,DEBOUNCE_WaitT);
+        LastTrack = ThisEvent.EventParam;
         break;
     case TAPE:
+        if(ThisEvent.EventParam){
+            LED_OnBank(LED_BANK1,TAPE_LED);
+        } else {
+            LED_OffBank(LED_BANK1,TAPE_LED);
+        }
 #ifdef ServiceTestHarness
         printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
 #else
@@ -151,24 +160,13 @@ ES_Event RunSensorService(ES_Event ThisEvent)
 #ifdef ServiceTestHarness
         printf("\r\n Beacon Event param: %x", ThisEvent.EventParam);
 #endif
-        if (ThisEvent.EventParam)
-        {
-            // detected
-            LED_OnBank(LED_BANK1, BEACON_LED);
-        }
-        else
-        {
-            // not detected
-            LED_OffBank(LED_BANK1, BEACON_LED);
-        }
+
         break;
     case BUMPER:
         ES_Timer_InitTimer(BUMPER_DEBOUNCE_T, DEBOUNCE_WaitB);
         LastBump = ThisEvent.EventParam;
 #ifdef ServiceTestHarness
         printf("\r\nBumper Event with the param,0x%x", ThisEvent.EventParam);
-#else
-        PostMawHSM(ThisEvent);
 #endif
         break;
     case ES_TIMEOUT:
@@ -181,7 +179,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
 #ifdef ServiceTestHarness
             printf("\r\n Debounced Bumper Event with param %x", LastBump);
 #else
-        PostMawHSM(ThisEvent);
+        PostMawHSM(PostEvent);
 #endif
         }
         else if (ThisEvent.EventParam == PING_DEBOUNCE_T){
@@ -200,6 +198,21 @@ ES_Event RunSensorService(ES_Event ThisEvent)
                 PostSensorService(PostEvent);
             }
         }
+        else if (ThisEvent.EventParam == TRACK_DEBOUNCE_T)
+        {
+            if(LastTrack != LastTrackP){
+#ifdef ServiceTestHarness
+            printf("\r\nTrack Event with the param,0x%x", LastTrack);
+#else
+            ES_Event PostEvent;
+            PostEvent.EventType = TRACKWIRE;
+            PostEvent.EventParam = LastTrack;
+            PostMawHSM(PostEvent);
+#endif
+        }
+           LastTrackP = LastTrack;
+        }
+        
         else
         {
 //            printf("\r\nERROR: Unknown TimerParam in SensorService");

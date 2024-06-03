@@ -120,12 +120,12 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
                     Maw_RightDoor(2);
 					break;
 			case TAPE: 
-				if(ThisEvent.EventParam == 0){
+				if(!(ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){
 					nextState = Forward;
 					makeTransition = TRUE;
 					ThisEvent.EventType = ES_NO_EVENT;
 				}
-                if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+                if((ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){
                     ThisEvent.EventType = ALIGNED;
                 }
 				break;
@@ -142,12 +142,12 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(100);
 					break;
 			case TAPE: 
-				if(ThisEvent.EventParam != 0){
+				if(!(!(ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit)))){
 					nextState = Align;
 					makeTransition = TRUE;
 					ThisEvent.EventType = ES_NO_EVENT;
 				}
-                if((ThisEvent.EventParam & TAPEfrrBit) && !(ThisEvent.EventParam & TAPEfrBit)){
+                if((ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){
                     ThisEvent.EventType = ALIGNED;
                 }
 			case ES_NO_EVENT:

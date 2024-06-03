@@ -32,10 +32,48 @@
 #include "BOARD.h"
 #include "AvoidObstacleSubHSM.h"
 #include "Maw.h"
-
+#include "SensorService.h"
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
+
+/*****PLEASE CHANGE THESE AFTER TESTING*****/
+#define DEBUGPRINT
+#define BackUpTime 480 
+#define Right1Time 832
+#define Forward1Time 1598
+#define Left1Time 832
+#define Forward2Time 2820
+//#define Left2Time 1250
+#define Right2Time 832
+
+//#define USEPING
+
+//not ping special defines
+#define TurnLTime 426
+#define BackLTime 426
+#define DriftRTime 2500
+#define TankRTime 1000
+#define PuppyTime 4000
+/*******************************************************************************
+ * DEBUGPRINT                                               *
+ ******************************************************************************/
+#ifdef DEBUGPRINT
+#include <stdio.h>
+#endif
+
+/*******************************************************************************
+ * PRIVATE FUNCTION PROTOTYPES                                                 *
+ ******************************************************************************/
+/* Prototypes for private functions for this machine. They should be functions
+   relevant to the behavior of this state machine */
+
+/*******************************************************************************
+ * PRIVATE MODULE VARIABLES                                                            *
+ ******************************************************************************/
+/* You will need MyPriority and the state variable; you may need others as well.
+ * The type of state variable should match that of enum in header file. */
+#ifdef USEPING
 typedef enum {
     InitPSubState,
 	BackUp, 
@@ -62,28 +100,38 @@ static const char *StateNames[] = {
     "PanicDodge",
 };
 
-/*****PLEASE CHANGE THESE AFTER TESTING*****/
-#define BackUpTime 1500 
-#define Right1Time 1000
-#define Forward1Time 1000
-#define Left1Time 1000
-#define Forward2Time 1000
-#define Left2Time 1000
-#define Right2Time 500
-#define PanicDodgeTime 500
 
 
-/*******************************************************************************
- * PRIVATE FUNCTION PROTOTYPES                                                 *
- ******************************************************************************/
-/* Prototypes for private functions for this machine. They should be functions
-   relevant to the behavior of this state machine */
+static const char *StateNames[] = {
+	"InitPSubState",
+	"BackUp",
+	"Right1",
+	"Forward1",
+	"Left1",
+	"Forward2",
+	"Left2",
+	"Right2",
+	"Forward3",
+};
+#else
+typedef enum {
+    InitPSubState,
+	BackUp, 
+	TurnL,
+	DriftR,
+    TankR,
+	BackL,
+} AvoidObstacleSubHSMState_t;
 
-/*******************************************************************************
- * PRIVATE MODULE VARIABLES                                                            *
- ******************************************************************************/
-/* You will need MyPriority and the state variable; you may need others as well.
- * The type of state variable should match that of enum in header file. */
+static const char *StateNames[] = {
+	"InitPSubState",
+	"BackUp", 
+	"TurnL",
+	"DriftR",
+    "TankR",
+	"BackL",
+};
+#endif
 
 static AvoidObstacleSubHSMState_t CurrentState = InitPSubState; // <- change name to match ENUM
 static uint8_t MyPriority;
@@ -132,11 +180,18 @@ uint8_t InitAvoidObstacleSubHSM(void)
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
 ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
 {
+#ifdef USEPING
     uint8_t makeTransition = FALSE; // use to flag transition
     AvoidObstacleSubHSMState_t nextState; // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
-
+    if (ThisEvent.EventType == BUMPER && ThisEvent.EventParam){
+        // uh oh this is bad
+            nextState = BackUp;
+            makeTransition = TRUE;
+            ThisEvent.EventType = OBSTACLE_AVOIDED;
+            ThisEvent.EventParam = FALSE;
+    }
     switch (CurrentState) { //This obnoxiously long switch statement written by ChatGPT.
     case InitPSubState: // If current state is initial Psedudo State
         if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
@@ -158,6 +213,9 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-100);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackUpTime);
+#ifdef DEBUGPRINT
+                    printf("\r\r\nBack Up\n[ ]\n M\n |\n v");
+#endif
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -176,9 +234,12 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case Right1:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-					Maw_LeftMtrSpeed(-80);
-					Maw_RightMtrSpeed(80);
+					Maw_LeftMtrSpeed(-100);
+					Maw_RightMtrSpeed(100);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right1Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nTurn Right\n[ ]\n\n M->");
+#endif
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -206,7 +267,10 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
-					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward1Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward1Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Forward\n[ ]\n\n   M->");
+#endif					
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -232,9 +296,12 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case Left1:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    Maw_LeftMtrSpeed(80);
-					Maw_RightMtrSpeed(-80);
+                    Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(-100);
 					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left1Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nTurn Left\r\n[ ]\r\n   ^\r\n   M");
+#endif	
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -262,8 +329,19 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                 case ES_ENTRY:
                     Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
-					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward2Time);					
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Forward2Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Forward\r\n   ^\r\n   M\r\n[ ]");
+#endif
                     break;
+                case TAPE:
+                    if(ThisEvent.EventParam){
+                        ThisEvent.EventType = OBSTACLE_AVOIDED;
+                        ThisEvent.EventParam = TRUE;
+                        nextState = BackUp;
+                        makeTransition = TRUE;
+                    }
+                break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
                         nextState = Left2;
@@ -288,9 +366,13 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case Left2:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    Maw_LeftMtrSpeed(80);
-					Maw_RightMtrSpeed(-80);
-					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left2Time);					
+                    Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(-100);
+                    ChangePingThres(PINGCLOSEf);
+//					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Left2Time);
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Left\r\n   \r\n  <M\r\n[ ]");
+#endif				
                     break;
 				case PINGCLOSE:
                     if(ThisEvent.EventParam){
@@ -299,13 +381,6 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-                case BUMPER:
-                    if(ThisEvent.EventParam){
-                        nextState = PanicDodge;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;    
                 case ES_NO_EVENT:
                 default:
                     // Unhandled events pass back up to the next level
@@ -316,9 +391,12 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case Right2:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    Maw_LeftMtrSpeed(-80);
-					Maw_RightMtrSpeed(80);
-					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right2Time);					
+                    Maw_LeftMtrSpeed(-100);
+					Maw_RightMtrSpeed(100);
+					ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, Right2Time);		
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Left\r\n   \r\n  M\n[ ]");
+#endif				
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER) {
@@ -348,6 +426,9 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
 					ThisEvent.EventType = ES_NO_EVENT;
+#ifdef DEBUGPRINT
+                    printf("\r\nGo Left\r\n M \r\n\r\n[ ]");
+#endif	
                     break;
                 case TAPE:
                     // may want to check exactly what we want here or change 
@@ -358,6 +439,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     // however as of now 5/26/2024 6:33PM the state machine 
                     // to seems behave as it would in our notebook :)
                     ThisEvent.EventType = OBSTACLE_AVOIDED;
+                    ThisEvent.EventParam = TRUE;
                     nextState = BackUp;
                     makeTransition = TRUE;
                     break;
@@ -402,6 +484,162 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
 
     ES_Tail(); // trace call stack end
     return ThisEvent;
+#endif
+#ifndef USEPING
+    uint8_t makeTransition = FALSE; // use to flag transition
+    AvoidObstacleSubHSMState_t nextState; // <- change type to correct enum
+
+    ES_Tattle(); // trace call stack
+    switch (CurrentState) { //This obnoxiously long switch statement written by ChatGPT.
+    case InitPSubState: // If current state is initial Psedudo State
+        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+        {
+            // this is where you would put any actions associated with the
+            // transition from the initial pseudo-state into the actual
+            // initial state
+
+            // now put the machine into the actual initial state
+            nextState = BackUp;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+        break;
+        case BackUp:
+            switch(ThisEvent.EventType){
+                case ES_ENTRY:
+                    Maw_LeftMtrSpeed(-100);
+                    Maw_RightMtrSpeed(-100);
+
+                    break;
+                case BUMPER:
+                    if(!ThisEvent.EventParam){
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackUpTime);
+                    }
+                    break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = TurnL;
+                        ThisEvent = NO_EVENT;
+                    }
+            }
+            break;
+        case TurnL:
+            switch(ThisEvent.EventType){
+                case ES_ENTRY:
+                    Maw_LeftMtrSpeed(-100);
+                    Maw_RightMtrSpeed(100);
+                    ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, TurnLTime);
+                    break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = DriftR;
+                        ThisEvent = NO_EVENT;
+                    }
+            }
+            break;
+        case DriftR:
+            switch (ThisEvent.EventType)
+            {
+            case ES_ENTRY:
+                    Maw_LeftMtrSpeed(100);
+                    Maw_RightMtrSpeed(70);
+                    ES_Timer_InitTimer (AVOID_OBSTACLE_TIMER,DriftRTime);
+                    ES_Timer_InitTimer(AVOID_WATCH_PUPPY_TIMER, PuppyTime);
+                break;
+            case BUMPER:
+                // only turn into backleft is a bumper is pressed down
+                if (ThisEvent.EventParam)
+                {
+                    makeTransition = TRUE;
+                    nextState = BackL;
+                    ThisEvent = NO_EVENT;
+                }
+            case TAPE:
+             // if the front Tape sensors are detected at all it OMW *should* be able to handle
+             // any odd issues if this is the case reset
+             if (ThisEvent.EventParam & ((1<<TAPEfrrBit)|(1<<TAPEfrBit)|(1<<TAPEflBit)
+             |(1<<TAPEfllBit)))
+             {
+                    makeTransition = TRUE;
+                    nextState = BackUp;
+                    ThisEvent.EventType = OBSTACLE_AVOIDED;
+                    ThisEvent.EventParam = TRUE;
+             }
+             case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_WATCH_PUPPY_TIMER){
+                        makeTransition = TRUE;
+                        nextState = BackL;
+                        ThisEvent = NO_EVENT;
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
+                    }
+                    else if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = TankR;
+                        ThisEvent = NO_EVENT;
+                    }
+            default:
+                break;
+            }
+            break;
+        case TankR:
+            switch(ThisEvent.EventType){
+                case ES_ENTRY:
+                    Maw_RightMtrSpeed(-100);
+                    Maw_LeftMtrSpeed(100);
+                    ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, TankRTime);
+                    break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_WATCH_PUPPY_TIMER){
+                        makeTransition = TRUE;
+                        nextState = BackL;
+                        ThisEvent = NO_EVENT;
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
+                    }
+                    else if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = BackL;
+                        ThisEvent = NO_EVENT;
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
+                    }
+                break;
+            }
+            break;
+        case BackL:
+            switch(ThisEvent.EventType){
+                case ES_ENTRY:
+                    Maw_LeftMtrSpeed(-100);
+                    Maw_RightMtrSpeed(0);
+                    break;
+                case BUMPER:
+                    if(!ThisEvent.EventParam){
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
+                    }
+                    break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+                        makeTransition = TRUE;
+                        nextState = DriftR;
+                        ThisEvent = NO_EVENT;
+                    }
+                    break;
+                default: // all unhandled states fall into here
+                    break;
+            }
+        break;
+    } // end switch on Current State
+
+    if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
+        // recursively call the current state with an exit event
+        RunAvoidObstacleSubHSM(EXIT_EVENT); // <- rename to your own Run function
+        CurrentState = nextState;
+        RunAvoidObstacleSubHSM(ENTRY_EVENT); // <- rename to your own Run function
+    }
+
+    ES_Tail(); // trace call stack end
+    return ThisEvent;
+#endif
 }
 
 

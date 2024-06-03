@@ -17,7 +17,7 @@
 #define MAX_MOTOR_VOLTAGE 8 
 // the motor Bias is a number that will be multiplied to the motors as you set the speed, keep between 0-1
 #define RIGHT_BIAS 1
-#define LEFT_BIAS 1
+#define LEFT_BIAS .97
 
 
 /*******************************************************************************
@@ -60,6 +60,14 @@ char Maw_LeftMtrSpeed(char newSpeed);
 char Maw_RightMtrSpeed(char newSpeed);
 
 /**
+ * @Function Maw_MaxMtr(uint8_t Dir)
+ * @param Dir - a true for forward or false for reverse
+ * @return SUCCESS or ERROR
+ * @brief  This function sets both motors to their max speed forward, regardless of battery voltage
+ * @author Caitlin Bonesio, 2024.6.3 */
+char Maw_MaxMtr(uint8_t dir);
+
+/**
  * @Function Maw_RightDoor(uint8_t Position)
  * @param Position - a true for depositing or false for collecting
  * @return SUCCESS or ERROR
@@ -75,4 +83,12 @@ char Maw_RightDoor(uint8_t Position);
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_LeftDoor(uint8_t Position);
 
+
+/**
+ * @Function Maw_Fans(uint8_t power)
+ * @param power - a bool true if on 0 if off
+ * @return none
+ * @brief  This function is used to turn on and off the fans
+ * @author Cooper Cantrell, 2024.6.3 */
+void Maw_Fans(uint8_t power);
 #endif

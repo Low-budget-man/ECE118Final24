@@ -45,8 +45,8 @@
 #define BATTERY_DISCONNECT_THRESHOLD 175
 // Track wire #defines ---------------------------------------------------------
 #define TRACK_VOLTAGE AD_PORTW4
-#define TRACK_THRESH 100
-#define TRACK_HYST 60
+#define TRACK_THRESH 125
+#define TRACK_HYST 75
 // Tape #defines ---------------------------------------------------------------
 // for tape sensor testing will only use the frr (front right right) tape sensor
 #define ONETAPE
@@ -90,9 +90,24 @@
 #define TAPE_VOLTAGE_BROWN TAPE_VOLTAGEfll
 #define TAPE_VOLTAGE_GREEN TAPE_VOLTAGEbl
 
-#define TAPE_THRESH 175 
-// reading voltage
-#define TAPE_HYST 50
+
+#define NUMTAPE 6
+static const uint16_t TAPE_THRESH[NUMTAPE] = {
+    180,
+    280,
+    280,
+    130,
+    110,
+    180
+};
+static const uint16_t TAPE_HYST[NUMTAPE] = {
+    40,
+    40,
+    40,
+    40,
+    40,
+    40
+};
 /*
 #define TAPEfrrBit (0)
 #define TAPEfrBit (1)
@@ -125,7 +140,8 @@
 #define PING_HYST 32
 // this is the number of points in the ping sensor moving avrage bigger is more 
 // filter but slower
-#define PING_FILTER 9
+#define PING_FILTER 8
+#define TAPE_FILTER 8
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -149,19 +165,31 @@ static ES_Event storedEvent;
 #endif
 
 /*******************************************************************************
+ * PRIVATE Types                                                           *
+ ******************************************************************************/
+typedef struct CircBuff_t
+{
+    uint16_t Data[TAPE_FILTER];
+    uint8_t Cursor;
+}CircBuff_t;
+
+
+/*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
 enum sensor {
     NOT_DETECTED, DETECTED
 };
-enum sensor LastTrack = NOT_DETECTED;
-enum sensor LastTapefrr = NOT_DETECTED;
+static enum sensor LastTape[NUMTAPE] = {
+    NOT_DETECTED,
+    NOT_DETECTED,
+    NOT_DETECTED,
+    NOT_DETECTED,
+    NOT_DETECTED,
+    NOT_DETECTED,
+};
 
-enum sensor LastTapefr = NOT_DETECTED;
-enum sensor LastTapefl = NOT_DETECTED;
-enum sensor LastTapefll = NOT_DETECTED;
-enum sensor LastTapebr = NOT_DETECTED;
-enum sensor LastTapebl = NOT_DETECTED;
+enum sensor LastTrack = NOT_DETECTED;
 
 enum sensor LastBeacon = NOT_DETECTED;
 
@@ -180,22 +208,11 @@ static uint8_t TapeWaiting = FALSE;
 static uint32_t TapeWaitStart;
 static uint8_t LEDset = FALSE;
 // so the current noise for the tape can be used
-uint16_t TapefrrNoise;
-
-uint16_t TapefrNoise;
-uint16_t TapeflNoise;
-uint16_t TapefllNoise;
-uint16_t TapebrNoise;
-uint16_t TapeblNoise;
+uint16_t TapeNoise[NUMTAPE];
 
 // a var to store the reading to
-uint16_t TapefrrRead;
+uint16_t TapeRead[NUMTAPE];
 
-uint16_t TapefrRead;
-uint16_t TapeflRead;
-uint16_t TapefllRead;
-uint16_t TapebrRead;
-uint16_t TapeblRead;
 // used to store the moving Avrg for the ping sensor
 uint16_t PingReadings[PING_FILTER];
 
@@ -229,27 +246,29 @@ void SetTapeLED(char state) {
     }
 }
 /**
- * @Function PingFilter(state)
- * @param The current Reading of the Ping Sensor
+ * @Function MovAvgFilter(Reading, *Readings, size, *cursor)
+ * @param Reading - the current reading that the sensor provides
+ * @param Readings - a pointer to the array that will store the data
+ * @param size - size of the array that is being pointed to (the number of elements in the array)
+ * @param cursor - a pointer to the cursor of the array
  * @return The new moving avg value
- * @brief This Function will return a moving avrage for the ping sensor to 
- * reduce noise
- * @author Cooper Cantrell 5/23/2024 4:09PM
+ * @brief This Function will return a moving avrage for any sensor to reduce noise
+ * @author Cooper Cantrell 6/3/2024 2:37PM
  */
-uint16_t PingFilter(uint16_t Reading){
+uint16_t MovAvgFilter(uint16_t Reading, uint16_t* Readings, uint8_t size, uint8_t* cursor){
     uint16_t out = 0;
     // This is from stack overflow, hope it works
     //shifts the memory over 1 item  and adds so the avg can me moving
-    static uint16_t cursor = 0;
-    PingReadings[cursor] = Reading;
-    cursor = (++cursor)%PING_FILTER;
+    //static uint16_t cursor = 0;
+    Readings[*cursor] = Reading;
+    *cursor = (++(*cursor))%size;
     //get the avg of the list
     
-    for (size_t i = 0; i < PING_FILTER; i++)
+    for (size_t i = 0; i < size; i++)
     {
-        out += PingReadings[i];
+        out += Readings[i];
     }
-    out /= PING_FILTER;
+    out /= size;
     return out;
 }
 
@@ -357,6 +376,7 @@ uint8_t CheckTrack(void) {
         DETECTED
     } CurrentTrack;
     uint16_t TrackVoltage = AD_ReadADPin(TRACK_VOLTAGE);
+    //printf("\r\n%d\r\n", TrackVoltage);
     // checks to see what the current value is
     if(LastTrack == DETECTED){
         if (TrackVoltage > TRACK_THRESH + TRACK_HYST) {
@@ -400,20 +420,17 @@ uint8_t CheckTrack(void) {
  * @author Cooper Cantrell 5/10/2024 12:07
  */
 uint8_t CheckTape(void) {
+    static CircBuff_t TapeFilterArray[NUMTAPE];
+    uint16_t TapeReadings[NUMTAPE];
     // if there is no noise to compare to turn the led off so we can get a noise reading
-    if (!TapefrrNoise) {
+    if (!TapeNoise[0]) {
         TapeLED = OFF;
     }
 
     // event checker setup
     uint8_t returnVal = FALSE;
     uint8_t param = 0;
-    static enum sensor CurrentTapefrr;
-    static enum sensor CurrentTapefr;
-    static enum sensor CurrentTapefl;
-    static enum sensor CurrentTapefll;
-    static enum sensor CurrentTapebr;
-    static enum sensor CurrentTapebl;
+    static enum sensor CurrentTape[NUMTAPE];
     // the LED will be off and be given LEDTIME
     if (!TapeWaiting) {
         TapeWaiting = TRUE;
@@ -430,185 +447,48 @@ uint8_t CheckTape(void) {
         LEDset = FALSE;
         if (TapeLED) // off is FALSE
         {
-            TapefrrRead = AD_ReadADPin(TAPE_VOLTAGEfrr);
-            TapefrRead = AD_ReadADPin(TAPE_VOLTAGEfr);
-            TapeflRead = AD_ReadADPin(TAPE_VOLTAGEfl);
-            TapefllRead = AD_ReadADPin(TAPE_VOLTAGEfll);
-            TapebrRead = AD_ReadADPin(TAPE_VOLTAGEbr);
-            TapeblRead = AD_ReadADPin(TAPE_VOLTAGEbl);
+            TapeRead[TAPEfrrBit] = AD_ReadADPin(TAPE_VOLTAGEfrr);
+            TapeRead[TAPEfrBit] = AD_ReadADPin(TAPE_VOLTAGEfr);
+            TapeRead[TAPEflBit] = AD_ReadADPin(TAPE_VOLTAGEfl);
+            TapeRead[TAPEfllBit] = AD_ReadADPin(TAPE_VOLTAGEfll);
+            TapeRead[TAPEbrBit] = AD_ReadADPin(TAPE_VOLTAGEbr);
+            TapeRead[TAPEblBit] = AD_ReadADPin(TAPE_VOLTAGEbl);
         } else {
-            TapefrrNoise = AD_ReadADPin(TAPE_VOLTAGEfrr);
-            TapefrNoise = AD_ReadADPin(TAPE_VOLTAGEfr);
-            TapeflNoise = AD_ReadADPin(TAPE_VOLTAGEfl);
-            TapefllNoise = AD_ReadADPin(TAPE_VOLTAGEfll);
-            TapebrNoise = AD_ReadADPin(TAPE_VOLTAGEbr);
-            TapeblNoise = AD_ReadADPin(TAPE_VOLTAGEbl);
+            TapeNoise[TAPEfrrBit] = AD_ReadADPin(TAPE_VOLTAGEfrr);
+            TapeNoise[TAPEfrBit] = AD_ReadADPin(TAPE_VOLTAGEfr);
+            TapeNoise[TAPEflBit] = AD_ReadADPin(TAPE_VOLTAGEfl);
+            TapeNoise[TAPEfllBit] = AD_ReadADPin(TAPE_VOLTAGEfll);
+            TapeNoise[TAPEbrBit] = AD_ReadADPin(TAPE_VOLTAGEbr);
+            TapeNoise[TAPEblBit] = AD_ReadADPin(TAPE_VOLTAGEbl);
         }
         TapeLED = !TapeLED;
         // after the check compare to past values and noise to the thresh and raise events
         //only if has at least 1 of each reading
-        if (TapefrrNoise && TapefrrRead) {
-            if(LastTapefrr == DETECTED){
-                if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH + TAPE_HYST) {
-                    CurrentTapefrr = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapefrr = DETECTED;
-                }
+        if((!TapeRead[0]) || (!TapeNoise[0])){ return returnVal;}
+        for(int i = 0; i < NUMTAPE; i++){//use for loop to use the same code on different tape sensors
+            TapeReadings[i] = MovAvgFilter((TapeNoise[i] - TapeRead[i]), (TapeFilterArray[i].Data), TAPE_FILTER, &(TapeFilterArray[i].Cursor));
+            uint16_t threshold;
+            //if(i == 5){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
+            //if(i == 5){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
+            if(LastTape[i]){
+                threshold = TAPE_THRESH[i] + TAPE_HYST[i];
             } else {
-                if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH - TAPE_HYST) {
-                    CurrentTapefrr = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapefrr = DETECTED;
-                }
+                threshold = TAPE_THRESH[i] - TAPE_HYST[i];
             }
-            if(LastTapefr == DETECTED){
-                if ((TapefrNoise - TapefrRead) >= TAPE_THRESH + TAPE_HYST) {
-                    CurrentTapefr = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapefr = DETECTED;
-                }
-            } else {
-                if ((TapefrNoise - TapefrRead) >= TAPE_THRESH - TAPE_HYST) {
-                    CurrentTapefr = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapefr = DETECTED;
-                }
-            }
-            if(LastTapebr == DETECTED){
-                if ((TapebrNoise - TapebrRead) >= TAPE_THRESH + TAPE_HYST) {
-                    CurrentTapebr = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapebr = DETECTED;
-                }
-            } else {
-                if ((TapebrNoise - TapebrRead) >= TAPE_THRESH - TAPE_HYST) {
-                    CurrentTapebr = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapebr = DETECTED;
-                }
-            }
-            if(LastTapebl == DETECTED){
-                if ((TapeblNoise - TapeblRead) >= TAPE_THRESH + TAPE_HYST) {
-                    CurrentTapebl = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapebl = DETECTED;
-                }
-            } else {
-                if ((TapeblNoise - TapeblRead) >= TAPE_THRESH - TAPE_HYST) {
-                    CurrentTapebl = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapebl = DETECTED;
-                }
-            }
-            if(LastTapefl == DETECTED){
-                if ((TapeflNoise - TapeflRead) >= TAPE_THRESH + TAPE_HYST) {
-                    CurrentTapefl = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapefl = DETECTED;
-                }
-            } else {
-                if ((TapeflNoise - TapeflRead) >= TAPE_THRESH - TAPE_HYST) {
-                    CurrentTapefl = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapefl = DETECTED;
-                }
-            }
-            if(LastTapefll == DETECTED){
-                if ((TapefllNoise - TapefllRead) >= TAPE_THRESH + TAPE_HYST) {
-                    CurrentTapefll = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapefll = DETECTED;
-                }
-            } else {
-                if ((TapefllNoise - TapefllRead) >= TAPE_THRESH - TAPE_HYST) {
-                    CurrentTapefll = NOT_DETECTED;
-                }
-                else {
-                    CurrentTapefll = DETECTED;
-                }
-            }
-//            if ((TapefrrNoise - TapefrrRead) >= TAPE_THRESH + TAPE_HYST) {
-//                CurrentTapefrr = NOT_DETECTED;
-//            }
-//            else if ((TapefrrNoise - TapefrrRead) <= TAPE_THRESH - TAPE_HYST) {
-//                CurrentTapefrr = DETECTED;
-//            }
-//            if ((TapefrNoise - TapefrRead) >= TAPE_THRESH + TAPE_HYST) {
-//                CurrentTapefr = NOT_DETECTED;
-//            }
-//            else if ((TapefrNoise - TapefrRead) <= TAPE_THRESH - TAPE_HYST) {
-//                CurrentTapefr = DETECTED;
-//            }
-//            if ((TapeflNoise - TapeflRead) >= TAPE_THRESH + TAPE_HYST) {
-//                CurrentTapefl = NOT_DETECTED;
-//            }
-//            else if ((TapeflNoise - TapeflRead) <= TAPE_THRESH - TAPE_HYST) {
-//                CurrentTapefl = DETECTED;
-//            }
-//            if ((TapefllNoise - TapefllRead) >= TAPE_THRESH + TAPE_HYST) {
-//                CurrentTapefll = NOT_DETECTED;
-//            }
-//            else if ((TapefllNoise - TapefllRead) <= TAPE_THRESH - TAPE_HYST) {
-//                CurrentTapefll = DETECTED;
-//            }
-//            if ((TapebrNoise - TapebrRead) >= TAPE_THRESH + TAPE_HYST) {
-//                CurrentTapebr = NOT_DETECTED;
-//            }
-//            else if ((TapebrNoise - TapebrRead) <= TAPE_THRESH - TAPE_HYST) {
-//                CurrentTapebr = DETECTED;
-//            }
-//            if ((TapeblNoise - TapeblRead) >= TAPE_THRESH + TAPE_HYST) {
-//                CurrentTapebl = NOT_DETECTED;
-//            }
-//            else if ((TapeblNoise - TapeblRead) <= TAPE_THRESH - TAPE_HYST) {
-//                CurrentTapebl = DETECTED;
-//            }
-
-            // compare past values with current values
-            if (CurrentTapefrr != LastTapefrr) {
+            CurrentTape[i] = (TapeReadings[i] < threshold);
+               
+            if (CurrentTape[i] != LastTape[i]) {
                 returnVal = TRUE;
-                LastTapefrr = CurrentTapefrr;
+                if(i == 4){
+//                    printf("\r\n e-%d t-%d", TapeReadings[i],threshold);
+                }
+                LastTape[i] = CurrentTape[i];
             }
-            if (CurrentTapefr != LastTapefr) {
-                returnVal = TRUE;
-                LastTapefr = CurrentTapefr;
-            }
-            if (CurrentTapefl != LastTapefl) {
-                returnVal = TRUE;
-                LastTapefl = CurrentTapefl;
-            }
-            if (CurrentTapefll != LastTapefll) {
-                returnVal = TRUE;
-                LastTapefll = CurrentTapefll;
-            }
-            if (CurrentTapebr != LastTapebr) {
-                returnVal = TRUE;
-                LastTapebr = CurrentTapebr;
-            }
-            if (CurrentTapebl != LastTapebl) {
-                returnVal = TRUE;
-                LastTapebl = CurrentTapebl;
-            }
+            param += (CurrentTape[i] << i);
         }
+         
     }
     if (returnVal) {
-        param += (CurrentTapefrr << TAPEfrrBit);
-        param += (CurrentTapefr << TAPEfrBit);
-        param += (CurrentTapefl << TAPEflBit);
-        param += (CurrentTapefll << TAPEfllBit);
-        param += (CurrentTapebr << TAPEbrBit);
-        param += (CurrentTapebl << TAPEblBit);
         ES_Event ThisEvent;
         ThisEvent.EventType = TAPE;
         ThisEvent.EventParam = param;
@@ -616,8 +496,6 @@ uint8_t CheckTape(void) {
         PostSensorService(ThisEvent);
 #else
         SaveEvent(ThisEvent);
-        printf("\r\n %d", (TapefllNoise - TapefllRead));
-        printf("\r\n %d", (TapeblNoise - TapeblRead));
 #endif
     }
 
@@ -701,7 +579,8 @@ uint8_t CheckBumper(void){
  * @author Cooper Cantrell 5/15/2024 5:26
  */
 uint8_t CheckPing(void){
-    uint16_t CurrentPing = PingFilter(PINGGetData());
+    static uint8_t PingCursor = 0;
+    uint16_t CurrentPing = MovAvgFilter(PINGGetData(), PingReadings, PING_FILTER, &PingCursor);
     uint8_t returnVal = FALSE;
     //printf("\r\n PING SENSOR DIST %d",CurrentPing);
     if (abs(CurrentPing - LastPing) > PING_HYST)
