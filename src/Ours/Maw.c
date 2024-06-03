@@ -243,6 +243,16 @@ char Maw_LeftDoor(uint8_t Position){
     }
     return SUCCESS;
 }
+/**
+ * @Function Maw_MaxMtr(uint8_t Dir)
+ * @param Dir - a true for forward or false for reverse
+ * @return SUCCESS or ERROR
+ * @brief  This function sets both motors to their max speed forward, regardless of battery voltage
+ * @author Caitlin Bonesio, 2024.6.3 */
+char Maw_MaxMtr(uint8_t dir){
+    PWM_SetDutyCycle(RIGHT_MOTOR, 1000);
+    PWM_SetDutyCycle(LEFT_MOTOR, 1000);
+}
 
 #ifdef MawTest
 int wait;

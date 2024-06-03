@@ -62,13 +62,13 @@ static const char *StateNames[] = {
 	"Return2Arena",
 };
 
-#define ALIGN_TIME 500
+#define ALIGN_TIME 1000
 #define BACKUP_TIME 1000
-#define RAM_TIME 1250
+#define RAM_TIME 2000
 #define DOOR_TIME 200
 #define WAIT_TIME 500
 #define BACKUP2_TIME 1000
-#define RETURN_TIME 852
+#define RETURN_TIME 1600
 
 #define FAN_PORT PORTZ
 #define FAN_PIN PIN9
@@ -169,6 +169,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
+                    
                 case ES_NO_EVENT:
                     break;
                 default:
@@ -181,10 +182,6 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-100);
 					ES_Timer_InitTimer(RAM_TIMER, BACKUP_TIME);
-					break;
-				case ES_EXIT:
-					Maw_LeftMtrSpeed(0);
-					Maw_RightMtrSpeed(0);
 					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
@@ -213,6 +210,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ES_ENTRY:
 					Maw_LeftDoor(FALSE);
 					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
+					Maw_LeftMtrSpeed(0);
+					Maw_RightMtrSpeed(0);
 					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
@@ -256,10 +255,6 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(100);
 					ES_Timer_InitTimer(RAM_TIMER, RAM_TIME);
 					break;
-				case ES_EXIT:
-					Maw_LeftMtrSpeed(0);
-					Maw_RightMtrSpeed(0);
-					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
 						nextState = Wait;
@@ -285,6 +280,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             switch (ThisEvent.EventType) {
 				case ES_ENTRY://No fan function yet
 					ES_Timer_InitTimer(RAM_TIMER, WAIT_TIME);
+					Maw_LeftMtrSpeed(0);
+					Maw_RightMtrSpeed(0);
 					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){

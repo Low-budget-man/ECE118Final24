@@ -42,7 +42,7 @@
  ******************************************************************************/
 // Include any defines you need to do
 // 30 seconds
-#define WANDER_TIME 10000 
+#define WANDER_TIME 10 
 // 2 min may need to break this up depending on how the timers work
 #define GAME_TIME 120000 
 //

@@ -60,6 +60,14 @@ char Maw_LeftMtrSpeed(char newSpeed);
 char Maw_RightMtrSpeed(char newSpeed);
 
 /**
+ * @Function Maw_MaxMtr(uint8_t Dir)
+ * @param Dir - a true for forward or false for reverse
+ * @return SUCCESS or ERROR
+ * @brief  This function sets both motors to their max speed forward, regardless of battery voltage
+ * @author Caitlin Bonesio, 2024.6.3 */
+char Maw_MaxMtr(uint8_t dir);
+
+/**
  * @Function Maw_RightDoor(uint8_t Position)
  * @param Position - a true for depositing or false for collecting
  * @return SUCCESS or ERROR

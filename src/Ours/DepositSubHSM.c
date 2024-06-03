@@ -229,8 +229,9 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 			switch (ThisEvent.EventType) {
 				case ES_EXIT:
                     ThisEvent.EventType = ES_NO_EVENT;
+                    CurrentState = -1;//prevents ES_EXIT from calling Ramming with ES_EXIT
                     nextState = Continue_Wandering;
-                    makeTransition == TRUE;
+                    makeTransition = TRUE;
                 case ES_NO_EVENT:
                     break;
 				default:
@@ -243,6 +244,8 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
         RunDepositSubHSM(EXIT_EVENT); // <- rename to your own Run function
+        if(nextState == Continue_Wandering){
+        }
         CurrentState = nextState;
         RunDepositSubHSM(ENTRY_EVENT); // <- rename to your own Run function
     }
