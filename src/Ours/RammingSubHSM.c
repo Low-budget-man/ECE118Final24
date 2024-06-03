@@ -145,9 +145,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
-            // INIT the fans
-            IO_PortsSetPortOutputs(FAN_PORT,FAN_PIN);
-            IO_PortsClearPortBits(FAN_PORT,FAN_PIN);        
+            // INIT the fans       
             // now put the machine into the actual initial state
             nextState = Align;
             makeTransition = TRUE;
@@ -251,7 +249,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
                     //Turn On Fans
-                    IO_PortsSetPortBits(FAN_PORT,FAN_PIN);    
+                    Maw_Fans(1);    
 					Maw_MaxMtr(1);
 					ES_Timer_InitTimer(RAM_TIMER, RAM_TIME);
 					break;
@@ -290,10 +288,6 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 						ThisEvent.EventType = ES_NO_EVENT;
 					}
                     break;
-                case ES_EXIT:
-                    //turn off fans
-                    IO_PortsClearPortBits(FAN_PORT,FAN_PIN);    
-                    break;
                 case ES_NO_EVENT:
                 default:
                     // Unhandled events pass back up to the next level
@@ -306,6 +300,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ES_ENTRY:
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-100);
+                    Maw_Fans(0);    
 					ES_Timer_InitTimer(RAM_TIMER, BACKUP2_TIME);
                     Maw_LeftDoor(1);
 					break;
