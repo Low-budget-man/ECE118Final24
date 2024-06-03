@@ -1,0 +1,7 @@
+git checkout main
+git checkout HSMCooper
+git pull
+git checkout HSMCaitlin
+git pull
+git checkout main
+git pull
