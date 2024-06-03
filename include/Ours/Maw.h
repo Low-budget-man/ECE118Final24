@@ -83,4 +83,12 @@ char Maw_RightDoor(uint8_t Position);
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_LeftDoor(uint8_t Position);
 
+
+/**
+ * @Function Maw_Fans(uint8_t power)
+ * @param power - a bool true if on 0 if off
+ * @return none
+ * @brief  This function is used to turn on and off the fans
+ * @author Cooper Cantrell, 2024.6.3 */
+void Maw_Fans(uint8_t power);
 #endif

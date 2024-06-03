@@ -26,22 +26,14 @@ void main(void)
     ES_Return_t ErrorType;
 
     BOARD_Init();
-
     printf("Starting Motor Testing\r\n");
 
 
     // Your hardware initialization function calls go here
     Maw_Init();
     // now initialize the Events and Services Framework and start it running
-    while(1){
-        while(!(IO_PortsReadPort(BUMPERbrPORT)&BUMPERbrPIN));
-        Maw_LeftMtrSpeed(100);
-        Maw_RightMtrSpeed(100);
-        uint32_t starttime = ES_Timer_GetTime();
-        while(starttime + 1000 > ES_Timer_GetTime());
-        Maw_LeftMtrSpeed(0);
-        Maw_RightMtrSpeed(0);
-    }
+
+    while(TRUE);
 };
 
 /*------------------------------- Footnotes -------------------------------*/

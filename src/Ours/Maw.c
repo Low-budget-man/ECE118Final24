@@ -36,7 +36,8 @@
 #define LEFT_DIR1 PORTZ,PIN5
 #define LEFT_DIR2 PORTZ,PIN4
 // when Dir1 = 1 and Dir2 = 0 that is forward
-
+// fans 
+#define FANs PORTZ, PIN9
 //Servo: Brn/red/orn is gnd/pwr/sig
 #define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07
@@ -48,9 +49,10 @@
 #define depositL 2250
 #define collectL 850
 #define blockL 1550
-//macro to read the battery voltage
+// macro to read the battery voltage 
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
-
+// for max power
+#define MAXPOWER
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/
@@ -69,6 +71,7 @@
  unsigned int ScaleValue(char newSpeed){
     // convert the Max motor voltage (8V) to the same 32 mV units of the output
     // of the read pin function
+#ifndef MAXPOWER
     float mathSpeed = newSpeed;
     float maxV = (MAX_MOTOR_VOLTAGE) * 31;
     float CurrentV = (float) CURRENT_BATT_VOLT;
@@ -90,7 +93,11 @@
         printf("warning motors have been over set, moving within bounds");
         out = 1000;
     }
-    return out;
+        return out;
+#else
+return newSpeed * 10;
+#endif
+
      
     //issues with battery reading motor for now
     //return newSpeed* 10;
@@ -128,6 +135,9 @@ void Maw_Init(void){
     IO_PortsClearPortBits(RIGHT_DIR2);
     IO_PortsClearPortBits(LEFT_DIR1);
     IO_PortsClearPortBits(LEFT_DIR2);
+    //inits the fans
+    IO_PortsSetPortOutputs(FANs);
+    IO_PortsClearPortBits(FANs);
     // for the servos
     RC_Init();
     RC_AddPins(RIGHT_DOOR|LEFT_DOOR);
@@ -263,6 +273,23 @@ char Maw_LeftDoor(uint8_t Position){
     }
     return SUCCESS;
 }
+/**
+ * @Function Maw_Fans(uint8_t power)
+ * @param power - a bool true if on 0 if off
+ * @return none
+ * @brief  This function is used to turn on and off the fans
+ * @author Cooper Cantrell, 2024.6.3 */
+void Maw_Fans(uint8_t power){
+    if (power)
+    {
+        IO_PortsSetPortBits(FANs);
+    }
+    else
+    {
+        IO_PortsClearPortBits(FANs);
+    }
+}
+
 
 
 #ifdef MawTest
