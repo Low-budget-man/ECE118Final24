@@ -117,7 +117,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
     WanderSubHSMState_t nextState; // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
-
+    //printf("\r\n Current State is '%s' with event '%s'",StateNames[CurrentState],EventNames[ThisEvent.EventType]);
     switch (CurrentState) {
         case InitPSubState: // If current state is initial Psedudo State
             if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
@@ -137,6 +137,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
         case Forward:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
+                    MOTOR_TATTLE(100,100)
                     Maw_LeftMtrSpeed(100);
                     Maw_RightMtrSpeed(100);
                     Maw_RightDoor(1);
@@ -179,6 +180,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
         case Reverse:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
+                    MOTOR_TATTLE(-100,-100)
                     Maw_LeftMtrSpeed(-100);
                     Maw_RightMtrSpeed(-100);
                     ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));
@@ -191,7 +193,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                     }
                     break;
                 case TAPE:
-                    if (TRUE /*ThisEvent.EventParam == WANTED EVENT*/) {
+                    if (ThisEvent.EventParam) {
                         nextState = Spin;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
@@ -224,10 +226,12 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                 case ES_ENTRY: // ccw to line up with door slightly more easily
                     if (LastBump & (1<<BUMPERfrBit))
                     {
+                        MOTOR_TATTLE(-100,100)
                         Maw_LeftMtrSpeed(-100);
    					    Maw_RightMtrSpeed(100);
                     }
                     else {
+                        MOTOR_TATTLE(100,-100)
                     Maw_LeftMtrSpeed(100);
    					Maw_RightMtrSpeed(-100);
                     }

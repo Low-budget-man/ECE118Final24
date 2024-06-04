@@ -115,6 +115,7 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
     case Align: 
         switch (ThisEvent.EventType) {
 			case ES_ENTRY: 
+                    MOTOR_TATTLE(-80, 80)
 					Maw_LeftMtrSpeed(-80);
 					Maw_RightMtrSpeed(80);
                     Maw_RightDoor(2);
@@ -138,6 +139,7 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
 	case Forward:
 		switch (ThisEvent.EventType) {
 			case ES_ENTRY: 
+                    MOTOR_TATTLE(100, 100)
 					Maw_LeftMtrSpeed(100);
 					Maw_RightMtrSpeed(100);
 					break;

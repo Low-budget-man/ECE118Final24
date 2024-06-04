@@ -153,7 +153,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     if((ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){
                         nextState = FollowTape;
                     } else {
-                        nextState = Align;
+                        nextState = FollowTape;
                     }
 					makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT; 
@@ -237,6 +237,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 		case Ramming:
 			ThisEvent = RunRammingSubHSM(ThisEvent);
 			switch (ThisEvent.EventType) {
+                /*
                 #ifndef NAV2
 				case ES_EXIT:
                 #else 
@@ -249,6 +250,13 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     TrackFlag = 0;
                     TrackFlagFRT = ES_Timer_GetTime();
                     break;
+                */
+               case DEPOSITED:
+                    makeTransition = TRUE;
+                    nextState = Continue_Wandering;
+#ifndef NAV_2
+                    ThisEvent = NO_EVENT;
+#endif
                 case ES_NO_EVENT:
                     break;
 				default:
@@ -261,8 +269,6 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
         RunDepositSubHSM(EXIT_EVENT); // <- rename to your own Run function
-        if(nextState == Continue_Wandering){
-        }
         CurrentState = nextState;
         RunDepositSubHSM(ENTRY_EVENT); // <- rename to your own Run function
     }

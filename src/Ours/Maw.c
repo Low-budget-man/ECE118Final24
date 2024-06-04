@@ -198,8 +198,8 @@ char Maw_MaxMtr(uint8_t dir){
         IO_PortsSetPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
     }
-    PWM_SetDutyCycle(RIGHT_MOTOR, 1000);
-    PWM_SetDutyCycle(LEFT_MOTOR, 1000);
+    PWM_SetDutyCycle(RIGHT_MOTOR, 998);
+    PWM_SetDutyCycle(LEFT_MOTOR, 968);
 }
 /**
  * @Function Maw_RightMtrSpeed(char newSpeed)
@@ -290,7 +290,13 @@ void Maw_Fans(uint8_t power){
     }
 }
 
-
+#ifdef MOTORTATTLE
+void Motor_Tattle(const char* func, int16_t left, int16_t right){
+    static uint16_t LastTime;
+    printf("\r\nfunc: %s, lspeed %d, rspeed %d, time %d", func, left, right, ES_Timer_GetTime() - LastTime);
+    LastTime = ES_Timer_GetTime();   
+}
+#endif
 
 #ifdef MawTest
 int wait;
