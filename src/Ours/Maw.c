@@ -37,7 +37,7 @@
 #define LEFT_DIR2 PORTZ,PIN4
 // when Dir1 = 1 and Dir2 = 0 that is forward
 // fans 
-#define FANs PORTZ, PIN9
+#define FANs PORTZ, PIN7
 //Servo: Brn/red/orn is gnd/pwr/sig
 #define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07

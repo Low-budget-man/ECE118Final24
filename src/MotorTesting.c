@@ -32,8 +32,14 @@ void main(void)
     // Your hardware initialization function calls go here
     Maw_Init();
     // now initialize the Events and Services Framework and start it running
-
-    while(TRUE);
+    while(TRUE){
+        if(IO_PortsReadPort(PORTX) & PIN8){
+            Maw_Fans(TRUE);
+        }
+        else{
+            Maw_Fans(FALSE);
+        }
+    }
 };
 
 /*------------------------------- Footnotes -------------------------------*/
