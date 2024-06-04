@@ -208,6 +208,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
 					Maw_LeftDoor(FALSE);
+                    Maw_Fans(1);  
 					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
 					Maw_LeftMtrSpeed(0);
 					Maw_RightMtrSpeed(0);
@@ -248,8 +249,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
         case Charge:
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-                    //Turn On Fans
-                    Maw_Fans(1);    
+                    //Turn On Fans  
 					Maw_MaxMtr(1);
 					ES_Timer_InitTimer(RAM_TIMER, RAM_TIME);
 					break;
