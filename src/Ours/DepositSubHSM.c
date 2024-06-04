@@ -157,29 +157,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     }
 					makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT; 
-                    /*I don't to have this added unless it has been discussed
-                     * without being drawn out 
-                    */
-//                    if(ThisEvent.EventParam == CORRECT_TAPE_MASK){
-//                        nextState = OMW;
-//                        makeTransition = TRUE;
-//                        ThisEvent.EventType = ES_NO_EVENT; 
-//                    }
-					break;
-//                case OMW:
-//                    ThisEvent = RunOMWSubHSM(ThisEvent);
-//                    switch (ThisEvent.EventType) {
-//                    case TRACKWIRE:
-//                        nextState = Ramming;
-//                        makeTransition = TRUE;
-//                        ThisEvent.EventType = ES_NO_EVENT; 
-//                        break;
-//                    break;
-//                    case ES_NO_EVENT:
-//                    default: // all unhandled events pass the event back up to the next level
-//                        break;
-//                    }
-//                    break
+                    break;
 				case TRACKWIRE:
 					nextState = Ramming;
 					makeTransition = TRUE;
@@ -189,19 +167,6 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 				default: // all unhandled events pass the event back up to the next level
 					break;
 			}
-            break;
-        case Align:
-            ThisEvent = RunAlignHSM(ThisEvent);
-            switch (ThisEvent.EventType) {
-                case ALIGNED:
-                    nextState = FollowTape;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-                case ES_NO_EVENT:
-                default:
-                    break;
-            }
             break;
 		case FollowTape:
 			ThisEvent = RunFollowTapeHSM(ThisEvent);
@@ -218,6 +183,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                         ThisEvent.EventType = ES_NO_EVENT; 
                     #ifdef NAV2
                     }
+                    InitFollowTapeHSM();
                     #endif
                     break;
                 case OBSTACLE_AVOIDED:
@@ -228,10 +194,9 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
                     
-			break;
-			case ES_NO_EVENT:
-			default: // all unhandled events pass the event back up to the next level
-				break;
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
 			}
             break;
 		case Ramming:

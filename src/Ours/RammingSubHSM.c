@@ -34,6 +34,7 @@
 #include "BOARD.h"
 #include "RammingSubHSM.h"
 #include "IO_Ports.h"
+#include "MawHSM.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -64,12 +65,16 @@ static const char *StateNames[] = {
 
 #define ALIGN_TIME 1000
 //back up default 1000
-#define BACKUP_TIME 2000
-// #define RAM_TIME 10
+#define BACKUP_TIME 1500
+#define RAM_TIME 2000
 #define DOOR_TIME 200
 #define WAIT_TIME 500
 #define BACKUP2_TIME 1500
 #define RETURN_TIME 2400
+#ifdef NAV2
+#define NAV2Backup 500
+#define NOTHINGTIME 1
+#endif
 
 #define FAN_PORT PORTZ
 #define FAN_PIN PIN9
@@ -192,7 +197,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					}
                     break;
                 case BUMPER:
-					if (ThisEvent.EventParam){//check if a bumper is on
+					if (ThisEvent.EventParam & ((1<<BUMPERblBit) | (1<<BUMPERbrBit))){//check if a bumper is on
 						nextState = FirstDoor;
 						makeTransition = TRUE;
 						ThisEvent.EventType = ES_NO_EVENT;
@@ -254,13 +259,21 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
             switch (ThisEvent.EventType) {
 				case ES_ENTRY:
                     //Turn On Fans  
-					// ES_Timer_InitTimer(RAM_TIMER, RAM_TIME);
+					ES_Timer_InitTimer(RAM_TIMER, RAM_TIME);
                     MOTOR_TATTLE(110, 110)
                     Maw_MaxMtr(TRUE);
 					break;			
 				case BUMPER: //Stop instead of trying to plow through wall
                     if(ThisEvent.EventParam){
                         nextState = Wait;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                        ES_Timer_StopTimer(RAM_TIMER);
+                    }
+                    break;
+                case ES_TIMEOUT:
+                    if(ThisEvent.EventParam == RAM_TIMER){
+                                                nextState = Wait;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                         ES_Timer_StopTimer(RAM_TIMER);
@@ -298,11 +311,18 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case Back2:
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
+                    #ifndef NAV2
                     MOTOR_TATTLE(-60, -100)
 					Maw_LeftMtrSpeed(-60);
 					Maw_RightMtrSpeed(-100);
-                    Maw_Fans(0);    
 					ES_Timer_InitTimer(RAM_TIMER, BACKUP2_TIME);
+                    #else
+                    MOTOR_TATTLE(-100, -100)
+					Maw_LeftMtrSpeed(-100);
+					Maw_RightMtrSpeed(-100);
+					ES_Timer_InitTimer(RAM_TIMER, NAV2Backup);
+                    #endif
+                    Maw_Fans(0);    
                     Maw_LeftDoor(1);
 					break;
                 case TAPE:
@@ -322,10 +342,17 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case Return2Arena:
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
+                    #ifndef NAV2
                     MOTOR_TATTLE(0, 100)
 					Maw_LeftMtrSpeed(0);
 					Maw_RightMtrSpeed(100);
 					ES_Timer_InitTimer(RAM_TIMER, RETURN_TIME);
+                    #else
+                    MOTOR_TATTLE(0, 0)
+					Maw_LeftMtrSpeed(0);
+					Maw_RightMtrSpeed(0);
+					ES_Timer_InitTimer(RAM_TIMER, NOTHINGTIME);
+                    #endif
                     Maw_RightDoor(1);
 					break;
                 case ES_TIMEOUT:

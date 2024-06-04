@@ -210,7 +210,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                         // exit event
                         ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME - ES_Timer_GetTimeRemaining(WANDER_SUBSTATE_TIMER))/2);
                     }
-                    else {
+                    else if(!(ThisEvent.EventParam & ((1<<BUMPERflBit) | (1<<BUMPERfrBit)))){
                         ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, (REVERSE_TIME));    
                     }
                     break;

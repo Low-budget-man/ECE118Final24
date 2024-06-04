@@ -21,12 +21,13 @@
 #define RIGHT_BIAS .998
 #define LEFT_BIAS .968
 
-#define MOTORTATTLE
+//#define MOTORTATTLE
 #ifdef MOTORTATTLE
 #define MOTOR_TATTLE(l, r) Motor_Tattle(__FUNCTION__, l, r);
 #else
 #define MOTOR_TATTLE(l, r)
 #endif
+
 
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *

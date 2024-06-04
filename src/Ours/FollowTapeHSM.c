@@ -142,60 +142,17 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
         }
         break;
 
-//    case Align: 
-//        switch (ThisEvent.EventType) {
-//			case ES_ENTRY: 
-//				Maw_LeftMtrSpeed(-80);
-//				Maw_RightMtrSpeed(80);
-//				break;
-//			case TAPE: 
-//				if(ThisEvent.EventParam == 0){
-//					nextState = Forward;
-//					makeTransition = TRUE;
-//					ThisEvent.EventType = ES_NO_EVENT;
-//				}
-//				else if ( ThisEvent.EventParam == CORRECT_TAPE_MASK){
-//					nextState = OMW;
-//					makeTransition = TRUE;
-//					ThisEvent.EventType = ES_NO_EVENT;
-//				}
-//				break;
-//			case ES_NO_EVENT:
-//			default:
-//				break;
-//			}
-//        break;
-//		
-//	case Forward:
-//		switch (ThisEvent.EventType) {
-//			case ES_ENTRY: 
-//					Maw_LeftMtrSpeed(100);
-//					Maw_RightMtrSpeed(100);
-//					break;
-//			case TAPE: 
-//				if(ThisEvent.EventParam != 0){
-//					nextState = Align;
-//					makeTransition = TRUE;
-//					ThisEvent.EventType = ES_NO_EVENT;
-//				}
-//				else if ( ThisEvent.EventParam == CORRECT_TAPE_MASK){
-//					nextState = OMW;
-//					makeTransition = TRUE;
-//					ThisEvent.EventType = ES_NO_EVENT;
-//				}
-//			case ES_NO_EVENT:
-//			default:
-//				break;
-//			}
-//		break;
-//		
+
 	case OMW:
         ThisEvent = RunOMWSubHSM(ThisEvent);
 		switch (ThisEvent.EventType) {
 			case BUMPER: 
-				nextState = AvoidObstacle;
-				makeTransition = TRUE;
-				ThisEvent.EventType = ES_NO_EVENT;
+                if(ThisEvent.EventParam){
+                    nextState = AvoidObstacle;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                }
+                break;
 			case ES_NO_EVENT:
 			default:
 				break;
@@ -211,6 +168,7 @@ ES_Event RunFollowTapeHSM(ES_Event ThisEvent)
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                 }
+                break;
 			case ES_NO_EVENT:
 			default:
 				break;
