@@ -63,7 +63,8 @@ static const char *StateNames[] = {
 };
 
 #define ALIGN_TIME 1000
-#define BACKUP_TIME 1000
+//back up default 1000
+#define BACKUP_TIME 2000
 // #define RAM_TIME 10
 #define DOOR_TIME 200
 #define WAIT_TIME 500
@@ -187,6 +188,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 						nextState = FirstDoor;
 						makeTransition = TRUE;
 						ThisEvent.EventType = ES_NO_EVENT;
+                        printf("\r\nLeaving backup on a timeout");
 					}
                     break;
                 case BUMPER:
@@ -195,6 +197,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 						makeTransition = TRUE;
 						ThisEvent.EventType = ES_NO_EVENT;
                         ES_Timer_StopTimer(RAM_TIMER);
+                        printf("\r\nLeaving backup on a bumper");
 					}
                     break;
                 case ES_NO_EVENT:
@@ -353,6 +356,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
         RunRammingSubHSM(EXIT_EVENT); // <- rename to your own Run function
+        if(nextState == FirstDoor){printf("\r\nleaving backup");}
         CurrentState = nextState;
         RunRammingSubHSM(ENTRY_EVENT); // <- rename to your own Run function
     }

@@ -30,7 +30,7 @@
 //Motor is outside in: pwm/dir/dir
 #define RIGHT_MOTOR PWM_PORTY12
 #define LEFT_MOTOR PWM_PORTZ06
-#define RIGHT_DIR1 PORTY,PIN10
+#define RIGHT_DIR1 PORTY,PIN11
 // was pin 9 but that seems to not work
 #define RIGHT_DIR2 PORTY,PIN6
 #define LEFT_DIR1 PORTZ,PIN5
@@ -223,6 +223,9 @@ char Maw_RightMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(RIGHT_DIR2);
     }
     PWM_SetDutyCycle(RIGHT_MOTOR, ScaleValue(newSpeed));
+#ifdef MOTORTATTLE
+    printf("\r\nrpin1: %d-%d",LATDbits.LATD2, (IO_PortsReadPort(PORTY) & PIN6)/PIN6);
+#endif
     return SUCCESS;
 }
 
