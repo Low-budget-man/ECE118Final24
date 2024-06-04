@@ -10,21 +10,30 @@
 #define MAW_H
 
 #include <BOARD.h>
+#include <stdio.h>
+#include "ES_Timers.h"
 /*******************************************************************************
  * PUBLIC DEFINES PROTOTYPES                                                  *
  ******************************************************************************/
 // This is in Volts
 #define MAX_MOTOR_VOLTAGE 8 
 // the motor Bias is a number that will be multiplied to the motors as you set the speed, keep between 0-1
-#define RIGHT_BIAS 1
-#define LEFT_BIAS .97
+#define RIGHT_BIAS .998
+#define LEFT_BIAS .968
 
+#define MOTORTATTLE
+#ifdef MOTORTATTLE
+#define MOTOR_TATTLE(l, r) Motor_Tattle(__FUNCTION__, l, r);
+#else
+#define MOTOR_TATTLE(l, r)
+#endif
 
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *
  ******************************************************************************/
-
-
+#ifdef MOTORTATTLE
+void Motor_Tattle(const char* func, int16_t left, int16_t right);
+#endif
 /**
  * @Function Maw_Init(void)
  * @param None.

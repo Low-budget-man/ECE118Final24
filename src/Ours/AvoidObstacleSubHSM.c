@@ -452,6 +452,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case BackUp:
             switch(ThisEvent.EventType){
                 case ES_ENTRY:
+                    MOTOR_TATTLE(-100, -100)
                     Maw_LeftMtrSpeed(-100);
                     Maw_RightMtrSpeed(-100);
 
@@ -472,6 +473,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case TurnL:
             switch(ThisEvent.EventType){
                 case ES_ENTRY:
+                    MOTOR_TATTLE(-100, 100)
                     Maw_LeftMtrSpeed(-100);
                     Maw_RightMtrSpeed(100);
                     ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, TurnLTime);
@@ -488,6 +490,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
             switch (ThisEvent.EventType)
             {
             case ES_ENTRY:
+                    MOTOR_TATTLE(100, 70)
                     Maw_LeftMtrSpeed(100);
                     Maw_RightMtrSpeed(70);
                     ES_Timer_InitTimer (AVOID_OBSTACLE_TIMER,DriftRTime);
@@ -531,6 +534,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case TankR:
             switch(ThisEvent.EventType){
                 case ES_ENTRY:
+                    MOTOR_TATTLE(-100, 100)
                     Maw_RightMtrSpeed(-100);
                     Maw_LeftMtrSpeed(100);
                     ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, TankRTime);
@@ -554,6 +558,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case BackL:
             switch(ThisEvent.EventType){
                 case ES_ENTRY:
+                    MOTOR_TATTLE(-100, 0)
                     Maw_LeftMtrSpeed(-100);
                     Maw_RightMtrSpeed(0);
                     break;

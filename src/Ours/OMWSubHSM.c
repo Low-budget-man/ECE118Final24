@@ -149,19 +149,23 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
         switch (CurrentState)
         {
         case TiltLeft:
+            MOTOR_TATTLE(50, 100)
             Maw_LeftMtrSpeed(50);
             Maw_RightMtrSpeed(100);
             break;
         case TiltRight:
+            MOTOR_TATTLE(100, 50)
             Maw_LeftMtrSpeed(100);
             Maw_RightMtrSpeed(50);
             break;
         case Straight:
         default:
+            MOTOR_TATTLE(100, 100)
             Maw_LeftMtrSpeed(100);
             Maw_RightMtrSpeed(100);
             break;
         case Panic:
+            MOTOR_TATTLE(100, 100)
             Maw_LeftMtrSpeed(0);
             Maw_RightMtrSpeed(0);
             break;
@@ -233,6 +237,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
         switch (ThisEvent.EventType)
         {
         case ES_ENTRY:
+            MOTOR_TATTLE(100, 50)
             Maw_LeftMtrSpeed(100);
             Maw_RightMtrSpeed(50);
             break;
@@ -252,6 +257,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
         switch (ThisEvent.EventType)
         {
         case ES_ENTRY:
+            MOTOR_TATTLE(-100, 100)
             Maw_RightMtrSpeed(100);
             Maw_LeftMtrSpeed(-100);
             break;
@@ -286,6 +292,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent)
 ES_Event RunOMWSubHSM(ES_Event ThisEvent){
     static uint8_t guideBackFlag = 0;
     if(ThisEvent.EventType == ES_ENTRY){
+        MOTOR_TATTLE(100, 100)
         Maw_LeftMtrSpeed(100);
         Maw_RightMtrSpeed(100);
         guideBackFlag = 0;
@@ -297,6 +304,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
         uint8_t GuideTapes = (((ThisEvent.EventParam & 1 << TAPEfrrBit) >> (TAPEfrrBit)) | (((ThisEvent.EventParam & 1 << TAPEfrBit) >> (TAPEfrBit-1))));
         switch (GuideTapes){
             case 0b00://left is off and right is off: turn right
+                MOTOR_TATTLE(100, 60)
                 Maw_LeftMtrSpeed(100);
                 Maw_RightMtrSpeed(60);
                 // this is for testing may allow us to catch a 
@@ -305,6 +313,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 //printf("\r\nleft is off and right is off: turn right\r\n");
                 break;
             case 0b01://left is off and right is on: on track go forward
+                MOTOR_TATTLE(100, 100)
                 Maw_LeftMtrSpeed(100);
                 Maw_RightMtrSpeed(100);
                 Maw_RightDoor(1);
@@ -313,12 +322,14 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 break;
             case 0b10://left is on and right is off: unexpected, assume way to far left turn hard Left (was panic mode)
                 //I've chosen to not have the robot move forward during this as the assumption may be wrong in which case it would drive itself off the edge
+                MOTOR_TATTLE(-100, 100)
                 Maw_LeftMtrSpeed(-100);
                 Maw_RightMtrSpeed(100);
                 Maw_RightDoor(1);
                 //printf("\r\nleft is on and right is off: Panic!\r\n");
                 break;
             case 0b11://Left is on and right is on: fully on tape turn left
+                MOTOR_TATTLE(60, 100)
                 Maw_LeftMtrSpeed(60);
                 Maw_RightMtrSpeed(100);
                 Maw_RightDoor(1);
@@ -329,6 +340,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
         if((ThisEvent.EventParam & (1<<TAPEfllBit | 1<<TAPEflBit | 1<<TAPEblBit )) || guideBackFlag){
             
             guideBackFlag = 1;
+            MOTOR_TATTLE(-100, 100)
             Maw_LeftMtrSpeed(-100);
             Maw_RightMtrSpeed(100);
             Maw_RightDoor(2);

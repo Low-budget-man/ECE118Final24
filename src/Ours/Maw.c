@@ -30,9 +30,9 @@
 //Motor is outside in: pwm/dir/dir
 #define RIGHT_MOTOR PWM_PORTY12
 #define LEFT_MOTOR PWM_PORTZ06
-#define RIGHT_DIR1 PORTY,PIN11
+#define RIGHT_DIR1 PORTY,PIN10
 // was pin 9 but that seems to not work
-#define RIGHT_DIR2 PORTY,PIN5
+#define RIGHT_DIR2 PORTY,PIN6
 #define LEFT_DIR1 PORTZ,PIN5
 #define LEFT_DIR2 PORTZ,PIN4
 // when Dir1 = 1 and Dir2 = 0 that is forward
@@ -165,6 +165,7 @@ void Maw_Init(void){
  * @brief  This function is used to set the speed and direction of the left motor.
  * @author Caitlin Bonesio, 2024.5.16 */
 char Maw_LeftMtrSpeed(char newSpeed){
+    newSpeed *= LEFT_BIAS;
     if(newSpeed < 0){
         IO_PortsSetPortBits(LEFT_DIR2);
         IO_PortsClearPortBits(LEFT_DIR1);
@@ -176,7 +177,6 @@ char Maw_LeftMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(LEFT_DIR1);
         IO_PortsClearPortBits(LEFT_DIR2);
     }
-    newSpeed *= LEFT_BIAS;
     PWM_SetDutyCycle(LEFT_MOTOR, ScaleValue(newSpeed));
     return SUCCESS;
 }
@@ -198,8 +198,8 @@ char Maw_MaxMtr(uint8_t dir){
         IO_PortsSetPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
     }
-    PWM_SetDutyCycle(RIGHT_MOTOR, 1000);
-    PWM_SetDutyCycle(LEFT_MOTOR, 1000);
+    PWM_SetDutyCycle(RIGHT_MOTOR, 998);
+    PWM_SetDutyCycle(LEFT_MOTOR, 968);
 }
 /**
  * @Function Maw_RightMtrSpeed(char newSpeed)
@@ -209,6 +209,7 @@ char Maw_MaxMtr(uint8_t dir){
  * @brief  This function is used to set the speed and direction of the left motor.
  * @author Caitlin Bonesio, 2024.5.16 */
 char Maw_RightMtrSpeed(char newSpeed){
+    newSpeed *= RIGHT_BIAS;
     if(newSpeed < 0){
         IO_PortsSetPortBits(RIGHT_DIR2);
         IO_PortsClearPortBits(RIGHT_DIR1);
@@ -221,7 +222,6 @@ char Maw_RightMtrSpeed(char newSpeed){
         IO_PortsClearPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
     }
-    newSpeed *= RIGHT_BIAS;
     PWM_SetDutyCycle(RIGHT_MOTOR, ScaleValue(newSpeed));
     return SUCCESS;
 }
@@ -290,7 +290,13 @@ void Maw_Fans(uint8_t power){
     }
 }
 
-
+#ifdef MOTORTATTLE
+void Motor_Tattle(const char* func, int16_t left, int16_t right){
+    static uint16_t LastTime;
+    printf("\r\nfunc: %s, lspeed %d, rspeed %d, time %d", func, left, right, ES_Timer_GetTime() - LastTime);
+    LastTime = ES_Timer_GetTime();   
+}
+#endif
 
 #ifdef MawTest
 int wait;
