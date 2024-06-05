@@ -17,6 +17,8 @@
 #include "LED.h"
 #include <stdio.h>
 #include "ES_Configure.h"
+#include "ES_Events.h"
+#include "DoorService.h"
 
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
@@ -42,14 +44,6 @@
 //Servo: Brn/red/orn is gnd/pwr/sig
 #define RIGHT_DOOR RC_PORTZ08
 #define LEFT_DOOR RC_PORTY07
-//Bigger to be more open (closer to 90 deg in)
-#define collectR 2250
-#define depositR 850
-#define blockR 1550
-// Smaller to be more open (sticking out all of the way)
-#define depositL 2250
-#define collectL 850
-#define blockL 1550
 // macro to read the battery voltage 
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
 // for max power
@@ -240,18 +234,10 @@ char Maw_RightMtrSpeed(char newSpeed){
  * @modifyed 5/29/2024
  * @mod able to give a number larger than 1 to enter a block pos
  * @author Cooper Cantrell, 2024.5.16 */
-char Maw_RightDoor(uint8_t Position){
-    if(Position){
-        if(Position > 1){
-            RC_SetPulseTime(RIGHT_DOOR, blockR);
-        }
-        else{
-            RC_SetPulseTime(RIGHT_DOOR,collectR);
-        }
-    }
-    else{
-        RC_SetPulseTime(RIGHT_DOOR,depositR);
-    }
+char Maw_RightDoor(uint16_t Position){
+    
+    RC_SetPulseTime(RIGHT_DOOR, Position);
+    
     return SUCCESS;
 }
 
@@ -265,18 +251,9 @@ char Maw_RightDoor(uint8_t Position){
  * @modifyed 5/29/2024
  * @mod able to give a number larger than 1 to enter a block pos
  * @author Cooper Cantrell, 2024.5.16 */
-char Maw_LeftDoor(uint8_t Position){
-    if((Position)){
-        if(Position > 1){
-            RC_SetPulseTime(LEFT_DOOR, blockL);
-        }
-        else{
-            RC_SetPulseTime(LEFT_DOOR,collectL);
-        }
-    }
-    else{
-        RC_SetPulseTime(LEFT_DOOR,depositL);
-    }
+char Maw_LeftDoor(uint16_t Position){
+    
+    RC_SetPulseTime(LEFT_DOOR, Position);
     return SUCCESS;
 }
 /**

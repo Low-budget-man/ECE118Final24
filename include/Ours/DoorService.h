@@ -4,8 +4,8 @@
  * Created 5/8/2024 at 10:36PM
  */
 
-#ifndef SensorService_H  // <- This should be changed to your own guard on both
-#define SensorService_H  //    of these lines
+#ifndef DoorService_H  // <- This should be changed to your own guard on both
+#define DoorService_H  //    of these lines
 
 
 /*******************************************************************************
@@ -14,7 +14,6 @@
 
 #include "ES_Configure.h"   // defines ES_Event, INIT_EVENT, ENTRY_EVENT, and EXIT_EVENT
 #include "ES_Events.h"
-#include "Maw.h"
 /*******************************************************************************
  * PUBLIC #DEFINES                                                             *
  ******************************************************************************/
@@ -23,6 +22,11 @@
  * PUBLIC TYPEDEFS                                                             *
  ******************************************************************************/
 
+typedef enum DOOR_t {
+    Depositing,
+    Collecting,
+    Blocking,          
+}DOOR;
 
 /*******************************************************************************
  * PUBLIC FUNCTION PROTOTYPES                                                  *

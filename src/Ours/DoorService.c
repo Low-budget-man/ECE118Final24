@@ -22,6 +22,15 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 #define DOORTIME 50
+//Bigger to be more open (closer to 90 deg in)
+#define collectR 2250
+#define depositR 850
+#define blockR 1550
+// Smaller to be more open (sticking out all of the way)
+#define depositL 2250
+#define collectL 850
+#define blockO -25
+#define Dummy 0
 
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
@@ -34,6 +43,17 @@
  ******************************************************************************/
 static DOOR doorConfig = Collecting;
 static uint8_t Priority;
+
+static uint16_t LPositions[] = {
+    depositL,
+    collectL,
+    Dummy,
+};
+static uint16_t RPositions[] = {
+    depositR,
+    collectR,
+    blockR,
+};
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
@@ -87,20 +107,23 @@ uint8_t PostDoorService(ES_Event ThisEvent)
  *        as this is called any time a new event is passed to the event queue.  
  * @author Cooper Cantrell 5/8/2024 */
 ES_Event RunDoorService(ES_Event ThisEvent){
+    
     switch (ThisEvent.EventType)
     {
     case DOORS:
         if (!(ThisEvent.EventParam == doorConfig))
         {
-            Maw_LeftDoor(ThisEvent.EventParam);
+            
+            LPositions[2] = blockR - blockO + 2*(blockO * doorConfig);
             doorConfig = ThisEvent.EventParam;
+            Maw_LeftDoor(LPositions[ThisEvent.EventParam]);
             ES_Timer_InitTimer(DOORTIMER, DOORTIME);
         }
         
         break;
         case ES_TIMEOUT:
         if(ThisEvent.EventParam == DOORTIMER){
-            Maw_RightDoor(doorConfig);
+            Maw_RightDoor(RPositions[doorConfig]);
         }
         break;
     default:

@@ -12,6 +12,7 @@
 #include <BOARD.h>
 #include <stdio.h>
 #include "ES_Timers.h"
+#include "DoorService.h"
 /*******************************************************************************
  * PUBLIC DEFINES PROTOTYPES                                                  *
  ******************************************************************************/
@@ -20,11 +21,6 @@
 // the motor Bias is a number that will be multiplied to the motors as you set the speed, keep between 0-1
 #define RIGHT_BIAS .998
 #define LEFT_BIAS .968
-typedef enum DOOR {
-    Depositing,
-    Collecting,
-    Blocking,          
-}DOOR;
 //#define MOTORTATTLE
 #ifdef MOTORTATTLE
 #define MOTOR_TATTLE(l, r) Motor_Tattle(__FUNCTION__, l, r);
@@ -91,7 +87,7 @@ char Maw_MaxMtr(uint8_t dir);
  * @modifyed 5/29/2024
  * @mod able to give a number larger than 1 to enter a block pos
  * @author Cooper Cantrell, 2024.5.16 */
-char Maw_RightDoor(uint8_t Position);
+char Maw_RightDoor(uint16_t Position);
 
 /**
  * @Function Maw_LeftDoor(uint8_t Position)
@@ -103,7 +99,7 @@ char Maw_RightDoor(uint8_t Position);
  * @modifyed 5/29/2024
  * @mod able to give a number larger than 1 to enter a block pos
  * @author Cooper Cantrell, 2024.5.16 */
-char Maw_LeftDoor(uint8_t Position);
+char Maw_LeftDoor(uint16_t Position);
 
 /**
  * @Function Maw_Doors(DOOR Input)
