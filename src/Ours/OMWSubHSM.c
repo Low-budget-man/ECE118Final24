@@ -126,6 +126,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 // this is for testing may allow us to catch a 
                 //few more balls
                 Maw_LeftDoor(1);
+                Maw_RightDoor(1);
                 //printf("\r\nleft is off and right is off: turn right\r\n");
                 break;
             case 0b01://left is off and right is on: on track go forward
@@ -133,6 +134,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 Maw_LeftMtrSpeed(100);
                 Maw_RightMtrSpeed(100);
                 Maw_LeftDoor(1);
+                Maw_RightDoor(1);
                 guideBackFlag = 0;
                 //printf("\r\nleft is off and right is on: on track go forward\r\n");
                 break;
@@ -142,6 +144,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 Maw_LeftMtrSpeed(-100);
                 Maw_RightMtrSpeed(100);
                 Maw_LeftDoor(1);
+                Maw_RightDoor(1);
                 //printf("\r\nleft is on and right is off: Panic!\r\n");
                 break;
             case 0b11://Left is on and right is on: fully on tape turn left
@@ -149,6 +152,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 Maw_LeftMtrSpeed(60);
                 Maw_RightMtrSpeed(100);
                 Maw_LeftDoor(1);
+                Maw_RightDoor(1);
                 //printf("\r\nLeft is on and right is on: fully on tape turn left\r\n");
                 break;
         }

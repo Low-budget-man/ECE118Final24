@@ -245,6 +245,8 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     Maw_RightMtrSpeed(70);
                     ES_Timer_InitTimer (AVOID_OBSTACLE_TIMER,DriftRTime);
                     ES_Timer_InitTimer(AVOID_WATCH_PUPPY_TIMER, PuppyTime);
+                    Maw_LeftDoor(TRUE);
+                    Maw_RightDoor(TRUE);
                 break;
             case BUMPER:
                 // only turn into backleft is a bumper is pressed down

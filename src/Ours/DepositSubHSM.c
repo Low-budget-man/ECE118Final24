@@ -58,7 +58,7 @@ static const char *StateNames[] = {
 	"Ramming",
 };
 
-#define TRACKIGNORETIME 5000
+#define TRACKIGNORETIME 10000
 
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
@@ -175,6 +175,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     #ifdef NAV2
                     if(TrackFlagFRT + TRACKIGNORETIME < ES_Timer_GetTime()){
                         TrackFlag = 1;
+                        TrackFlagFRT = ES_Timer_GetTime();
                     }
                     if(TrackFlag){
                     #endif
@@ -192,6 +193,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     nextState = Continue_Wandering;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
+
                     break;
                     
                 case ES_NO_EVENT:
@@ -219,6 +221,8 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                case DEPOSITED:
                     makeTransition = TRUE;
                     nextState = Continue_Wandering;
+                    TrackFlag = 0;
+                    TrackFlagFRT = ES_Timer_GetTime();
 #ifndef NAV_2
                     ThisEvent = NO_EVENT;
 #endif

@@ -20,7 +20,9 @@
 // the motor Bias is a number that will be multiplied to the motors as you set the speed, keep between 0-1
 #define RIGHT_BIAS .998
 #define LEFT_BIAS .968
-
+#define COLLECT
+#define DEPOSIT 
+#define COLSE
 //#define MOTORTATTLE
 #ifdef MOTORTATTLE
 #define MOTOR_TATTLE(l, r) Motor_Tattle(__FUNCTION__, l, r);
@@ -79,17 +81,25 @@ char Maw_MaxMtr(uint8_t dir);
 
 /**
  * @Function Maw_RightDoor(uint8_t Position)
- * @param Position - a true for depositing or false for collecting
+ * @param Position - a true for collect or false for deposit a param > 1 = blocking
  * @return SUCCESS or ERROR
- * @brief  This function is used to open and close the doors
+ * @brief  This function is used to open and close the 
+ * @note Because of how the servos are on the bot there it seems like it is 
+ * going to the wrong spot this is to abstract away how the servos are mounted
+ * @modifyed 5/29/2024
+ * @mod able to give a number larger than 1 to enter a block pos
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_RightDoor(uint8_t Position);
 
 /**
  * @Function Maw_LeftDoor(uint8_t Position)
- * @param Position - a true for depositing or false for collecting
+ * @param Position - a true for collect or false for deposit a param > 1 = blocking
  * @return SUCCESS or ERROR
- * @brief  This function is used to open and close the doors
+ * @brief  This function is used to open and close the 
+ * @note Because of how the servos are on the bot there it seems like it is 
+ * going to the wrong spot this is to abstract away how the servos are mounted
+ * @modifyed 5/29/2024
+ * @mod able to give a number larger than 1 to enter a block pos
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_LeftDoor(uint8_t Position);
 

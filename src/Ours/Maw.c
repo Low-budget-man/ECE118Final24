@@ -231,12 +231,14 @@ char Maw_RightMtrSpeed(char newSpeed){
 
 /**
  * @Function Maw_RightDoor(uint8_t Position)
- * @param Position - a true for depositing or false for collecting
+ * @param Position - a true for collect or false for deposit a param > 1 = blocking
  * @return SUCCESS or ERROR
- * @brief  This function is used to open and close the doors
- * @author Cooper Cantrell, 2024.5.16
+ * @brief  This function is used to open and close the 
+ * @note Because of how the servos are on the bot there it seems like it is 
+ * going to the wrong spot this is to abstract away how the servos are mounted
  * @modifyed 5/29/2024
- * @mod able to give a number larger than 1 to enter a block pos */
+ * @mod able to give a number larger than 1 to enter a block pos
+ * @author Cooper Cantrell, 2024.5.16 */
 char Maw_RightDoor(uint8_t Position){
     if(Position){
         if(Position > 1){
@@ -254,7 +256,7 @@ char Maw_RightDoor(uint8_t Position){
 
 /**
  * @Function Maw_LeftDoor(uint8_t Position)
- * @param Position - a true for depositing or false for collecting
+ * @param Position - a true for collect or false for deposit a param > 1 = blocking
  * @return SUCCESS or ERROR
  * @brief  This function is used to open and close the 
  * @note Because of how the servos are on the bot there it seems like it is 
@@ -265,7 +267,7 @@ char Maw_RightDoor(uint8_t Position){
 char Maw_LeftDoor(uint8_t Position){
     if((Position)){
         if(Position > 1){
-            RC_SetPulseTime(RIGHT_DOOR, blockR);
+            RC_SetPulseTime(LEFT_DOOR, blockL);
         }
         else{
             RC_SetPulseTime(LEFT_DOOR,collectL);
