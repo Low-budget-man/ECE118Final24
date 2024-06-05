@@ -201,15 +201,21 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case BackUp:
             switch(ThisEvent.EventType){
                 case ES_ENTRY:
-                    MOTOR_TATTLE(-100, -100)
+                    MOTOR_TATTLE(-100, -80)
                     Maw_LeftMtrSpeed(-100);
-                    Maw_RightMtrSpeed(-100);
+                    Maw_RightMtrSpeed(-80);
                     ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackUpETime);
 
                     break;
                 case BUMPER:
                     if(!ThisEvent.EventParam){
                         ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackUpTime);
+                    }
+                    else if (ThisEvent.EventParam & ((1<<BUMPERbrBit)|(1<<BUMPERblBit))){
+                        makeTransition = TRUE;
+                        nextState = DriftR;
+                        ES_Timer_StopTimer(AVOID_OBSTACLE_TIMER);
+                        ThisEvent = NO_EVENT;
                     }
                     break;
                 case ES_TIMEOUT:
