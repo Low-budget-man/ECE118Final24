@@ -140,7 +140,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
                     MOTOR_TATTLE(100,100)
                     Maw_LeftMtrSpeed(100);
                     Maw_RightMtrSpeed(100);
-                    Maw_RightDoor(1);
+                    Maw_Doors(Collecting);
 
                     break;
                 case TAPE:
@@ -236,7 +236,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
    					Maw_RightMtrSpeed(-100);
                     }
                     ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
-                    Maw_RightDoor(2);
+                    Maw_Doors(Blocking);
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == WANDER_SUBSTATE_TIMER) {

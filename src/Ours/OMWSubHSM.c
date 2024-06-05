@@ -115,7 +115,6 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
     }
     if(ThisEvent.EventType == TAPE){
         ThisEvent.EventType = ES_NO_EVENT;
-        
         //GuideTapes is a two bit number, the left bit is if TAPEfr is on and the Right bit is if TAPEfrr is on
         uint8_t GuideTapes = (((ThisEvent.EventParam & 1 << TAPEfrrBit) >> (TAPEfrrBit)) | (((ThisEvent.EventParam & 1 << TAPEfrBit) >> (TAPEfrBit-1))));
         switch (GuideTapes){
@@ -125,16 +124,12 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 Maw_RightMtrSpeed(60);
                 // this is for testing may allow us to catch a 
                 //few more balls
-                Maw_LeftDoor(1);
-                Maw_RightDoor(1);
                 //printf("\r\nleft is off and right is off: turn right\r\n");
                 break;
             case 0b01://left is off and right is on: on track go forward
                 MOTOR_TATTLE(100, 100)
                 Maw_LeftMtrSpeed(100);
                 Maw_RightMtrSpeed(100);
-                Maw_LeftDoor(1);
-                Maw_RightDoor(1);
                 guideBackFlag = 0;
                 //printf("\r\nleft is off and right is on: on track go forward\r\n");
                 break;
@@ -143,16 +138,12 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 MOTOR_TATTLE(-100, 100)
                 Maw_LeftMtrSpeed(-100);
                 Maw_RightMtrSpeed(100);
-                Maw_LeftDoor(1);
-                Maw_RightDoor(1);
                 //printf("\r\nleft is on and right is off: Panic!\r\n");
                 break;
             case 0b11://Left is on and right is on: fully on tape turn left
                 MOTOR_TATTLE(60, 100)
                 Maw_LeftMtrSpeed(60);
                 Maw_RightMtrSpeed(100);
-                Maw_LeftDoor(1);
-                Maw_RightDoor(1);
                 //printf("\r\nLeft is on and right is on: fully on tape turn left\r\n");
                 break;
         }
@@ -163,7 +154,9 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
             MOTOR_TATTLE(-100, 100)
             Maw_LeftMtrSpeed(-100);
             Maw_RightMtrSpeed(100);
-            Maw_LeftDoor(2);
+            Maw_Doors(Blocking);
+        } else{
+            Maw_Doors(Collecting);
         }
     }
 }

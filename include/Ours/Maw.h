@@ -20,9 +20,11 @@
 // the motor Bias is a number that will be multiplied to the motors as you set the speed, keep between 0-1
 #define RIGHT_BIAS .998
 #define LEFT_BIAS .968
-#define COLLECT
-#define DEPOSIT 
-#define COLSE
+typedef enum DOOR {
+    Depositing,
+    Collecting,
+    Blocking,          
+}DOOR;
 //#define MOTORTATTLE
 #ifdef MOTORTATTLE
 #define MOTOR_TATTLE(l, r) Motor_Tattle(__FUNCTION__, l, r);
@@ -103,6 +105,14 @@ char Maw_RightDoor(uint8_t Position);
  * @author Cooper Cantrell, 2024.5.16 */
 char Maw_LeftDoor(uint8_t Position);
 
+/**
+ * @Function Maw_Doors(DOOR Input)
+ * @param Input - a DOOR enum that is open closed or deposit
+ * @return none
+ * @brief  This function will be used to set the doors of the bot async  
+ * @note this calls the doors service to set the doors into the wanted config 
+ * @author Cooper Cantrell, 2024.6.5 */
+void Maw_Doors(DOOR Input);
 
 /**
  * @Function Maw_Fans(uint8_t power)

@@ -118,7 +118,7 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
                     MOTOR_TATTLE(-80, 80)
 					Maw_LeftMtrSpeed(-80);
 					Maw_RightMtrSpeed(80);
-                    Maw_RightDoor(2);
+                    Maw_Doors(Blocking);
 					break;
 			case TAPE: 
 				if(!(ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){

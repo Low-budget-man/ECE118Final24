@@ -215,31 +215,12 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case FirstDoor:
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-					Maw_LeftDoor(FALSE);
+                    Maw_Doors(Depositing);
                     Maw_Fans(1);  
 					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
                     MOTOR_TATTLE(0, 0)
 					Maw_LeftMtrSpeed(0);
 					Maw_RightMtrSpeed(0);
-					break;
-                case ES_TIMEOUT:
-					if (ThisEvent.EventParam == RAM_TIMER){
-						nextState = SecondDoor;
-						makeTransition = TRUE;
-						ThisEvent.EventType = ES_NO_EVENT;
-					}
-                    break;
-                case ES_NO_EVENT:
-                default:
-                    // Unhandled events pass back up to the next level
-                    break;
-            }
-            break;
-		case SecondDoor:	//Continue moving back in this state, minimal delay, just so doors don't interfere.
-            switch (ThisEvent.EventType) {
-				case ES_ENTRY:
-					Maw_RightDoor(FALSE);
-					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
 					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
@@ -254,6 +235,24 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                     break;
             }
             break;
+		// case SecondDoor:	//Continue moving back in this state, minimal delay, just so doors don't interfere.
+        //     switch (ThisEvent.EventType) {
+		// 		case ES_ENTRY:
+		// 			ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
+		// 			break;
+        //         case ES_TIMEOUT:
+		// 			if (ThisEvent.EventParam == RAM_TIMER){
+		// 				nextState = Charge;
+		// 				makeTransition = TRUE;
+		// 				ThisEvent.EventType = ES_NO_EVENT;
+		// 			}
+        //             break;
+        //         case ES_NO_EVENT:
+        //         default:
+        //             // Unhandled events pass back up to the next level
+        //             break;
+        //     }
+        //     break;
 
         case Charge:
             switch (ThisEvent.EventType) {
@@ -323,7 +322,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					ES_Timer_InitTimer(RAM_TIMER, NAV2Backup);
                     #endif
                     Maw_Fans(0);    
-                    Maw_LeftDoor(1);
+                    Maw_Doors(Collecting);
 					break;
                 case TAPE:
                 case ES_TIMEOUT:
@@ -353,7 +352,6 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(0);
 					ES_Timer_InitTimer(RAM_TIMER, NOTHINGTIME);
                     #endif
-                    Maw_RightDoor(1);
 					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
