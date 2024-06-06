@@ -51,9 +51,8 @@
 #define CLOSE 725
 // for the collecting drum
 //#define DRUM_BACKWARDS
-// Temp values to see if it compiles 
-#define DRUM_DIR1 PORTZ, PIN9
-#define DRUM_DIR2 PORTZ, PIN9
+#define DRUM_DIR1 PORTW, PIN9
+#define DRUM_DIR2 PORTW, PIN10
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/

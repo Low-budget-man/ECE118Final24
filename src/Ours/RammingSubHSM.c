@@ -292,6 +292,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                     MOTOR_TATTLE(0, 0)
 					Maw_LeftMtrSpeed(0);
 					Maw_RightMtrSpeed(0);
+                    Maw_Drum(FALSE);
 					break;
                 case ES_TIMEOUT:
 					if (ThisEvent.EventParam == RAM_TIMER){
@@ -299,6 +300,9 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 						makeTransition = TRUE;
 						ThisEvent.EventType = ES_NO_EVENT;
 					}
+                    break;
+                case ES_EXIT:
+                    Maw_Drum(TRUE);
                     break;
                 case ES_NO_EVENT:
                 default:
