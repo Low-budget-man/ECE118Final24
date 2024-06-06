@@ -12,7 +12,6 @@
 #include <BOARD.h>
 #include <stdio.h>
 #include "ES_Timers.h"
-#include "DoorService.h"
 /*******************************************************************************
  * PUBLIC DEFINES PROTOTYPES                                                  *
  ******************************************************************************/
@@ -108,7 +107,7 @@ char Maw_LeftDoor(uint16_t Position);
  * @brief  This function will be used to set the doors of the bot async  
  * @note this calls the doors service to set the doors into the wanted config 
  * @author Cooper Cantrell, 2024.6.5 */
-void Maw_Doors(DOOR Input);
+void Maw_Doors(uint8_t Input);
 
 /**
  * @Function Maw_Fans(uint8_t power)
@@ -117,4 +116,13 @@ void Maw_Doors(DOOR Input);
  * @brief  This function is used to turn on and off the fans
  * @author Cooper Cantrell, 2024.6.3 */
 void Maw_Fans(uint8_t power);
+
+/**
+ * @Function Maw_Drum(uint8_t DIR)
+ * @param DIR - a bool true if Collecting deposit otherwise 
+ * @return none
+ * @brief  This function will switch the dir of the drum
+ * @author Cooper Cantrell, 2024.6.5 */
+void Maw_Drum(uint8_t DIR);
+
 #endif

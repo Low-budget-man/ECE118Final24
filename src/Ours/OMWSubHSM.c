@@ -150,6 +150,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 //printf("\r\nLeft is on and right is on: fully on tape turn left\r\n");
                 break;
         }
+        }
         //this code overwrites any previous motor sets, used when the bot is almost over the edge
         if((ThisEvent.EventParam & (1<<TAPEfllBit | 1<<TAPEflBit | 1<<TAPEblBit )) || guideBackFlag){
             

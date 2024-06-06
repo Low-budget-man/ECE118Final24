@@ -18,7 +18,6 @@
 #include <stdio.h>
 #include "ES_Configure.h"
 #include "ES_Events.h"
-#include "DoorService.h"
 
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
@@ -50,6 +49,11 @@
 #define MAXPOWER
 #define OPEN 2250
 #define CLOSE 725
+// for the collecting drum
+//#define DRUM_BACKWARDS
+// Temp values to see if it compiles 
+#define DRUM_DIR1 PORTZ, PIN9
+#define DRUM_DIR2 PORTZ, PIN9
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/
@@ -142,6 +146,10 @@ void Maw_Init(void){
     LED_Init();
     LED_AddBanks(LED_BANK1);
     LED_OffBank(LED_BANK1, 0xf);
+    //sets up the Drum
+    IO_PortsSetPortOutputs(DRUM_DIR1);
+    IO_PortsSetPortOutputs(DRUM_DIR2);
+    Maw_Drum(TRUE);
 }
 
 
@@ -281,6 +289,26 @@ void Maw_Fans(uint8_t power){
     else
     {
         IO_PortsClearPortBits(FANs);
+    }
+}
+
+/**
+ * @Function Maw_Drum(uint8_t DIR)
+ * @param DIR - a bool true if Collecting deposit otherwise 
+ * @return none
+ * @brief  This function will switch the dir of the drum
+ * @author Cooper Cantrell, 2024.6.5 */
+void Maw_Drum(uint8_t DIR){
+#ifdef DRUM_BACKWARDS
+    DIR = !DIR;
+#endif
+    if(DIR){
+        IO_PortsSetPortBits(DRUM_DIR1);
+        IO_PortsClearPortBits(DRUM_DIR2);
+    }
+    else{
+        IO_PortsSetPortBits(DRUM_DIR2);
+        IO_PortsClearPortBits(DRUM_DIR1);
     }
 }
 

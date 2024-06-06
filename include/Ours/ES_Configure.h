@@ -113,8 +113,8 @@ static const char *EventNames[] = {
 #define TIMER6_RESP_FUNC PostMawHSM
 #define TIMER7_RESP_FUNC PostSensorService
 #define TIMER8_RESP_FUNC PostMawHSM
-#define TIMER9_RESP_FUNC PostDoorService
-#define TIMER10_RESP_FUNC PostMawHSM
+#define TIMER9_RESP_FUNC PostMawHSM
+#define TIMER10_RESP_FUNC TIMER_UNUSED
 #define TIMER11_RESP_FUNC TIMER_UNUSED
 #define TIMER12_RESP_FUNC TIMER_UNUSED
 #define TIMER13_RESP_FUNC TIMER_UNUSED
@@ -136,8 +136,7 @@ static const char *EventNames[] = {
 #define AVOID_OBSTACLE_TIMER 6
 #define TRACK_DEBOUNCE_T 7
 #define AVOID_WATCH_PUPPY_TIMER 8
-#define DOORTIMER 9
-#define OMW_PUPPY 10
+#define OMW_PUPPY 9
 /****************************************************************************/
 // The maximum number of services sets an upper bound on the number of 
 // services that the framework will handle. Reasonable values are 8 and 16
@@ -147,7 +146,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 5 // including keyboard
+#define NUM_SERVICES 4 // including keyboard
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
