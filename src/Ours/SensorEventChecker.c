@@ -93,12 +93,12 @@
 
 #define NUMTAPE 6
 static const uint16_t TAPE_THRESH[NUMTAPE] = {
-    180,
-    280,
-    280,
-    130,
-    110,
-    180
+    140,
+    240,
+    240,
+    90,
+    120,
+    100
 };
 static const uint16_t TAPE_HYST[NUMTAPE] = {
     40,
@@ -120,8 +120,9 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 // Note that the time waited is 1 ms more than this
 #define TAPEtime 4
 // Beacon #defines -------------------------------------------------------------
-#define BEACON_PORT PORTW
-#define BEACON_PIN PIN3
+// tape sensor goes here BEACON is not used
+// #define BEACON_PORT PORTW
+// #define BEACON_PIN PIN3
 // Bumper #defines -------------------------------------------------------------
 #define BUMPERfrPORT PORTX
 #define BUMPERfrPIN PIN8
@@ -256,6 +257,7 @@ void SetTapeLED(char state) {
  * @author Cooper Cantrell 6/3/2024 2:37PM
  */
 uint16_t MovAvgFilter(uint16_t Reading, uint16_t* Readings, uint8_t size, uint8_t* cursor){
+    
     uint16_t out = 0;
     // This is from stack overflow, hope it works
     //shifts the memory over 1 item  and adds so the avg can me moving
@@ -305,7 +307,7 @@ void SensorInit(void) {
     IO_PortsSetPortOutputs(TAPE_LEDfrrPort, TapeOut);
     // Sets the phototransistor to all of them high
     // for the Beacon ----------------------------------------------------------
-    IO_PortsSetPortInputs(BEACON_PORT, BEACON_PIN);
+//    IO_PortsSetPortInputs(BEACON_PORT, BEACON_PIN);
     //for the bumper -----------------------------------------------------------
     // assumes that all bupers will be on the same port for input
     // if not will need to change
@@ -466,10 +468,10 @@ uint8_t CheckTape(void) {
         //only if has at least 1 of each reading
         if((!TapeRead[0]) || (!TapeNoise[0])){ return returnVal;}
         for(int i = 0; i < NUMTAPE; i++){//use for loop to use the same code on different tape sensors
-            TapeReadings[i] = MovAvgFilter((TapeNoise[i] - TapeRead[i]), (TapeFilterArray[i].Data), TAPE_FILTER, &(TapeFilterArray[i].Cursor));
+            TapeReadings[i] = MovAvgFilter(abs(TapeNoise[i] - TapeRead[i]), (TapeFilterArray[i].Data), TAPE_FILTER, &(TapeFilterArray[i].Cursor));
             uint16_t threshold;
-            //if(i == 5){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
-            //if(i == 5){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
+            if(i == 3){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
+//            if(i == 3){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
             if(LastTape[i]){
                 threshold = TAPE_THRESH[i] + TAPE_HYST[i];
             } else {
@@ -510,26 +512,26 @@ uint8_t CheckTape(void) {
  *      in beacon detetion
  * @author Cooper Cantrell 5/14/2024 2:47
  */
-uint8_t CheckBeacon(void) {
-    uint8_t returnVal = FALSE;
-    enum sensor CurrentBeacon = !(BEACON_PIN & IO_PortsReadPort(BEACON_PORT));
-    if ((CurrentBeacon != LastBeacon)) {
-        LastBeacon = CurrentBeacon;
-        returnVal = TRUE;
-        ES_Event ThisEvent;
-        ThisEvent.EventParam = CurrentBeacon;
-        ThisEvent.EventType = BEACON;
-#ifndef EVENTCHECKER_TEST // keep this as is for test harness
-#ifdef DEBUG_PRINT
-        printf("\r\n Posting a BEACON wire event");
-#endif
-        PostSensorService(ThisEvent);
-#else
-        SaveEvent(ThisEvent);
-#endif
-    }
-    return returnVal;
-}
+//uint8_t CheckBeacon(void) {
+//    uint8_t returnVal = FALSE;
+//    enum sensor CurrentBeacon = !(BEACON_PIN & IO_PortsReadPort(BEACON_PORT));
+//    if ((CurrentBeacon != LastBeacon)) {
+//        LastBeacon = CurrentBeacon;
+//        returnVal = TRUE;
+//        ES_Event ThisEvent;
+//        ThisEvent.EventParam = CurrentBeacon;
+//        ThisEvent.EventType = BEACON;
+//#ifndef EVENTCHECKER_TEST // keep this as is for test harness
+//#ifdef DEBUG_PRINT
+//        printf("\r\n Posting a BEACON wire event");
+//#endif
+//        PostSensorService(ThisEvent);
+//#else
+//        SaveEvent(ThisEvent);
+//#endif
+//    }
+//    return returnVal;
+//}
 
 /**
  * @Function CheckBumper(void)

@@ -33,12 +33,7 @@ void main(void)
     Maw_Init();
     // now initialize the Events and Services Framework and start it running
     while(TRUE){
-        if(IO_PortsReadPort(PORTX) & PIN8){
-            Maw_Fans(TRUE);
-        }
-        else{
-            Maw_Fans(FALSE);
-        }
+        Maw_Doors(!!(IO_PortsReadPort(PORTX) & PIN8));
     }
 };
 
