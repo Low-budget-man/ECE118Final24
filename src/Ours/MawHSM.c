@@ -44,7 +44,7 @@
 // 30 seconds
 #define WANDER_TIME 10 
 // 2 min may need to break this up depending on how the timers work
-#define GAME_TIME 120000 
+#define GAME_TIME 3000 
 //
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -174,7 +174,8 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             MOTOR_TATTLE(0, 0)
             Maw_RightMtrSpeed(0);
             Maw_LeftMtrSpeed(0);
-            Maw_Doors(Collecting);
+            
+            Maw_Doors(FALSE);
             break;
         case BUMPER:
             // so that it only triggers on bumper raises
@@ -186,7 +187,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             }
             break;
         case ES_EXIT:
-            // When Leaveing this state start the timer
+                ES_Timer_InitTimer(WANDER_TIMER,WANDER_TIME);
             break;
         default:
             break;
@@ -201,8 +202,6 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         ThisEvent = RunWanderSubHSM(ThisEvent);
         switch (ThisEvent.EventType)
         {
-            case ES_ENTRY:
-                ES_Timer_InitTimer(WANDER_TIMER,WANDER_TIME);
             case ES_TIMEOUT:
             if (ThisEvent.EventParam == WANDER_TIMER)
             {

@@ -48,6 +48,8 @@
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
 // for max power
 #define MAXPOWER
+#define OPEN 2250
+#define CLOSE 725
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/
@@ -248,17 +250,21 @@ char Maw_LeftDoor(uint16_t Position){
     return SUCCESS;
 }
 /**
- * @Function Maw_Doors(DOOR Input)
- * @param Input - a DOOR enum that is open closed or deposit
+ * @Function Maw_Doors(uint8_t Input)
+ * @param Input - bool that true will put the poker in such a way that opens the trapdoor
  * @return none
  * @brief  This function will be used to set the doors of the bot async  
  * @note this calls the doors service to set the doors into the wanted config 
  * @author Cooper Cantrell, 2024.6.5 */
-void Maw_Doors(DOOR Input){
-    ES_Event Post;
-    Post.EventType = DOORS;
-    Post.EventParam = Input;
-    PostDoorService(Post);
+void Maw_Doors(uint8_t Input){
+    if(Input){
+        Maw_RightDoor(OPEN);
+    }
+    else
+    {
+        Maw_RightDoor(CLOSE);
+    }
+    
     
 }
 /**

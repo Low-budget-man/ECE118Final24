@@ -215,7 +215,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 		case FirstDoor:
 			switch (ThisEvent.EventType) {
 				case ES_ENTRY:
-                    Maw_Doors(Depositing);
+                    Maw_Doors(TRUE);
                     Maw_Fans(1);  
 					ES_Timer_InitTimer(RAM_TIMER, DOOR_TIME);
                     MOTOR_TATTLE(0, 0)
@@ -322,7 +322,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					ES_Timer_InitTimer(RAM_TIMER, NAV2Backup);
                     #endif
                     Maw_Fans(0);    
-                    Maw_Doors(Collecting);
+                    Maw_Doors(FALSE);
 					break;
                 case TAPE:
                 case ES_TIMEOUT:

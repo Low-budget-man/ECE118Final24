@@ -157,12 +157,6 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
             MOTOR_TATTLE(-100, 100)
             Maw_LeftMtrSpeed(-100);
             Maw_RightMtrSpeed(100);
-            
-//                    printf("\r\n%s setting blocking ", __FUNCTION__);
-            Maw_Doors(Blocking);
-        } else{
-            Maw_Doors(Collecting);
-        }
     }
     if(ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == OMW_PUPPY){
         ThisEvent.EventType = BUMPER;
