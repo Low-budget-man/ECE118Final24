@@ -40,6 +40,7 @@
  ******************************************************************************/
 //#define REALSSM
 #define BRAINDEAD
+#define PuppyTime 2000
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -106,6 +107,7 @@ uint8_t InitOMWSubHSM(void)
 }
 
 ES_Event RunOMWSubHSM(ES_Event ThisEvent){
+  printf("\r\n OMW post %s, param %d",EventNames[ThisEvent.EventType],ThisEvent.EventParam);
     static uint8_t guideBackFlag = 0;
     if(ThisEvent.EventType == ES_ENTRY){
         MOTOR_TATTLE(100, 100)
@@ -114,6 +116,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
         guideBackFlag = 0;
     }
     if(ThisEvent.EventType == TAPE){
+        ES_Timer_InitTimer(OMW_PUPPY,PuppyTime);
         ThisEvent.EventType = ES_NO_EVENT;
         //GuideTapes is a two bit number, the left bit is if TAPEfr is on and the Right bit is if TAPEfrr is on
         uint8_t GuideTapes = (((ThisEvent.EventParam & 1 << TAPEfrrBit) >> (TAPEfrrBit)) | (((ThisEvent.EventParam & 1 << TAPEfrBit) >> (TAPEfrBit-1))));
@@ -154,11 +157,19 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
             MOTOR_TATTLE(-100, 100)
             Maw_LeftMtrSpeed(-100);
             Maw_RightMtrSpeed(100);
+            
+//                    printf("\r\n%s setting blocking ", __FUNCTION__);
             Maw_Doors(Blocking);
         } else{
             Maw_Doors(Collecting);
         }
     }
+    if(ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == OMW_PUPPY){
+        ThisEvent.EventType = BUMPER;
+        ThisEvent.EventParam = 0xf;
+        return ThisEvent;
+    }
+    return ThisEvent;
 }
         
 

@@ -63,7 +63,7 @@ static const char *StateNames[] = {
 	"Return2Arena",
 };
 
-#define ALIGN_TIME 1000
+#define ALIGN_TIME 1
 //back up default 1000
 #define BACKUP_TIME 1500
 #define RAM_TIME 2000

@@ -140,15 +140,6 @@ void Maw_Init(void){
     LED_Init();
     LED_AddBanks(LED_BANK1);
     LED_OffBank(LED_BANK1, 0xf);
-    //sets the servos to collecting
-    Maw_RightDoor(TRUE);
-    int i;
-    for (i = 0; i < (366000); i++) {
-        asm("nop");
-    }
-
-    Maw_LeftDoor(TRUE);
-    
 }
 
 

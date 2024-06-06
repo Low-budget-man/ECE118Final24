@@ -174,6 +174,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             MOTOR_TATTLE(0, 0)
             Maw_RightMtrSpeed(0);
             Maw_LeftMtrSpeed(0);
+            Maw_Doors(Collecting);
             break;
         case BUMPER:
             // so that it only triggers on bumper raises

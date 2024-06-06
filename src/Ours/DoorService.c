@@ -21,10 +21,10 @@
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
-#define DOORTIME 50
+#define DOORTIME 100
 //Bigger to be more open (closer to 90 deg in)
 #define collectR 2250
-#define depositR 850
+#define depositR 725
 #define blockR 1550
 // Smaller to be more open (sticking out all of the way)
 #define depositL 2250
@@ -41,7 +41,7 @@
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
-static DOOR doorConfig = Collecting;
+static DOOR doorConfig = Blocking;
 static uint8_t Priority;
 
 static uint16_t LPositions[] = {
@@ -107,7 +107,7 @@ uint8_t PostDoorService(ES_Event ThisEvent)
  *        as this is called any time a new event is passed to the event queue.  
  * @author Cooper Cantrell 5/8/2024 */
 ES_Event RunDoorService(ES_Event ThisEvent){
-    
+    //printf("\r\n Got Door post %s, param %d",EventNames[ThisEvent.EventType],ThisEvent.EventParam);
     switch (ThisEvent.EventType)
     {
     case DOORS:
@@ -117,13 +117,15 @@ ES_Event RunDoorService(ES_Event ThisEvent){
             LPositions[2] = blockR - blockO + 2*(blockO * doorConfig);
             doorConfig = ThisEvent.EventParam;
             Maw_LeftDoor(LPositions[ThisEvent.EventParam]);
+            // printf("setting left door to position %d", LPositions[ThisEvent.EventParam]);
             ES_Timer_InitTimer(DOORTIMER, DOORTIME);
         }
         
         break;
-        case ES_TIMEOUT:
+    case ES_TIMEOUT:
         if(ThisEvent.EventParam == DOORTIMER){
             Maw_RightDoor(RPositions[doorConfig]);
+            // printf("setting right door to position %d", RPositions[doorConfig]);
         }
         break;
     default:

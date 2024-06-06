@@ -236,6 +236,7 @@ ES_Event RunWanderSubHSM(ES_Event ThisEvent) {
    					Maw_RightMtrSpeed(-100);
                     }
                     ES_Timer_InitTimer(WANDER_SUBSTATE_TIMER, SPIN_TIME);
+                    // printf("\r\n%s setting blocking ", __FUNCTION__);
                     Maw_Doors(Blocking);
                     break;
                 case ES_TIMEOUT:
