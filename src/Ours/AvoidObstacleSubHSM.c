@@ -55,7 +55,7 @@
 #define BackLTime 250
 #define DriftRTime 1000
 #define TankRTime 625
-#define PuppyTime 4000
+#define PuppyTime 5000
 /*******************************************************************************
  * DEBUGPRINT                                               *
  ******************************************************************************/
@@ -320,6 +320,7 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     MOTOR_TATTLE(-100, 0)
                     Maw_LeftMtrSpeed(-100);
                     Maw_RightMtrSpeed(0);
+                    ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, PuppyTime);
                     break;
                 case BUMPER:
                     if(!ThisEvent.EventParam){
