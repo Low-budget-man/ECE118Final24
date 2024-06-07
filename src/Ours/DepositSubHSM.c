@@ -172,9 +172,16 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
             ThisEvent = RunAlignHSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case ALIGNED:
-                    nextState = FollowTape;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+                    if(ThisEvent.EventParam){
+                        nextState = FollowTape;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    else{
+                        nextState = Continue_Wandering;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
                     break;
                 case ES_NO_EVENT:
                 default:

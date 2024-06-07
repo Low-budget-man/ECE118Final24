@@ -122,7 +122,7 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 // Time that is needed for the tape sensor to get a stable reading (in ms)
 // Note that the time waited is 1 ms more than this
 #ifndef TAPECALI
-#define TAPEtime 9
+#define TAPEtime 4
 #else
 #define TAPEtime 999
 #endif

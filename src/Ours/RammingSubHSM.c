@@ -68,7 +68,7 @@ static const char *StateNames[] = {
 #define BACKUP_TIME 750
 #define RAM_TIME 1000
 #define DOOR_TIME 100
-#define WAIT_TIME 1000
+#define WAIT_TIME 3000
 #define BACKUP2_TIME 500
 #define RETURN_TIME 555
 #ifdef NAV2

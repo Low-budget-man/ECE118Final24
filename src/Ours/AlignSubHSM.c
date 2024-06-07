@@ -15,7 +15,7 @@
  ******************************************************************************/
 //Include any defines you need to do
 
-
+#define PuppyTime 2000
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -120,17 +120,24 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(80);
                     //printf("\r\n%s setting blocking ", __FUNCTION__);
                     //Maw_Doors(Blocking);
+                    ES_Timer_InitTimer(ALIGN_PUPPY,PuppyTime);
 					break;
 			case TAPE: 
 				if(!(ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){
-					nextState = Forward;
-					makeTransition = TRUE;
-					ThisEvent.EventType = ES_NO_EVENT;
+//					nextState = Forward;
+//					makeTransition = TRUE;
+//					ThisEvent.EventType = ES_NO_EVENT;
 				}
                 if((ThisEvent.EventParam & (1<<TAPEfrrBit)) || (ThisEvent.EventParam & (1<<TAPEfrBit))){
                     ThisEvent.EventType = ALIGNED;
+                    ThisEvent.EventParam = TRUE;
                 }
 				break;
+            case ES_TIMEOUT:   
+                if(ThisEvent.EventParam == ALIGN_PUPPY){
+                    ThisEvent.EventType = ALIGNED;
+                    ThisEvent.EventParam = FALSE;
+                }
 			case ES_NO_EVENT:
 			default:
 				break;
@@ -141,8 +148,8 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
 		switch (ThisEvent.EventType) {
 			case ES_ENTRY: 
                     MOTOR_TATTLE(100, 100)
-					Maw_LeftMtrSpeed(100);
-					Maw_RightMtrSpeed(100);
+					Maw_LeftMtrSpeed(60);
+					Maw_RightMtrSpeed(60);
 					break;
 			case TAPE: 
 				if(!(!(ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit)))){
