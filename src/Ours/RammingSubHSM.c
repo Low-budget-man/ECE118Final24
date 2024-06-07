@@ -63,13 +63,13 @@ static const char *StateNames[] = {
 	"Return2Arena",
 };
 
-#define ALIGN_TIME 500
+#define ALIGN_TIME 100
 //back up default 1000
-#define BACKUP_TIME 1500
-#define RAM_TIME 2000
-#define DOOR_TIME 200
-#define WAIT_TIME 2000
-#define BACKUP2_TIME 1500
+#define BACKUP_TIME 750
+#define RAM_TIME 1000
+#define DOOR_TIME 100
+#define WAIT_TIME 1000
+#define BACKUP2_TIME 500
 #define RETURN_TIME 555
 #ifdef NAV2
 #define NAV2Backup 1000
@@ -325,8 +325,8 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(-60);
 					ES_Timer_InitTimer(RAM_TIMER, NAV2Backup);
                     #endif
-                    Maw_Fans(0);    
                     Maw_Doors(FALSE);
+                    Maw_Fans(0);    
 					break;
                 case TAPE:
                 case ES_TIMEOUT:

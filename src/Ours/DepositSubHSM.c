@@ -153,7 +153,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     if((ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){
                         nextState = FollowTape;
                     } else {
-                        nextState = FollowTape;
+                        nextState = Align;
                     }
 					makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT; 
@@ -167,6 +167,19 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 				default: // all unhandled events pass the event back up to the next level
 					break;
 			}
+            break;
+            case Align:
+            ThisEvent = RunAlignHSM(ThisEvent);
+            switch (ThisEvent.EventType) {
+                case ALIGNED:
+                    nextState = FollowTape;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+                case ES_NO_EVENT:
+                default:
+                    break;
+            }
             break;
 		case FollowTape:
 			ThisEvent = RunFollowTapeHSM(ThisEvent);

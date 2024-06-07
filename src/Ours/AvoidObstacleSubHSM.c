@@ -52,7 +52,7 @@
 
 //not ping special defines
 #define TurnLTime 426
-#define BackLTime 426
+#define BackLTime 250
 #define DriftRTime 1000
 #define TankRTime 625
 #define PuppyTime 4000

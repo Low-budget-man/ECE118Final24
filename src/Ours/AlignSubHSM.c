@@ -127,7 +127,7 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
 					makeTransition = TRUE;
 					ThisEvent.EventType = ES_NO_EVENT;
 				}
-                if((ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){
+                if((ThisEvent.EventParam & (1<<TAPEfrrBit)) || (ThisEvent.EventParam & (1<<TAPEfrBit))){
                     ThisEvent.EventType = ALIGNED;
                 }
 				break;
@@ -150,7 +150,7 @@ ES_Event RunAlignHSM(ES_Event ThisEvent)
 					makeTransition = TRUE;
 					ThisEvent.EventType = ES_NO_EVENT;
 				}
-                if((ThisEvent.EventParam & (1<<TAPEfrrBit)) && !(ThisEvent.EventParam & (1<<TAPEfrBit))){
+                if((ThisEvent.EventParam & (1<<TAPEfrrBit)) || (ThisEvent.EventParam & (1<<TAPEfrBit))){
                     ThisEvent.EventType = ALIGNED;
                 }
 			case ES_NO_EVENT:
