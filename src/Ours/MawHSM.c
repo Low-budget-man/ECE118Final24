@@ -42,9 +42,9 @@
  ******************************************************************************/
 // Include any defines you need to do
 // 30 seconds
-#define WANDER_TIME 10 
+#define WANDER_TIME 1
 // 2 min may need to break this up depending on how the timers work
-#define GAME_TIME 3000 
+#define GAME_TIME 120000 
 //
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -187,7 +187,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             }
             break;
         case ES_EXIT:
-                ES_Timer_InitTimer(WANDER_TIMER,WANDER_TIME);
+                ES_Timer_InitTimer(GAME_TIMER,GAME_TIME);
             break;
         default:
             break;
@@ -202,6 +202,9 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         ThisEvent = RunWanderSubHSM(ThisEvent);
         switch (ThisEvent.EventType)
         {
+            case ES_ENTRY:
+                ES_Timer_InitTimer(WANDER_TIMER,WANDER_TIME);
+                break;
             case ES_TIMEOUT:
             if (ThisEvent.EventParam == WANDER_TIMER)
             {

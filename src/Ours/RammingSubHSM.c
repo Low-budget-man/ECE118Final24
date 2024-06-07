@@ -68,11 +68,11 @@ static const char *StateNames[] = {
 #define BACKUP_TIME 1500
 #define RAM_TIME 2000
 #define DOOR_TIME 200
-#define WAIT_TIME 500
+#define WAIT_TIME 2000
 #define BACKUP2_TIME 1500
-#define RETURN_TIME 2400
+#define RETURN_TIME 555
 #ifdef NAV2
-#define NAV2Backup 500
+#define NAV2Backup 1000
 #define NOTHINGTIME 1
 #endif
 
@@ -185,7 +185,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 				case ES_ENTRY:
                     MOTOR_TATTLE(-100, -100)
 					Maw_LeftMtrSpeed(-100);
-					Maw_RightMtrSpeed(-100);
+					Maw_RightMtrSpeed(-95);
 					ES_Timer_InitTimer(RAM_TIMER, BACKUP_TIME);
 					break;
                 case ES_TIMEOUT:
@@ -322,7 +322,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
                     #else
                     MOTOR_TATTLE(-100, -100)
 					Maw_LeftMtrSpeed(-100);
-					Maw_RightMtrSpeed(-100);
+					Maw_RightMtrSpeed(-60);
 					ES_Timer_InitTimer(RAM_TIMER, NAV2Backup);
                     #endif
                     Maw_Fans(0);    
@@ -351,10 +351,10 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(100);
 					ES_Timer_InitTimer(RAM_TIMER, RETURN_TIME);
                     #else
-                    MOTOR_TATTLE(0, 0)
-					Maw_LeftMtrSpeed(0);
-					Maw_RightMtrSpeed(0);
-					ES_Timer_InitTimer(RAM_TIMER, NOTHINGTIME);
+                    MOTOR_TATTLE(100, 60);
+					Maw_LeftMtrSpeed(100);
+					Maw_RightMtrSpeed(60);
+					ES_Timer_InitTimer(RAM_TIMER, RETURN_TIME);
                     #endif
 					break;
                 case ES_TIMEOUT:

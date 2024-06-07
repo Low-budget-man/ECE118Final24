@@ -53,8 +53,8 @@
 //not ping special defines
 #define TurnLTime 426
 #define BackLTime 426
-#define DriftRTime 1500
-#define TankRTime 725
+#define DriftRTime 1000
+#define TankRTime 625
 #define PuppyTime 4000
 /*******************************************************************************
  * DEBUGPRINT                                               *
@@ -201,11 +201,13 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
         case BackUp:
             switch(ThisEvent.EventType){
                 case ES_ENTRY:
-                    MOTOR_TATTLE(-100, -100)
+                    MOTOR_TATTLE(-100, -60)
                     Maw_LeftMtrSpeed(-100);
-                    Maw_RightMtrSpeed(-100);
-                    ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackUpETime);
-
+                    Maw_RightMtrSpeed(-60);
+                    if (!(ES_Timer_GetTimeRemaining(AVOID_OBSTACLE_TIMER)))
+                    {
+                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackUpETime);
+                    }
                     break;
                 case BUMPER:
                     if(!ThisEvent.EventParam){
@@ -246,9 +248,9 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
             switch (ThisEvent.EventType)
             {
             case ES_ENTRY:
-                    MOTOR_TATTLE(100, 70)
+                    MOTOR_TATTLE(100, 60)
                     Maw_LeftMtrSpeed(100);
-                    Maw_RightMtrSpeed(70);
+                    Maw_RightMtrSpeed(60);
                     ES_Timer_InitTimer (AVOID_OBSTACLE_TIMER,DriftRTime);
                     ES_Timer_InitTimer(AVOID_WATCH_PUPPY_TIMER, PuppyTime);
                 break;

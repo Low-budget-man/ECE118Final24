@@ -48,7 +48,7 @@
 // for max power
 #define MAXPOWER
 #define OPEN 725
-#define CLOSE 1700
+#define CLOSE 1500
 // for the collecting drum
 //#define DRUM_BACKWARDS
 #define DRUM_DIR1 PORTZ,PIN9

@@ -182,10 +182,11 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     #endif
                         nextState = Ramming;
                         makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT; 
+                        ThisEvent.EventType = ES_NO_EVENT;
+                        InitFollowTapeHSM();
                     #ifdef NAV2
                     }
-                    InitFollowTapeHSM();
+//                    InitFollowTapeHSM();
                     #endif
                     break;
                 case OBSTACLE_AVOIDED:
