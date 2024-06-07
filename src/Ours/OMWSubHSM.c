@@ -125,7 +125,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
             case 0b00://left is off and right is off: turn right
                 MOTOR_TATTLE(100, 60)
                 Maw_LeftMtrSpeed(100);
-                Maw_RightMtrSpeed(60);
+                Maw_RightMtrSpeed(0);
                 // this is for testing may allow us to catch a 
                 //few more balls
                 //printf("\r\nleft is off and right is off: turn right\r\n");
@@ -147,7 +147,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 break;
             case 0b11://Left is on and right is on: fully on tape turn left
                 MOTOR_TATTLE(60, 100)
-                Maw_LeftMtrSpeed(60);
+                Maw_LeftMtrSpeed(0);
                 Maw_RightMtrSpeed(100);
                 guideBackFlag = 0;
                 //printf("\r\nLeft is on and right is on: fully on tape turn left\r\n");
