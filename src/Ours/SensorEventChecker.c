@@ -75,6 +75,7 @@
 // #define TAPE_LED_GREEN TAPE_LEDblPort
 
 // #endif
+
 #define TAPE_VOLTAGEfrr AD_PORTV4
 
 #define TAPE_VOLTAGEfr AD_PORTV5
@@ -91,15 +92,16 @@
 #define TAPE_VOLTAGE_BROWN TAPE_VOLTAGEfll
 #define TAPE_VOLTAGE_GREEN TAPE_VOLTAGEbl
 
+//#define TAPECALI
 
 #define NUMTAPE 6
 static const uint16_t TAPE_THRESH[NUMTAPE] = {
-    160,
-    150,
-    190,
-    70,//Broken
-    160,
-    130
+    178,
+    141,
+    202,
+    92,
+    168,
+    90
 };
 static const uint16_t TAPE_HYST[NUMTAPE] = {
     5,
@@ -119,7 +121,11 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 */
 // Time that is needed for the tape sensor to get a stable reading (in ms)
 // Note that the time waited is 1 ms more than this
-#define TAPEtime 5
+#ifndef TAPECALI
+#define TAPEtime 9
+#else
+#define TAPEtime 999
+#endif
 // Beacon #defines -------------------------------------------------------------
 // tape sensor goes here BEACON is not used
 // #define BEACON_PORT PORTW
@@ -468,11 +474,16 @@ uint8_t CheckTape(void) {
         // after the check compare to past values and noise to the thresh and raise events
         //only if has at least 1 of each reading
         if((!TapeRead[0]) || (!TapeNoise[0])){ return returnVal;}
+#ifdef TAPECALI
+        printf("\r\n -------------------------------------------");
+#endif
         for(int i = 0; i < NUMTAPE; i++){//use for loop to use the same code on different tape sensors
             TapeReadings[i] = MovAvgFilter(abs(TapeNoise[i] - TapeRead[i]), (TapeFilterArray[i].Data), TAPE_FILTER, &(TapeFilterArray[i].Cursor));
             uint16_t threshold;
-            //if(i == 5){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
-            //if(i == 0){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
+#ifdef TAPECALI
+            printf("\r\n%d-%d", TapeReadings[i],i);//debug code to set hysteresis bounds
+#endif
+            // if(i == 0){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
             if(LastTape[i]){
                 threshold = TAPE_THRESH[i] + TAPE_HYST[i];
             } else {
