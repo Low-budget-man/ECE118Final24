@@ -33,7 +33,10 @@ void main(void)
     Maw_Init();
     // now initialize the Events and Services Framework and start it running
     while(TRUE){
-        Maw_Doors(!!(IO_PortsReadPort(PORTX) & PIN8));
+        Maw_Drum(!!(IO_PortsReadPort(PORTX) & PIN8));
+        for(int i = 0; i <50000; i++){
+            asm("nop");
+        }
     }
 };
 

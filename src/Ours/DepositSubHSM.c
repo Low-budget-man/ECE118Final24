@@ -173,9 +173,11 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
             switch (ThisEvent.EventType) {
                 case TRACKWIRE:
                     #ifdef NAV2
-                    if(TrackFlagFRT + TRACKIGNORETIME < ES_Timer_GetTime()){
+                    
+                    if((TrackFlagFRT + TRACKIGNORETIME < ES_Timer_GetTime()) && ThisEvent.EventParam){
                         TrackFlag = 1;
                         TrackFlagFRT = ES_Timer_GetTime();
+                        printf("\r\ntrack flag raised, time: %d", TrackFlagFRT);
                     }
                     if(TrackFlag){
                     #endif
@@ -220,9 +222,10 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                 */
                case DEPOSITED:
                     makeTransition = TRUE;
-                    nextState = Continue_Wandering;
+                    nextState = FollowTape;
                     TrackFlag = 0;
                     TrackFlagFRT = ES_Timer_GetTime();
+                    printf("\r\ntrack flag lowered, time: %d", TrackFlagFRT);
 #ifndef NAV_2
                     ThisEvent = NO_EVENT;
 #endif

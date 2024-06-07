@@ -51,8 +51,8 @@
 #define CLOSE 1700
 // for the collecting drum
 //#define DRUM_BACKWARDS
-#define DRUM_DIR1 PORTW, PIN9
-#define DRUM_DIR2 PORTW, PIN10
+#define DRUM_DIR1 PORTZ,PIN9
+#define DRUM_DIR2 PORTZ,PIN3
 /*******************************************************************************
  * PRIVATE VARIABLES                                                           *
  ******************************************************************************/
@@ -148,6 +148,8 @@ void Maw_Init(void){
     //sets up the Drum
     IO_PortsSetPortOutputs(DRUM_DIR1);
     IO_PortsSetPortOutputs(DRUM_DIR2);
+    IO_PortsSetPortBits(DRUM_DIR1);
+    IO_PortsSetPortBits(DRUM_DIR2);
     Maw_Drum(TRUE);
 }
 

@@ -38,6 +38,7 @@
 #include "ES_Timers.h"
 #include "PingSensor.h"
 #include <stdlib.h>
+#include <stdio.h>
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -93,20 +94,20 @@
 
 #define NUMTAPE 6
 static const uint16_t TAPE_THRESH[NUMTAPE] = {
-    140,
-    240,
-    240,
-    90,
+    110,
+    100,
+    150,
+    50,
     120,
-    100
+    90
 };
 static const uint16_t TAPE_HYST[NUMTAPE] = {
     40,
     40,
     40,
+    25,
     40,
-    40,
-    40
+    25
 };
 /*
 #define TAPEfrrBit (0)
@@ -118,7 +119,7 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 */
 // Time that is needed for the tape sensor to get a stable reading (in ms)
 // Note that the time waited is 1 ms more than this
-#define TAPEtime 4
+#define TAPEtime 5
 // Beacon #defines -------------------------------------------------------------
 // tape sensor goes here BEACON is not used
 // #define BEACON_PORT PORTW
@@ -142,7 +143,7 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 // this is the number of points in the ping sensor moving avrage bigger is more 
 // filter but slower
 #define PING_FILTER 8
-#define TAPE_FILTER 8
+#define TAPE_FILTER 4
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
@@ -470,8 +471,8 @@ uint8_t CheckTape(void) {
         for(int i = 0; i < NUMTAPE; i++){//use for loop to use the same code on different tape sensors
             TapeReadings[i] = MovAvgFilter(abs(TapeNoise[i] - TapeRead[i]), (TapeFilterArray[i].Data), TAPE_FILTER, &(TapeFilterArray[i].Cursor));
             uint16_t threshold;
-            if(i == 3){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
-//            if(i == 3){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
+            //if(i == 3){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
+            //if(i == 0){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
             if(LastTape[i]){
                 threshold = TAPE_THRESH[i] + TAPE_HYST[i];
             } else {
