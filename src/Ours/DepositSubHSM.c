@@ -177,7 +177,6 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     if((TrackFlagFRT + TRACKIGNORETIME < ES_Timer_GetTime()) && ThisEvent.EventParam){
                         TrackFlag = 1;
                         TrackFlagFRT = ES_Timer_GetTime();
-                        printf("\r\ntrack flag raised, time: %d", TrackFlagFRT);
                     }
                     if(TrackFlag){
                     #endif
@@ -225,7 +224,6 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
                     nextState = FollowTape;
                     TrackFlag = 0;
                     TrackFlagFRT = ES_Timer_GetTime();
-                    printf("\r\ntrack flag lowered, time: %d", TrackFlagFRT);
 #ifndef NAV_2
                     ThisEvent = NO_EVENT;
 #endif

@@ -40,7 +40,7 @@
  ******************************************************************************/
 //#define REALSSM
 #define BRAINDEAD
-#define PuppyTime 2000
+#define PuppyTime 3000
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -116,7 +116,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
         guideBackFlag = 0;
     }
     if(ThisEvent.EventType == TAPE){
-        //ES_Timer_InitTimer(OMW_PUPPY,PuppyTime);
+        ES_Timer_InitTimer(OMW_PUPPY,PuppyTime);
         ThisEvent.EventType = ES_NO_EVENT;
         //GuideTapes is a two bit number, the left bit is if TAPEfr is on and the Right bit is if TAPEfrr is on
         uint8_t GuideTapes = (((ThisEvent.EventParam & (1 << TAPEfrrBit)) >> (TAPEfrrBit)) | (((ThisEvent.EventParam & (1 << TAPEfrBit)) >> (TAPEfrBit-1))));
@@ -146,7 +146,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
                 //printf("\r\nleft is on and right is off: Panic!\r\n");
                 break;
             case 0b11://Left is on and right is on: fully on tape turn left
-                MOTOR_TATTLE(60, 100)
+                MOTOR_TATTLE(0, 100)
                 Maw_LeftMtrSpeed(0);
                 Maw_RightMtrSpeed(100);
                 guideBackFlag = 0;

@@ -94,20 +94,20 @@
 
 #define NUMTAPE 6
 static const uint16_t TAPE_THRESH[NUMTAPE] = {
-    110,
-    100,
     150,
-    50,
-    120,
-    90
+    140,
+    180,
+    70,//Broken
+    150,
+    120
 };
 static const uint16_t TAPE_HYST[NUMTAPE] = {
-    40,
-    40,
-    40,
-    25,
-    40,
-    25
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
 };
 /*
 #define TAPEfrrBit (0)
@@ -471,7 +471,7 @@ uint8_t CheckTape(void) {
         for(int i = 0; i < NUMTAPE; i++){//use for loop to use the same code on different tape sensors
             TapeReadings[i] = MovAvgFilter(abs(TapeNoise[i] - TapeRead[i]), (TapeFilterArray[i].Data), TAPE_FILTER, &(TapeFilterArray[i].Cursor));
             uint16_t threshold;
-            //if(i == 3){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
+            //if(i == 5){printf("\r\n%d-", TapeReadings[i]);}//debug code to set hysteresis bounds
             //if(i == 0){printf("%d\r\n", (TapeNoise[i] - TapeRead[i]));}
             if(LastTape[i]){
                 threshold = TAPE_THRESH[i] + TAPE_HYST[i];
@@ -482,9 +482,6 @@ uint8_t CheckTape(void) {
                
             if (CurrentTape[i] != LastTape[i]) {
                 returnVal = TRUE;
-                if(i == 4){
-//                    printf("\r\n e-%d t-%d", TapeReadings[i],threshold);
-                }
                 LastTape[i] = CurrentTape[i];
             }
             param += (CurrentTape[i] << i);
@@ -494,6 +491,7 @@ uint8_t CheckTape(void) {
     if (returnVal) {
         ES_Event ThisEvent;
         ThisEvent.EventType = TAPE;
+        param &= 0b110111;//disable broken sensor
         ThisEvent.EventParam = param;
 #ifndef EVENTCHECKER_TEST // keep this as is for test harness
         PostSensorService(ThisEvent);

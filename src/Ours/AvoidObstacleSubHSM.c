@@ -53,8 +53,8 @@
 //not ping special defines
 #define TurnLTime 426
 #define BackLTime 426
-#define DriftRTime 2500
-#define TankRTime 1000
+#define DriftRTime 1500
+#define TankRTime 725
 #define PuppyTime 4000
 /*******************************************************************************
  * DEBUGPRINT                                               *
@@ -272,13 +272,13 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                     ThisEvent.EventParam = TRUE;
              }
              case ES_TIMEOUT:
-                    if(ThisEvent.EventParam == AVOID_WATCH_PUPPY_TIMER){
-                        makeTransition = TRUE;
-                        nextState = BackL;
-                        ThisEvent = NO_EVENT;
-                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
-                    }
-                    else if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
+//                    if(ThisEvent.EventParam == AVOID_WATCH_PUPPY_TIMER){
+//                        makeTransition = TRUE;
+//                        nextState = BackL;
+//                        ThisEvent = NO_EVENT;
+//                        ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
+//                    }
+                    if (ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
                         makeTransition = TRUE;
                         nextState = TankR;
                         ThisEvent = NO_EVENT;
