@@ -14,7 +14,7 @@ void main(void)
 
     BOARD_Init();
 
-    printf("Starting ES Framework Template\r\n");
+    printf("Starting ES Framework for ECE 118 final\r\n");
     printf("using the 2nd Generation Events & Services Framework\r\n");
 
 

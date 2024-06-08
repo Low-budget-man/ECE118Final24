@@ -33,6 +33,7 @@
 #include "MawHSM.h"
 #include "ES_Timers.h"
 #include "Maw.h"
+#include "LED.h"
 // #include all sub state machines called
 #include "WanderSubHSM.h"
 #include "DepositSubHSM.h"
@@ -45,7 +46,8 @@
 #define WANDER_TIME 1
 // 2 min may need to break this up depending on how the timers work
 #define GAME_TIME 120000 
-//
+#define HEART_RATE 500
+#define STATE_HEART (1<<1)
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -79,7 +81,6 @@ static const char *StateNames[] = {
 static MawHSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
 static uint8_t TimerCounter; // This may not be needed if the timers are 32Bits
- 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
@@ -147,7 +148,12 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
     MawHSMState_t nextState;        // <- change type to correct enum
 
     ES_Tattle(); // trace call stack
-
+    if(ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == HEART_BEAT){
+        ThisEvent = NO_EVENT;
+        ES_Timer_InitTimer(HEART_BEAT,HEART_RATE);
+        LED_InvertBank(LED_BANK1,STATE_HEART);
+        
+    }
     switch (CurrentState)
     {
     case InitPState:                        // If current state is initial Pseudo State
@@ -163,11 +169,13 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             nextState = StartEnd;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
+            ES_Timer_InitTimer(HEART_BEAT,HEART_RATE);
             ;
         }
         break;
     case StartEnd:
         // Stays in In the StartEnd state until the bumpers are pressed
+//        printf("\r\n In start end and got a %s event with param %d",EventNames[ThisEvent.EventType],ThisEvent.EventParam);
         switch (ThisEvent.EventType)
         {
         case ES_ENTRY:
@@ -181,6 +189,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
             // so that it only triggers on bumper raises
             if (!(ThisEvent.EventParam))
             {
+//                printf("\r\n maw will start :)");
                 nextState = Wander;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;

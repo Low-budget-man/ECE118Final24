@@ -144,7 +144,9 @@ void Maw_Init(void){
     // SET up the LEDs
     LED_Init();
     LED_AddBanks(LED_BANK1);
+    LED_AddBanks(LED_BANK2);
     LED_OffBank(LED_BANK1, 0xf);
+    LED_OffBank(LED_BANK2, 0xf);
     //sets up the Drum
     IO_PortsSetPortOutputs(DRUM_DIR1);
     IO_PortsSetPortOutputs(DRUM_DIR2);

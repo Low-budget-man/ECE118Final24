@@ -30,7 +30,7 @@
 
 #define CLOSE_HYST 50
 
-//#define ServiceTestHarness
+#define ServiceTestHarness
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -127,20 +127,20 @@ ES_Event RunSensorService(ES_Event ThisEvent)
         // This section is used to reset service for some reason
         break;
     case TRACKWIRE:
-        if(ThisEvent.EventParam){
-            LED_OnBank(LED_BANK1,TRACK_LED);
-        } else {
-            LED_OffBank(LED_BANK1,TRACK_LED);
-        }
+//        if(ThisEvent.EventParam){
+//            LED_OnBank(LED_BANK1,TRACK_LED);
+//        } else {
+//            LED_OffBank(LED_BANK1,TRACK_LED);
+//        }
         ES_Timer_InitTimer(TRACK_DEBOUNCE_T,DEBOUNCE_WaitT);
         LastTrack = ThisEvent.EventParam;
         break;
     case TAPE:
-        if(ThisEvent.EventParam){
-            LED_OnBank(LED_BANK1,TAPE_LED);
-        } else {
-            LED_OffBank(LED_BANK1,TAPE_LED);
-        }
+//        if(ThisEvent.EventParam){
+//            LED_OnBank(LED_BANK1,TAPE_LED);
+//        } else {
+//            LED_OffBank(LED_BANK1,TAPE_LED);
+//        }
 #ifdef ServiceTestHarness
         printf("\r\nTape Event with the param,0x%x", ThisEvent.EventParam);
 #else
@@ -176,6 +176,7 @@ ES_Event RunSensorService(ES_Event ThisEvent)
             ES_Event PostEvent;
             PostEvent.EventParam = LastBump;
             PostEvent.EventType = BUMPER;
+            LED_SetBank(LED_BANK2,LastBump);
 #ifdef ServiceTestHarness
             printf("\r\n Debounced Bumper Event with param %x", LastBump);
 #else
