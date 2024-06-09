@@ -12,7 +12,6 @@ This is the git repo that will deal with the code for the final project of ECE 1
   - [x] Tape Detector
   - [x] Beacon detector
   - [x] Ping Sensor
-
 - [x] Integrate sensors into ES framwork
   - [x] Track Wire detector
   - [x] Tape Detector 
@@ -22,19 +21,21 @@ This is the git repo that will deal with the code for the final project of ECE 1
   - [x] Write test cases for Motors and servos
   - [x] Test Motors
   - [x] Test Servos
-- [ ] Create bot behavior state machines 
+- [x] Create bot behavior state machines 
   - [x] Create an HSM that that the sensors can post to
   - [x] Create Sub State machines
-  - [ ] Debug state machines 
-  
+  - [x] Debug state machines 
+- [x] Emergency frontal redesign
+  - [x] add a port for the drum
+  - [x] add drum code to state machine
+  - [x] recalibrate servo
+  - [x] recalibrate tape sensor
 - [ ] Finish Bot Code
-
+  - [ ] make minspec
 ## Authors and acknowledgment
 Authors: \
 Caitlin Bonesio \
 Cooper Cantrell \
 Max Meyers
-
 ## Project status
     ONGOING
-
