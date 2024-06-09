@@ -131,10 +131,20 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 // #define BEACON_PORT PORTW
 // #define BEACON_PIN PIN3
 // Bumper #defines -------------------------------------------------------------
+// was X8 does not work
+// X3 does not work
+// X6 does not work
+// X8 does not work (tried it 2 times by mistake)
+// X10 does not work
 #define BUMPERfrPORT PORTX
-#define BUMPERfrPIN PIN8
+#define BUMPERfrPIN PIN10
 #define BUMPERflPORT PORTW
 #define BUMPERflPIN PIN5
+// was X11 does not work
+// X4 does not work
+// X7 does not work
+// X9 does not work
+// X11 does not work
 #define BUMPERbrPORT PORTX
 #define BUMPERbrPIN PIN11
 #define BUMPERblPORT PORTW
@@ -430,6 +440,7 @@ uint8_t CheckTrack(void) {
  */
 uint8_t CheckTape(void) {
     static CircBuff_t TapeFilterArray[NUMTAPE];
+    //printf("\r\nHELP");
     uint16_t TapeReadings[NUMTAPE];
     // if there is no noise to compare to turn the led off so we can get a noise reading
     if (!TapeNoise[0]) {
