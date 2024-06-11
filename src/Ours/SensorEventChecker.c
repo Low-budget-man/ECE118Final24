@@ -131,20 +131,31 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 // #define BEACON_PORT PORTW
 // #define BEACON_PIN PIN3
 // Bumper #defines -------------------------------------------------------------
+// this was with old PIC32
+/*
 // was X8 does not work
 // X3 does not work
 // X6 does not work
 // X8 does not work (tried it 2 times by mistake)
 // X10 does not work
+*/
+//New Pic
+//X10 does not work
+//X4 does not work
+//X6 Does work
 #define BUMPERfrPORT PORTX
-#define BUMPERfrPIN PIN10
+#define BUMPERfrPIN PIN6
+// W5 does work
 #define BUMPERflPORT PORTW
 #define BUMPERflPIN PIN5
+// this was with old PIC32
+/*
 // was X11 does not work
 // X4 does not work
 // X7 does not work
 // X9 does not work
 // X11 does not work
+*/
 #define BUMPERbrPORT PORTX
 #define BUMPERbrPIN PIN11
 #define BUMPERblPORT PORTW
@@ -439,6 +450,7 @@ uint8_t CheckTrack(void) {
  * @author Cooper Cantrell 5/10/2024 12:07
  */
 uint8_t CheckTape(void) {
+//      printf("\r\n RunTapeEvent");
     static CircBuff_t TapeFilterArray[NUMTAPE];
     //printf("\r\nHELP");
     uint16_t TapeReadings[NUMTAPE];
@@ -465,6 +477,7 @@ uint8_t CheckTape(void) {
     if (ES_Timer_GetTime() > TapeWaitStart + TAPEtime) {
         TapeWaiting = FALSE;
         LEDset = FALSE;
+        //printf("\r\n Toggled Tape");
         if (TapeLED) // off is FALSE
         {
             TapeRead[TAPEfrrBit] = AD_ReadADPin(TAPE_VOLTAGEfrr);
