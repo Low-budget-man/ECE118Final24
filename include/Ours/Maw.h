@@ -19,7 +19,7 @@
 #define MAX_MOTOR_VOLTAGE 8 
 // the motor Bias is a number that will be multiplied to the motors as you set the speed, keep between 0-1
 #define RIGHT_BIAS .998
-#define LEFT_BIAS .968
+#define LEFT_BIAS -.968
 //#define MOTORTATTLE
 #ifdef MOTORTATTLE
 #define MOTOR_TATTLE(l, r) Motor_Tattle(__FUNCTION__, l, r);
