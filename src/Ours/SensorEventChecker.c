@@ -76,13 +76,12 @@
 
 // #endif
 
-#define TAPE_VOLTAGEfrr AD_PORTV4
-
-#define TAPE_VOLTAGEfr AD_PORTV5
-#define TAPE_VOLTAGEfl AD_PORTV6
-#define TAPE_VOLTAGEfll AD_PORTV7
-#define TAPE_VOLTAGEbr AD_PORTV8
-#define TAPE_VOLTAGEbl AD_PORTW3
+#define TAPE_VOLTAGEfrr AD_PORTW3
+#define TAPE_VOLTAGEfr AD_PORTW4
+#define TAPE_VOLTAGEfl AD_PORTW5
+#define TAPE_VOLTAGEfll AD_PORTW6
+#define TAPE_VOLTAGEbr AD_PORTW7
+#define TAPE_VOLTAGEbl AD_PORTW8
 
 
 #define TAPE_VOLTAGE_BLUE TAPE_VOLTAGEbr
@@ -146,8 +145,8 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 #define BUMPERfrPORT PORTX
 #define BUMPERfrPIN PIN6
 // W5 does work
-#define BUMPERflPORT PORTW
-#define BUMPERflPIN PIN5
+#define BUMPERflPORT PORTV
+#define BUMPERflPIN PIN3
 // this was with old PIC32
 /*
 // was X11 does not work
@@ -158,9 +157,9 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 */
 #define BUMPERbrPORT PORTX
 #define BUMPERbrPIN PIN11
-#define BUMPERblPORT PORTW
+#define BUMPERblPORT PORTV
 //Pin 6 and 8 is haveing issues and does not work
-#define BUMPERblPIN PIN7
+#define BUMPERblPIN PIN4
 //#define BUMPERfrBit (1)
 //#define BUMPERflBit (0)
 //#define BUMPERbrBit (3)
@@ -526,7 +525,7 @@ uint8_t CheckTape(void) {
     if (returnVal) {
         ES_Event ThisEvent;
         ThisEvent.EventType = TAPE;
-        param &= 0b110111;//disable broken sensor
+        //param &= 0b110111;//disable broken sensor
         ThisEvent.EventParam = param;
 #ifndef EVENTCHECKER_TEST // keep this as is for test harness
         PostSensorService(ThisEvent);
