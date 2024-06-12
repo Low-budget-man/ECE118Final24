@@ -45,7 +45,7 @@
 // Batt #defines ---------------------------------------------------------------
 #define BATTERY_DISCONNECT_THRESHOLD 175
 // Track wire #defines ---------------------------------------------------------
-#define TRACK_VOLTAGE AD_PORTW4
+#define TRACK_VOLTAGE AD_PORTV6
 #define TRACK_THRESH 125
 #define TRACK_HYST 75
 // Tape #defines ---------------------------------------------------------------
@@ -76,13 +76,12 @@
 
 // #endif
 
-#define TAPE_VOLTAGEfrr AD_PORTV4
-
-#define TAPE_VOLTAGEfr AD_PORTV5
-#define TAPE_VOLTAGEfl AD_PORTV6
-#define TAPE_VOLTAGEfll AD_PORTV7
-#define TAPE_VOLTAGEbr AD_PORTV8
-#define TAPE_VOLTAGEbl AD_PORTW3
+#define TAPE_VOLTAGEfrr AD_PORTW3
+#define TAPE_VOLTAGEfr AD_PORTW4
+#define TAPE_VOLTAGEfl AD_PORTW5
+#define TAPE_VOLTAGEfll AD_PORTW6
+#define TAPE_VOLTAGEbr AD_PORTW7
+#define TAPE_VOLTAGEbl AD_PORTW8
 
 
 #define TAPE_VOLTAGE_BLUE TAPE_VOLTAGEbr
@@ -96,12 +95,12 @@
 
 #define NUMTAPE 6
 static const uint16_t TAPE_THRESH[NUMTAPE] = {
-    178,
-    141,
-    202,
-    92,
-    168,
-    90
+    65,
+    100,
+    210,
+    63,
+    154,
+    109
 };
 static const uint16_t TAPE_HYST[NUMTAPE] = {
     5,
@@ -131,25 +130,36 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 // #define BEACON_PORT PORTW
 // #define BEACON_PIN PIN3
 // Bumper #defines -------------------------------------------------------------
+// this was with old PIC32
+/*
 // was X8 does not work
 // X3 does not work
 // X6 does not work
 // X8 does not work (tried it 2 times by mistake)
 // X10 does not work
+*/
+//New Pic
+//X10 does not work
+//X4 does not work
+//X6 Does work
 #define BUMPERfrPORT PORTX
-#define BUMPERfrPIN PIN10
-#define BUMPERflPORT PORTW
-#define BUMPERflPIN PIN5
+#define BUMPERfrPIN PIN6
+// W5 does work
+#define BUMPERflPORT PORTV
+#define BUMPERflPIN PIN3
+// this was with old PIC32
+/*
 // was X11 does not work
 // X4 does not work
 // X7 does not work
 // X9 does not work
 // X11 does not work
+*/
 #define BUMPERbrPORT PORTX
 #define BUMPERbrPIN PIN11
-#define BUMPERblPORT PORTW
+#define BUMPERblPORT PORTV
 //Pin 6 and 8 is haveing issues and does not work
-#define BUMPERblPIN PIN7
+#define BUMPERblPIN PIN4
 //#define BUMPERfrBit (1)
 //#define BUMPERflBit (0)
 //#define BUMPERbrBit (3)
@@ -439,6 +449,7 @@ uint8_t CheckTrack(void) {
  * @author Cooper Cantrell 5/10/2024 12:07
  */
 uint8_t CheckTape(void) {
+//      printf("\r\n RunTapeEvent");
     static CircBuff_t TapeFilterArray[NUMTAPE];
     //printf("\r\nHELP");
     uint16_t TapeReadings[NUMTAPE];
@@ -465,6 +476,7 @@ uint8_t CheckTape(void) {
     if (ES_Timer_GetTime() > TapeWaitStart + TAPEtime) {
         TapeWaiting = FALSE;
         LEDset = FALSE;
+        //printf("\r\n Toggled Tape");
         if (TapeLED) // off is FALSE
         {
             TapeRead[TAPEfrrBit] = AD_ReadADPin(TAPE_VOLTAGEfrr);
@@ -513,7 +525,7 @@ uint8_t CheckTape(void) {
     if (returnVal) {
         ES_Event ThisEvent;
         ThisEvent.EventType = TAPE;
-        param &= 0b110111;//disable broken sensor
+        //param &= 0b110111;//disable broken sensor
         ThisEvent.EventParam = param;
 #ifndef EVENTCHECKER_TEST // keep this as is for test harness
         PostSensorService(ThisEvent);

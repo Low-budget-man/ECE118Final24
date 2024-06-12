@@ -187,13 +187,13 @@ char Maw_LeftMtrSpeed(char newSpeed){
  * @author Caitlin Bonesio, 2024.6.3 */
 char Maw_MaxMtr(uint8_t dir){
     if(dir == 0){
-        IO_PortsSetPortBits(LEFT_DIR2);
-        IO_PortsClearPortBits(LEFT_DIR1);
+        IO_PortsSetPortBits(LEFT_DIR1);
+        IO_PortsClearPortBits(LEFT_DIR2);
         IO_PortsSetPortBits(RIGHT_DIR2);
         IO_PortsClearPortBits(RIGHT_DIR1);
     } else {
-        IO_PortsSetPortBits(LEFT_DIR1);
-        IO_PortsClearPortBits(LEFT_DIR2);
+        IO_PortsSetPortBits(LEFT_DIR2);
+        IO_PortsClearPortBits(LEFT_DIR1);
         IO_PortsSetPortBits(RIGHT_DIR1);
         IO_PortsClearPortBits(RIGHT_DIR2);
     }
