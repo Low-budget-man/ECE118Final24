@@ -30,7 +30,7 @@
 
 #define CLOSE_HYST 50
 
-#define ServiceTestHarness
+//#define ServiceTestHarness
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/
@@ -165,9 +165,6 @@ ES_Event RunSensorService(ES_Event ThisEvent)
     case BUMPER:
         ES_Timer_InitTimer(BUMPER_DEBOUNCE_T, DEBOUNCE_WaitB);
         LastBump = ThisEvent.EventParam;
-#ifdef ServiceTestHarness
-        printf("\r\nBumper Event with the param,0x%x", ThisEvent.EventParam);
-#endif
         break;
     case ES_TIMEOUT:
         if (ThisEvent.EventParam == BUMPER_DEBOUNCE_T)

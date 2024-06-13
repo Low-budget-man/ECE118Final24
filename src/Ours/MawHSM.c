@@ -175,7 +175,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         break;
     case StartEnd:
         // Stays in In the StartEnd state until the bumpers are pressed
-//        printf("\r\n In start end and got a %s event with param %d",EventNames[ThisEvent.EventType],ThisEvent.EventParam);
+        printf("\r\n In start end and got a %s event with param %d",EventNames[ThisEvent.EventType],ThisEvent.EventParam);
         switch (ThisEvent.EventType)
         {
         case ES_ENTRY:

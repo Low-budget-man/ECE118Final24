@@ -95,12 +95,12 @@
 
 #define NUMTAPE 6
 static const uint16_t TAPE_THRESH[NUMTAPE] = {
-    65,
-    100,
-    210,
-    63,
-    154,
-    109
+    105,
+    140,
+    250,
+    103,
+    174,
+    139
 };
 static const uint16_t TAPE_HYST[NUMTAPE] = {
     5,
