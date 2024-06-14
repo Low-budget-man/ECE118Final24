@@ -48,7 +48,6 @@
 #define GAME_TIME 120000 
 #define HEART_RATE 500
 #define STATE_HEART (1<<1)
-//#define DEBUG
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
@@ -155,11 +154,6 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         LED_InvertBank(LED_BANK1,STATE_HEART);
         
     }
-#ifdef DEBUG
-    if(ThisEvent.EventType != ES_NO_EVENT && ThisEvent.EventType != ES_TIMERACTIVE){
-        printf("\r\n %s: in state %s with event %s with param %d",__FUNCTION__,StateNames[CurrentState],EventNames[ThisEvent.EventType],ThisEvent.EventParam);
-    }
-#endif
     switch (CurrentState)
     {
     case InitPState:                        // If current state is initial Pseudo State
@@ -181,6 +175,7 @@ ES_Event RunMawHSM(ES_Event ThisEvent)
         break;
     case StartEnd:
         // Stays in In the StartEnd state until the bumpers are pressed
+        printf("\r\n In start end and got a %s event with param %d",EventNames[ThisEvent.EventType],ThisEvent.EventParam);
         switch (ThisEvent.EventType)
         {
         case ES_ENTRY:

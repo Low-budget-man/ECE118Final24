@@ -47,8 +47,8 @@
 #define CURRENT_BATT_VOLT AD_ReadADPin(BAT_VOLTAGE)
 // for max power
 #define MAXPOWER
-#define OPEN 925
-#define CLOSE 2050
+#define OPEN 725
+#define CLOSE 1500
 // for the collecting drum
 //#define DRUM_BACKWARDS
 #define DRUM_DIR1 PORTZ,PIN9

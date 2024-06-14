@@ -104,7 +104,7 @@ static const uint16_t TAPE_THRESH[NUMTAPE] = {
 };
 static const uint16_t TAPE_HYST[NUMTAPE] = {
     5,
-    25,
+    5,
     5,
     5,
     5,
@@ -170,7 +170,7 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
 // this is the number of points in the ping sensor moving avrage bigger is more 
 // filter but slower
 #define PING_FILTER 8
-#define TAPE_FILTER 5
+#define TAPE_FILTER 4
 /*******************************************************************************
  * EVENTCHECKER_TEST SPECIFIC CODE                                                             *
  ******************************************************************************/
