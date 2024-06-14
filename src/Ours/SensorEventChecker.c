@@ -110,6 +110,7 @@ static const uint16_t TAPE_HYST[NUMTAPE] = {
     5,
     5
 };
+#define DISABLEDTAPE 3
 /*
 #define TAPEfrrBit (0)
 #define TAPEfrBit (1)
@@ -501,6 +502,7 @@ uint8_t CheckTape(void) {
         printf("\r\n -------------------------------------------");
 #endif
         for(int i = 0; i < NUMTAPE; i++){//use for loop to use the same code on different tape sensors
+            if(i = DISABLEDTAPE){continue;}
             TapeReadings[i] = MovAvgFilter(abs(TapeNoise[i] - TapeRead[i]), (TapeFilterArray[i].Data), TAPE_FILTER, &(TapeFilterArray[i].Cursor));
             uint16_t threshold;
 #ifdef TAPECALI
@@ -516,6 +518,7 @@ uint8_t CheckTape(void) {
                
             if (CurrentTape[i] != LastTape[i]) {
                 returnVal = TRUE;
+                //printf("\r\nchange detected last: %d, cur: %d", LastTape[i], CurrentTape[i]);
                 LastTape[i] = CurrentTape[i];
             }
             param += (CurrentTape[i] << i);
