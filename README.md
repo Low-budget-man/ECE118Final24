@@ -30,12 +30,12 @@ This is the git repo that will deal with the code for the final project of ECE 1
   - [x] add drum code to state machine
   - [x] recalibrate servo
   - [x] recalibrate tape sensor
-- [ ] Finish Bot Code
-  - [ ] make minspec
+- [x] Finish Bot Code
+  - [x] make minspec
 ## Authors and acknowledgment
 Authors: \
 Caitlin Bonesio \
 Cooper Cantrell \
 Max Meyers
 ## Project status
-    ONGOING
+    COMPLETED

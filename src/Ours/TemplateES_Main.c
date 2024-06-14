@@ -22,6 +22,7 @@ void main(void)
     Maw_Init();
     // now initialize the Events and Services Framework and start it running
     ErrorType = ES_Initialize();
+    printf("\r\nsuccessfully initialized");
     if (ErrorType == Success) {
         ErrorType = ES_Run();
 
