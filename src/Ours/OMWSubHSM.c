@@ -125,7 +125,7 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
         //printf("\r\nguideTapes %X, gbf: %d", GuideTapes, guideBackFlag);
         switch (GuideTapes){
             case 0b00://left is off and right is off: turn right
-                MOTOR_TATTLE(100, 0)
+                MOTOR_TATTLE(100, 60)
                 Maw_LeftMtrSpeed(100);
                 Maw_RightMtrSpeed(0);
                 // this is for testing may allow us to catch a 
@@ -160,9 +160,9 @@ ES_Event RunOMWSubHSM(ES_Event ThisEvent){
         if((ThisEvent.EventParam & ((1<<TAPEfllBit) | (1<<TAPEflBit) | (1<<TAPEblBit) )) || guideBackFlag){
             
             guideBackFlag = 1;
-            MOTOR_TATTLE(-100, -60)
+            MOTOR_TATTLE(-100, 100)
             Maw_LeftMtrSpeed(-100);
-            Maw_RightMtrSpeed(-60);
+            Maw_RightMtrSpeed(100);
         }
     }
     if(ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == OMW_PUPPY){
