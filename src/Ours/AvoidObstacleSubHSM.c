@@ -327,13 +327,6 @@ ES_Event RunAvoidObstacleSubHSM(ES_Event ThisEvent)
                         ES_Timer_InitTimer(AVOID_OBSTACLE_TIMER, BackLTime);
                     }
                     break;
-                case TAPE:
-                    if(ThisEvent.EventParam & ((1<<TAPEblBit)|(1<<TAPEbrBit))){
-                        makeTransition = TRUE;
-                        nextState = DriftR;
-                        ThisEvent = NO_EVENT;
-                    }
-                    break;
                 case ES_TIMEOUT:
                     if(ThisEvent.EventParam == AVOID_OBSTACLE_TIMER){
                         makeTransition = TRUE;
