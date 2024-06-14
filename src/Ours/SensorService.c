@@ -30,7 +30,7 @@
 
 #define CLOSE_HYST 50
 
-//#define ServiceTestHarness
+#define ServiceTestHarness
 /*******************************************************************************
  * PRIVATE FUNCTION PROTOTYPES                                                 *
  ******************************************************************************/

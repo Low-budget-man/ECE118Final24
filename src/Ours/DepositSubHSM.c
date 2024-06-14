@@ -168,7 +168,7 @@ ES_Event RunDepositSubHSM(ES_Event ThisEvent)
 					break;
 			}
             break;
-            case Align:
+        case Align:
             ThisEvent = RunAlignHSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case ALIGNED:

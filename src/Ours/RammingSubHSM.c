@@ -320,7 +320,7 @@ ES_Event RunRammingSubHSM(ES_Event ThisEvent)
 					Maw_RightMtrSpeed(-100);
 					ES_Timer_InitTimer(RAM_TIMER, BACKUP2_TIME);
                     #else
-                    MOTOR_TATTLE(-100, -100)
+                    MOTOR_TATTLE(-100, -60)
 					Maw_LeftMtrSpeed(-100);
 					Maw_RightMtrSpeed(-60);
 					ES_Timer_InitTimer(RAM_TIMER, NAV2Backup);
